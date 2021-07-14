@@ -29,12 +29,12 @@ module.exports = {
      let author = await db.fetch(`rob_${user.id}`);
      let author2 = await db.fetch(`money_${user2.id}`);
 
-     let timeout = 120000000;
+     let timeout = 86400000;
 
      if (author !== null && timeout - (Date.now() - author) > 0) {
-       let time = ms(timeout - (Date.now() - author));
+       let time = new Date(timeout - (Date.now() - author));
 
-       return message.channel.send(robEmbed.setDescription(`❌ Вы уже недавно воровали деньги у этого участника.\n\nПопробуй снова через **${time}**.`)).then(msg => {msg.delete({timeout: "10000"})});
+       return message.channel.send(robEmbed.setDescription(`❌ Вы уже недавно воровали деньги у этого участника.\n\nПопробуй снова через **${time.getUTCHours()} часа(ов) ${time.getMinutes()} минут**.`)).then(msg => {msg.delete({timeout: "10000"})});
      } else {
        if (author2 < 100) return message.channel.send(robEmbed.setDescription(`❌ Вы должны иметь не менее 100 монет, чтобы воровать у кого-то.`)).then(msg => {msg.delete({timeout: "10000"})});
 

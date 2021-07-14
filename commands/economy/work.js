@@ -21,17 +21,27 @@ module.exports = {
         let author = await db.fetch(`work_${user.id}`)
 
         let timeout = 1800000;
-
+        var options = {
+          era: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          weekday: 'long',
+          timezone: 'UTC',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric'
+        };
 
 
         if (author !== null && timeout - (Date.now() - author) > 0) {
-            let time = ms(timeout - (Date.now() - author));
+            let time = new Date(timeout - (Date.now() - author));
 
             let timeEmbed = new MessageEmbed()
                 .setColor(redlight)
                 .setTimestamp()
                 .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-                .setDescription(`❌ Вы уже работали недавно\n\nПопробуй снова через **${time}**.`);
+                .setDescription(`❌ Вы уже работали недавно\n\nПопробуй снова через **${time.getMinutes()} минут**.`);
             message.channel.send(timeEmbed).then(msg => {msg.delete({timeout: "10000"})});
         } else {
             let amount = Math.floor(Math.random() * 800) + 1;

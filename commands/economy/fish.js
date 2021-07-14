@@ -44,12 +44,13 @@ module.exports = {
             let fishtime = await db.fetch(`fishtime_${user.id}`);
 
             if (fishtime !== null && timeout - (Date.now() - fishtime) > 0) {
-                let time = ms(timeout - (Date.now() - fishtime));
+                let time = new Date(timeout - (Date.now() - fishtime));
 
                 let timeEmbed = new MessageEmbed()
                     .setColor(redlight)
                     .setTimestamp()
-                    .setDescription(`❌ Вы недавно рыбачили.\n\nПопробуй еще раз через ${time}.`);
+                    .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
+                    .setDescription(`❌ Вы недавно рыбачили.\n\nПопробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**`);
                 return message.channel.send(timeEmbed).then(msg => {msg.delete({timeout: "10000"})});
             }
 
