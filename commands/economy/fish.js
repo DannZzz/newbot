@@ -11,7 +11,7 @@ function randomRange(min, max) {
 
 module.exports = {
     config: {
-        name: 'Рыбачить',
+        name: 'рыбачить',
         aliases: ['catchfish', 'fish', "рыба"],
         category: 'economy',
         description: 'Рыбачить, хм неплохо.',
