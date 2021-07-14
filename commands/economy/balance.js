@@ -34,7 +34,7 @@ module.exports = {
         .setTimestamp()
         .setAuthor(member.user.username, member.user.displayAvatarURL({dynamic: true}))
         .setDescription(
-          `Наличные: ${COIN}**${bal}**\nБанк: ${BANK}**${bank}**\n\nБаланс: ${COIN}**${totalMoney}**`
+          `Баланс: ${COIN}**${bal}**\nБанк: ${BANK}**${bank}**\n\nНа счету: ${COIN}**${totalMoney}**`
         );
       message.channel.send(moneyEmbed);
     } else {

@@ -37,7 +37,7 @@ module.exports = {
       .setColor(greenlight)
       .setTimestamp()
       .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-      .setDescription(`Изменение баланса: Обналичивание\n\nКол-во денег: ${COIN}**${args[0]}**\nНаличные: ${COIN}**${bal}**`)
+      .setDescription(`Изменение баланса: Обналичивание\n\nКол-во денег: ${COIN}**${args[0]}**\nБаланс: ${COIN}**${bal}**`)
 
       message.channel.send(sEmbed);
     } catch (e) {
