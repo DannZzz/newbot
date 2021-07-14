@@ -86,10 +86,10 @@ module.exports = {
                         const card = draw(message.channel, playerHand);
                         const total = calculate(playerHand);
                         if (total > 21) {
-                            reason = `❌ Вы рисуете ${card.display}, Общее ${total}! Увы`;
+                            reason = `Вы достаете ${card.display}, Общее ${total}! Увы`;
                             break;
                         } else if (total === 21) {
-                            reason = `✅ Вы рисуете ${card.display} И добиваете 21!`;
+                            reason = `Вы достаете ${card.display} И добиваете 21!`;
                             win = true;
                         }
                     } else {
@@ -103,22 +103,22 @@ module.exports = {
                     if (inital < 17) card = draw(message.channel, dealerHand);
                     const total = calculate(dealerHand);
                     if (total > 21) {
-                        reason = `Дилер рисует ${card.display}, в общем ${total}! Дилер проиграл.`;
+                        reason = `Дилер достает ${card.display}, в общем ${total}! Дилер проиграл.`;
                         win = true;
                     } else if (total >= 17) {
                         const playerTotal = calculate(playerHand);
                         if (total === playerTotal) {
-                            reason = `${card ? `Дилер рисует ${card.display}, всего ` : ''}${playerTotal}-${total}`;
+                            reason = `${card ? `Дилер достает ${card.display}, всего ` : ''}${playerTotal}-${total}`;
                             break;
                         } else if (total > playerTotal) {
-                            reason = `${card ? `Дилер рисует ${card.display}, всего ` : ''}${playerTotal}-\`${total}\``;
+                            reason = `${card ? `Дилер достает ${card.display}, всего ` : ''}${playerTotal}-\`${total}\``;
                             break;
                         } else {
-                            reason = `${card ? `Дилер рисует ${card.display}, всего ` : ''}\`${playerTotal}\`-${total}`;
+                            reason = `${card ? `Дилер достает ${card.display}, всего ` : ''}\`${playerTotal}\`-${total}`;
                             win = true;
                         }
                     } else {
-                        await message.channel.send(gameEmbed.setDescription(`**Дилер рисует карты ${card.display}, в общем ${total}!**`));
+                        await message.channel.send(gameEmbed.setDescription(`**Дилер достает карты ${card.display}, в общем ${total}!**`));
                     }
                 }
             }
