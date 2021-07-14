@@ -1,0 +1,9 @@
+discord.js
+moment
+ms
+superagent
+quick.db
+fs
+amethyste-api
+giphy-api
+common-tags

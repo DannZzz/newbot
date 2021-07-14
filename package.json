@@ -1,0 +1,25 @@
+{
+  "name": "bot-v2",
+  "version": "1.0.0",
+  "engines": {
+    "node": "14.17.3"
+  },
+  "description": "discord bot v2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dann#0006",
+  "license": "ISC",
+  "dependencies": {
+    "amethyste-api": "^1.1.5",
+    "common-tags": "^1.8.0",
+    "discord.js": "^12.5.3",
+    "fs": "0.0.1-security",
+    "giphy-api": "^2.0.2",
+    "moment": "^2.29.1",
+    "ms": "^2.1.3",
+    "quick.db": "^7.1.3",
+    "superagent": "^6.1.0"
+  }
+}
