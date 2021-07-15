@@ -38,7 +38,7 @@ module.exports = {
      } else {
        if (author2 < 100) return message.channel.send(robEmbed.setDescription(`❌ Вы должны иметь не менее 100 монет, чтобы воровать у кого-то.`)).then(msg => {msg.delete({timeout: "10000"})});
 
-       let random = Math.floor(Math.random() * 300) + 1
+       let random = target / 100 * (Math.floor(Math.random() * (36 - 10)) + 10);
 
        if (target < random) {return message.channel.send(robEmbed.setDescription(`❌ К сожалению вы ничего не смогли воровать.`)).then(msg => {msg.delete({timeout: "10000"})});
      } else {

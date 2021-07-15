@@ -32,7 +32,7 @@ module.exports = {
                 const embed = new MessageEmbed()
                     .setAuthor(user.user.username, user.user.displayAvatarURL({ dynamic: true }))
                     .setColor(cyan)
-                    .addField("**Статус**", `**Польз. статус** -\n${activity.state}`)
+                    .addField("** **", `**Польз. статус** -\n${activity.state}`)
                     .setThumbnail(user.user.displayAvatarURL())
                     .setFooter(message.guild.name, message.guild.iconURL())
                     .setTimestamp()

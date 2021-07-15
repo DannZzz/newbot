@@ -26,7 +26,7 @@ module.exports = {
      if (user.user.id === user2.id) return message.channel.send(gEmbed.setDescription("❌ Вы не сможете перевести деньги самому себе.")).then(msg => {msg.delete({timeout: "10000"})});
 
      if(!args[1]) return message.channel.send(gEmbed.setDescription("❌ Укажите кол-во монет, чтобы перевести.")).then(msg => {msg.delete({timeout: "10000"})});
-     if(isNaN(args[1])) return message.channel.send(gEmbed.setDescription("❌ Укажите кол-во монет в виде числ, чтобы перевести.")).then(msg => {msg.delete({timeout: "10000"})});
+     if(isNaN(args[1]) && args[1] !== "all") return message.channel.send(gEmbed.setDescription("❌ Укажите кол-во монет в виде числ, чтобы перевести.")).then(msg => {msg.delete({timeout: "10000"})});
 
      memberMoney = await db.fetch(`money_${user2.id}`)
      if(memberMoney < args[1]) return message.channel.send(gEmbed.setDescription("❌ У вас недостаточно денег.")).then(msg => {msg.delete({timeout: "10000"})});
@@ -37,9 +37,16 @@ module.exports = {
      .setTitle("Перевод")
      .setTimestamp()
 
+     if (args[1] === "all") {
+       args[1] = memberMoney;
+       db.add(`money_${user.id}`, args[1]);
+       db.subtract(`money_${user2.id}`, args[1]);
+     } else {
+       db.add(`money_${user.id}`, args[1]);
+       db.subtract(`money_${user2.id}`, args[1]);
+     }
 
-     db.add(`money_${user.id}`, args[1]);
-     db.subtract(`money_${user2.id}`, args[1]);
+     
      let userBal = await db.fetch(`money_${user.id}`);
      let memberMoneyAfter = await db.fetch(`money_${user2.id}`);
 

@@ -28,7 +28,7 @@ module.exports = {
         .setTimestamp()
         .setColor(greenlight)
         .setAuthor(message.guild.name, message.guild.iconURL())
-        return message.channel.send(mtsEmbed.setDescription(`✅ Мьют роль для этого сервера: \`${roleName.name}\`!`)).then(msg => {msg.delete({timeout: "10000"})});
+        return message.channel.send(mtsEmbed.setDescription(`✅ Мьют роль для этого сервера: \`${roleName.name}\`!`))
       } else {
         return message.channel.send(mtEmbed.setDescription("❌ Пожалуйста, укажите название роли или ID роли.")).then(msg => {msg.delete({timeout: "10000"})});
       }

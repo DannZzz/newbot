@@ -8,7 +8,7 @@ module.exports = {
     name: "обналичить",
     description: "Обналичить деньги из банка.",
     category: "economy",
-    aliases: ["cash-out", "cash", "об"],
+    aliases: ["cash-out", "cash", "об", "with"],
     accessableby: "Для всех",
     usage: "[кол-во монет] "
   },
@@ -20,16 +20,22 @@ module.exports = {
       .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
 
       if(!args[0]) return message.channel.send(iEmbed.setDescription("❌ Укажите кол-во денег, чтобы обналичить в банк.")).then(msg => {msg.delete({timeout: "10000"})});
-      if(isNaN(args[0])) return message.channel.send(iEmbed.setDescription("❌ Укажите кол-во денег в виде числ.")).then(msg => {msg.delete({timeout: "10000"})});
+      if(isNaN(args[0]) && args[0] !== "all") return message.channel.send(iEmbed.setDescription("❌ Укажите кол-во денег в виде числ.")).then(msg => {msg.delete({timeout: "10000"})});
       let user = message.author;
       let bal1 = await db.fetch(`money_${user.id}`);
       let bank1 = await db.fetch(`bank_${user.id}`);
 
       if(args[0] > bank1) return message.channel.send(iEmbed.setDescription("❌ У вас недостаточно денег.")).then(msg => {msg.delete({timeout: "10000"})});
 
+      if (args[0] === "all") {
+        args[0] = bank1;
+        db.add(`money_${user.id}`, args[0]);
+        db.subtract(`bank_${user.id}`, args[0]);
+      }else {
+        db.add(`money_${user.id}`, args[0]);
+        db.subtract(`bank_${user.id}`, args[0]);
+      }
 
-      db.add(`money_${user.id}`, args[0]);
-      db.subtract(`bank_${user.id}`, args[0]);
 
       let bal = await db.fetch(`money_${user.id}`);
 

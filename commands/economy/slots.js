@@ -29,31 +29,48 @@ module.exports = {
     .setColor(redlight)
     .setDescription(`❌ Укажите ставку.`);
 
-    if (!money) return message.channel.send(moneyhelp);
-    if (money > moneydb) return message.channel.send(moneymore);
+    let timeout = 59000
+    let author = await db.fetch(`slots_${message.author.id}`);
+    if (author !== null && timeout - (Date.now() - author) > 0) {
 
-    let number = []
-    for (let i = 0; i < 3; i++) { number[i] = Math.floor(Math.random() * slotItems.length); }
 
-    if (number[0] == number[1] && number[1] == number[2])  {
-        money *= 9
-        win = true;
-    } else if (number[0] == number[1] || number[0] == number[2] || number[1] == number[2]) {
-        money *= 3
-        win = true;
-    }
-    if (win) {
-        let slotsEmbed1 = new MessageEmbed()
-            .setDescription(`${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n✅ Ты выиграл ${money}${COIN}`)
-            .setColor(greenlight)
-        message.channel.send(slotsEmbed1)
-        db.add(`money_${user.id}`, money)
+      let aembed = new MessageEmbed()
+      .setColor(redlight)
+      .setTimestamp()
+      .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
+
+      let time = new Date(timeout - (Date.now() - author));
+      return message.channel.send(aembed.setDescription(`❌ Попробуй снова через **${time.getSeconds()} секунд**.`)).then(msg => {msg.delete({timeout: "10000"})});
     } else {
-        let slotsEmbed = new MessageEmbed()
-            .setDescription(`${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n❌ Ты проиграл ${money}${COIN}`)
-            .setColor(redlight)
-        message.channel.send(slotsEmbed)
-        db.subtract(`money_${user.id}`, money)
+      if (!money) return message.channel.send(moneyhelp);
+      if (money > moneydb) return message.channel.send(moneymore);
+      let reward;
+      let number = []
+      for (let i = 0; i < 3; i++) { number[i] = Math.floor(Math.random() * slotItems.length); }
+
+      if (number[0] == number[1] && number[1] == number[2])  {
+          money *= 2;
+          win = true;
+      } else if (number[0] == number[1] || number[0] == number[2] || number[1] == number[2]) {
+          money += money;
+          win = true;
+      }
+      if (win) {
+          let slotsEmbed1 = new MessageEmbed()
+              .setDescription(`${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n✅ Ты выиграл ${money}${COIN}`)
+              .setColor(greenlight)
+          message.channel.send(slotsEmbed1)
+          db.add(`money_${user.id}`, money)
+
+      } else {
+          let slotsEmbed = new MessageEmbed()
+              .setDescription(`${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n❌ Ты проиграл ${money}${COIN}`)
+              .setColor(redlight)
+          message.channel.send(slotsEmbed)
+          db.subtract(`money_${user.id}`, money)
+
+      }
+      db.set(`slots_${message.author.id}`, Date.now());
     }
 
 }

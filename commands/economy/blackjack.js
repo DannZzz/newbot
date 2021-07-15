@@ -12,7 +12,7 @@ const { COIN, BANK } = require('../../config');
 module.exports = {
     config: {
         name: 'блэкджек',
-        aliases: ['bj', 'blackjack'],
+        aliases: ['bj', 'blackjack', 'бж'],
         category: 'economy',
         usage: '[число колод 1-8] <ставка>',
         description: 'Игра Блэкджек!',
@@ -58,11 +58,17 @@ module.exports = {
             } else if (dealerInitialTotal === 21) {
                 ops.games.delete(message.channel.id);
                 db.subtract(`money_${user.id}`, amount);
-                return message.channel.send(noEmbed.setDescription(`❌ У дилера блэкджек!\nВы проиграли **${amout}**${COIN}`))
+                return message.channel.send(noEmbed.setDescription(`❌ У дилера блэкджек!\nВы проиграли **${amount}**${COIN}`))
             } else if (playerInitialTotal === 21) {
+                let embed = new MessageEmbed()
+                .setColor(greenlight)
+                .setTimestamp()
+                .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
+
                 ops.games.delete(message.channel.id);
-                db.add(`money_${user.id}`, amount)
-                return message.channel.send(noEmbed.setDescription(`❌ У вас блэкджек!\nВы выиграли **${amount * (amount / 2)}**${COIN}`)).then(msg => {msg.delete({timeout: "10000"})})
+
+                db.add(`money_${user.id}`, amount + (amount / 2))
+                return message.channel.send(embed.setDescription(`✅ У вас блэкджек!\nВы выиграли **${amount + (amount / 2)}**${COIN}`))
             }
 
             let playerTurn = true;
@@ -75,7 +81,7 @@ module.exports = {
 
             while (!win) {
                 if (playerTurn) {
-                    await message.channel.send(gameEmbed.setDescription(`
+                    let msg = await message.channel.send(gameEmbed.setDescription(`
 						**Первая карта дилера -** ${dealerHand[0].display}\n\n
 						**Вы [${calculate(playerHand)}] -**\n
 						**${playerHand.map(card => card.display).join('\n')}**\n\n
@@ -109,7 +115,9 @@ module.exports = {
                         const playerTotal = calculate(playerHand);
                         if (total === playerTotal) {
                             reason = `${card ? `Дилер достает ${card.display}, всего ` : ''}${playerTotal}-${total}`;
+                            win = 'ничья'
                             break;
+
                         } else if (total > playerTotal) {
                             reason = `${card ? `Дилер достает ${card.display}, всего ` : ''}${playerTotal}-\`${total}\``;
                             break;
@@ -130,12 +138,20 @@ module.exports = {
             .setTimestamp()
             .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
 
-            if (win) {
+            if (win === true) {
                 db.add(`money_${user.id}`, amount);
                 return message.channel.send(winEmbed.setDescription(`✅ **${reason}, Вы выиграли ${COIN}${amount}**!`));
+            }else if (!win){
+              db.subtract(`money_${user.id}`, amount);
+              return message.channel.send(noEmbed.setDescription(`❌ **${reason}, Вы проиграли ${COIN}${amount}**!`));
+
             } else {
-                db.subtract(`money_${user.id}`, amount);
-                return message.channel.send(noEmbed.setDescription(`❌ **${reason}, Вы проиграли ${COIN}${amount}**!`));
+                let Nembed = new MessageEmbed()
+                .setColor(cyan)
+                .setTimestamp()
+                .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
+
+                return message.channel.send(Nembed.setDescription(`👀 **${reason}, У вас ничья!**`));
             }
         } catch (err) {
             ops.games.delete(message.channel.id);
