@@ -46,11 +46,11 @@ module.exports = {
        db.subtract(`money_${user2.id}`, args[1]);
      }
 
-     
+
      let userBal = await db.fetch(`money_${user.id}`);
      let memberMoneyAfter = await db.fetch(`money_${user2.id}`);
 
-     message.channel.send(sEmbed.setDescription(`Изменение баланса: Перевод\n\nКому: <@${user.id}>\nКол-во монет: ${COIN}**${args[1]}**\n\nБаланс <@${user2.id}> - ${COIN}**${memberMoneyAfter}**\nБаланс <@${user.id}> - ${COIN}**${userBal}**`))
+     message.channel.send(sEmbed.setDescription(`Изменение баланса: Перевод\n\nКому: <@${user.id}>\nКол-во монет: ${COIN}**${args[1]}**\n\nБаланс: <@${user2.id}> - ${COIN}**${memberMoneyAfter}**\nБаланс: <@${user.id}> - ${COIN}**${userBal}**`))
     } catch (e) {
      console.log(e);
     }
