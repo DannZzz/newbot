@@ -8,12 +8,12 @@ const disagree = "❎";
 
 module.exports = {
     config: {
-      name: "vote",
-      description: "Выдает информацию о сервере",
+      name: "голосование",
+      description: "Создает голосование время.",
       usage: "[время 1m 1h, 1d] ",
       category: "fun",
-      accessableby: "Для всех",
-      aliases: ['вот']
+      accessableby: "Нужна роль: Администратор.",
+      aliases: ['vote', 'гол']
     },
     run: async (bot, message, args) => {
       let nembed = new MessageEmbed()
@@ -22,6 +22,7 @@ module.exports = {
       .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
 
       if(!args[0]) return message.channel.send(nembed.setDescription("❌ Укажите время.")).then(msg => {msg.delete({timeout: "10000"})});
+      if (!message.member.hasPermission("ADMINISTRATOR")) return message.channel.send(nembed.setDescription("❌ У вас недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
       if(!ms(args[0]) || !isNaN(args[0])) return message.channel.send(nembed.setDescription("❌ Укажите время на английском. \`\`1m, 1h, 1d\`\`")).then(msg => {msg.delete({timeout: "10000"})});
       if(!args[1]) return message.channel.send(nembed.setDescription("❌ Задайте вопрос голосовании.")).then(msg => {msg.delete({timeout: "10000"})});
       // Number.isInteger(itime)
