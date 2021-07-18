@@ -1,6 +1,7 @@
-const db = require('quick.db');
+
 const {MessageEmbed} = require("discord.js")
 const {greenlight, redlight} = require('../../JSON/colours.json');
+const serverModel = require("../../serverSchema");
 
 
 module.exports = {
@@ -21,7 +22,8 @@ module.exports = {
       if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send(dmtEmbed.setDescription("❌ У меня недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
 
         try {
-            let a = db.fetch(`muterole_${message.guild.id}`)
+            let sd = await serverModel.findOne({ serverID: message.guild.id });
+            let a = sd.muteRole;a
 
             if (!a) {
                 return message.channel.send(dmtEmbed.setDescription("❌ Роль мьюта пока не установлена.")).then(msg => {msg.delete({timeout: "10000"})});
@@ -31,7 +33,7 @@ module.exports = {
               .setColor(greenlight)
               .setAuthor(message.guild.name, message.guild.iconURL())
                 let role = message.guild.roles.cache.get(a)
-                db.delete(`muterole_${message.guild.id}`)
+                await serverModel.findOneAndUpdate({serverID: message.guild.id},{$set: {muteRole: undefined}});
 
                 message.channel.send(dmtsEmbed.setDescription(`✅ **\`${role.name}\`** мьют роль успешно удалена`))
             }

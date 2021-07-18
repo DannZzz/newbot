@@ -1,7 +1,9 @@
-const db = require("quick.db");
+
 const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
+const profileModel = require("../../profileSchema");
+
 
 module.exports = {
   config: {
@@ -28,8 +30,13 @@ module.exports = {
      if(!args[1]) return message.channel.send(gEmbed.setDescription("❌ Укажите кол-во монет, чтобы перевести.")).then(msg => {msg.delete({timeout: "10000"})});
      if(isNaN(args[1]) && args[1] !== "all") return message.channel.send(gEmbed.setDescription("❌ Укажите кол-во монет в виде числ, чтобы перевести.")).then(msg => {msg.delete({timeout: "10000"})});
 
-     memberMoney = await db.fetch(`money_${user2.id}`)
+     let profileDataMember = await profileModel.findOne({ userID: user.id });
+     let profileDataAuthor = await profileModel.findOne({ userID: user2.id });
+
+     let memberMoney = profileDataAuthor.coins
      if(memberMoney < args[1]) return message.channel.send(gEmbed.setDescription("❌ У вас недостаточно денег.")).then(msg => {msg.delete({timeout: "10000"})});
+     if(10 > args[1]) return message.channel.send(gEmbed.setDescription("❌ Минимальная сумма **10**.")).then(msg => {msg.delete({timeout: "10000"})});
+
 
      let sEmbed = new MessageEmbed()
      .setColor(greenlight)
@@ -39,18 +46,15 @@ module.exports = {
 
      if (args[1] === "all") {
        args[1] = memberMoney;
-       db.add(`money_${user.id}`, args[1]);
-       db.subtract(`money_${user2.id}`, args[1]);
+       await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor(args[1])}})
+       await profileModel.findOneAndUpdate({userID: user2.id},{$inc: {coins: Math.floor(-args[1])}})
      } else {
-       db.add(`money_${user.id}`, args[1]);
-       db.subtract(`money_${user2.id}`, args[1]);
+       await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor(args[1])}})
+       await profileModel.findOneAndUpdate({userID: user2.id},{$inc: {coins: Math.floor(-args[1])}})
      }
 
 
-     let userBal = await db.fetch(`money_${user.id}`);
-     let memberMoneyAfter = await db.fetch(`money_${user2.id}`);
-
-     message.channel.send(sEmbed.setDescription(`Изменение баланса: Перевод\n\nКому: <@${user.id}>\nКол-во монет: ${COIN}**${args[1]}**\n\nБаланс: <@${user2.id}> - ${COIN}**${memberMoneyAfter}**\nБаланс: <@${user.id}> - ${COIN}**${userBal}**`))
+     message.channel.send(sEmbed.setDescription(`Изменение баланса: Перевод\n\nКому: <@${user.id}>\nКол-во монет: ${COIN}**${Math.floor(args[1])}**`))
     } catch (e) {
      console.log(e);
     }

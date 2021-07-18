@@ -1,8 +1,8 @@
 const { MessageEmbed } = require("discord.js");
-const db = require("quick.db");
 const ms = require("ms");
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
+const profileModel = require("../../profileSchema");
 
 module.exports = {
     config: {
@@ -19,7 +19,8 @@ module.exports = {
         let timeout = 86400000;
         let amount = 1000;
 
-        let daily = await db.fetch(`daily_${user.id}`);
+        let profileData = await profileModel.findOne({ userID: user.id });
+        let daily = await profileData.daily;
 
         if (daily !== null && timeout - (Date.now() - daily) > 0) {
             let time = new Date(timeout - (Date.now() - daily));
@@ -35,8 +36,11 @@ module.exports = {
                 .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
                 .setDescription(`✅ Ваш ежедневный приз ${amount}${COIN}`);
             message.channel.send(moneyEmbed)
-            db.add(`money_${user.id}`, amount)
-            db.set(`daily_${user.id}`, Date.now())
+
+            await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount}})
+            await profileModel.findOneAndUpdate({userID: user.id}, {$set: {daily: Date.now()}})
+
+
 
 
         }

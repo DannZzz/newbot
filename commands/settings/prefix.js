@@ -1,6 +1,6 @@
 const {MessageEmbed} = require('discord.js');
-let db = require('quick.db');
 const {cyan} = require("../../JSON/colours.json");
+const serverModel = require("../../serverSchema");
 
 module.exports = {
     config: {
@@ -17,9 +17,10 @@ module.exports = {
         .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
         .setColor(cyan)
         if (!message.member.hasPermission('ADMINISTRATOR' || "MANAGE_SERVER")) return message.channel.send(prefixEmbed.setDescription(`❌ <@${message.member.id}> у вас недостаточно прав.`)).then(msg => {msg.delete({timeout: "10000"})})
-
+        let sd = await serverModel.findOne({ serverID: message.guild.id });
         if (!args[0]) {
-          let b = await db.fetch(`prefix_${message.guild.id}`);
+
+          let b = sd.prefix;
           if (b) {
         return message.channel.send(prefixEmbed.setDescription(`✅ Префикс сервера: ${b}`)).then(msg => {msg.delete({timeout: "10000"})});
       } else return message.channel.send(prefixEmbed.setDescription("❌ Пожалуйста, укажите новый префикс.")).then(msg => {msg.delete({timeout: "10000"})});
@@ -28,12 +29,12 @@ module.exports = {
         try {
 
             let a = args.join(' ');
-            let b = await db.fetch(`prefix_${message.guild.id}`)
+            let b = sd.prefix;
 
             if (a === b) {
                 return message.channel.send(prefixEmbed.setDescription("❌ Этот префикс уже установлен.")).then(msg => {msg.delete({timeout: "10000"})})
             } else {
-                db.set(`prefix_${message.guild.id}`, a)
+                await serverModel.findOneAndUpdate({serverID: message.guild.id}, {$set: {prefix: a}});
 
                 return message.channel.send(prefixEmbed.setDescription(`✅ Новый префикс сервера: ${a}`))
             }

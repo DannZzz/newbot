@@ -1,5 +1,7 @@
-const db = require('quick.db');
+
 const { PREFIX } = require('../../config');
+const profileModel = require("../../profileSchema");
+const serverModel = require("../../serverSchema");
 const queue2 = new Map();
 const queue3 = new Map();
 const queue = new Map();
@@ -7,16 +9,38 @@ const games = new Map()
 
 module.exports = async (bot, message) => {
     try {
+      let profileData;
+      let serverData;
+  try {
+    profileData = await profileModel.findOne({ userID: message.author.id });
+    if (!profileData) {
+      let profile = await profileModel.create({
+        userID: message.author.id,
+        serverID: message.guild.id,
+        coins: 1000,
+        bank: 0,
+        slots: 0,
+        rob: 0,
+        fish: 0,
+        work: 0,
+        daily: 0
+      });
+      profile.save();
+    }
+  } catch (err) {
+    console.log(err);
+  }
         if (message.author.bot || message.channel.type === "dm") return;
 
         let prefix;
-        let fetched = await db.fetch(`prefix_${message.guild.id}`);
+        serverData = await serverModel.findOne({ serverID: message.guild.id });
+        if(!serverData) {
+          let server = await serverModel.create({
+            serverID: message.guild.id,
+          })
+        server.save()}
 
-        if (fetched === null) {
-            prefix = PREFIX
-        } else {
-            prefix = fetched
-        }
+        prefix = serverData.prefix;
 
         let args = message.content.slice(prefix.length).trim().split(/ +/g);
         let cmd = args.shift().toLowerCase();
@@ -31,7 +55,7 @@ module.exports = async (bot, message) => {
         }
 
         var commandfile = bot.commands.get(cmd) || bot.commands.get(bot.aliases.get(cmd))
-        if (commandfile) commandfile.run(bot, message, args, ops)
+        if (commandfile) commandfile.run(bot, message, args, ops, profileData)
     } catch (e) {
         console.log(e);
     }

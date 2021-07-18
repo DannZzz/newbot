@@ -1,9 +1,10 @@
 const fishes = require('../../JSON/fishes.json');
-let db = require('quick.db');
 const ms = require("ms");
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const { MessageEmbed } = require('discord.js');
+const profileModel = require("../../profileSchema");
+
 
 function randomRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -21,14 +22,10 @@ module.exports = {
     run: async (bot, message, args) => {
 
         let user = message.author;
+        let profileData = await profileModel.findOne({ userID: user.id });
 
-        let bal = db.fetch(`money_${user.id}`)
-
-        let fish = await db.fetch(`fish_${user.id}`)
         if (!args[0]) {
-            if (bal === null) bal = 0;
 
-            if (fish == null) fish = 0;
 
             const fishID = Math.floor(Math.random() * 10) + 1;
             let rarity;
@@ -41,10 +38,10 @@ module.exports = {
             const worth = randomRange(fishh.min, fishh.max);
 
             let timeout = 180000;
-            let fishtime = await db.fetch(`fishtime_${user.id}`);
+            let fishtime = profileData.fish;
 
             if (fishtime !== null && timeout - (Date.now() - fishtime) > 0) {
-                let time = new Date(timeout - (Date.now() - fishtime));
+                let time = await new Date(timeout - (Date.now() - fishtime));
 
                 let timeEmbed = new MessageEmbed()
                     .setColor(redlight)
@@ -60,9 +57,10 @@ module.exports = {
                 .setDescription(`**🎣 Вы забросили свою удочку и поймали ${fishh.symbol}, И это было продано за ${COIN}${worth}**!`)
             message.channel.send(embed);
 
-            db.add(`money_${user.id}`, worth);
-            db.add(`fish_${user.id}`, 1);
-            db.set(`fishtime_${user.id}`, Date.now())
+            await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: worth}})
+            await profileModel.findOneAndUpdate({userID: user.id}, {$set: {fish: Date.now()}})
+
+
         }
         if (args[0] === 'лист' || args[0] === 'list') {
 

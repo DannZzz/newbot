@@ -1,6 +1,5 @@
 const { stripIndents } = require('common-tags');
 const { shuffle, verify } = require('../../functions');
-const db = require('quick.db');
 const suits = ['<:kyap:864965175941791786>', '<:xach:864965176088068096>', '<:xar:864965175764320277>', '<:sirt:864965176330682408>'];
 const faces = ['Валет', 'Дама', 'Король'];
 const hitWords = ['повысить', 'hit'];
@@ -8,6 +7,8 @@ const standWords = ['оставить', 'stand'];
 const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
+const profileModel = require("../../profileSchema");
+
 
 module.exports = {
     config: {
@@ -30,13 +31,15 @@ module.exports = {
         if (deckCount <= 0 || deckCount >= 9) return message.channel.send(noEmbed.setDescription("❌ Укажите число от 1 до 8!")).then(msg => {msg.delete({timeout: "10000"})});
 
         let user = message.author;
-        let bal = db.fetch(`money_${user.id}`)
-        if (!bal === null) bal = 0;
+        let profileData = await profileModel.findOne({ userID: user.id });
+        let bal = profileData.coins;
+
         if (!args[1]) return message.channel.send(noEmbed.setDescription("❌ Укажите ставку!")).then(msg => {msg.delete({timeout: "10000"})})
 
         let amount = parseInt(args[1])
         if (isNaN(args[1])) return message.channel.send(noEmbed.setDescription("❌ Укажите число!")).then(msg => {msg.delete({timeout: "10000"})})
-        if (amount > 10000) return message.channel.send(noEmbed.setDescription("❌ Максимальная ставка **10000**!")).then(msg => {msg.delete({timeout: "10000"})})
+        if (amount < 100) return message.channel.send(noEmbed.setDescription("❌ Минимальная ставка **100**!")).then(msg => {msg.delete({timeout: "10000"})})
+        if (amount > 100000) return message.channel.send(noEmbed.setDescription("❌ Максимальная ставка **1000000**!")).then(msg => {msg.delete({timeout: "10000"})})
 
         if (bal < amount) return message.channel.send(noEmbed.setDescription("❌ У вас недостаточно денег!")).then(msg => {msg.delete({timeout: "10000"})})
         const current = ops.games.get(message.channel.id);
@@ -57,8 +60,8 @@ module.exports = {
                 return message.channel.send(noEmbed.setDescription("😂 У вас обоих Блэкджек!"))
             } else if (dealerInitialTotal === 21) {
                 ops.games.delete(message.channel.id);
-                db.subtract(`money_${user.id}`, amount);
-                return message.channel.send(noEmbed.setDescription(`❌ У дилера блэкджек!\nВы проиграли **${amount}**${COIN}`))
+                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor(-amount)}});
+                return message.channel.send(noEmbed.setDescription(`❌ У дилера блэкджек!\nВы проиграли **${Math.floor(amount)}**${COIN}`))
             } else if (playerInitialTotal === 21) {
                 let embed = new MessageEmbed()
                 .setColor(greenlight)
@@ -66,9 +69,9 @@ module.exports = {
                 .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
 
                 ops.games.delete(message.channel.id);
+                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor(amount+(amount/2))}});
 
-                db.add(`money_${user.id}`, amount + (amount / 2))
-                return message.channel.send(embed.setDescription(`✅ У вас блэкджек!\nВы выиграли **${amount + (amount / 2)}**${COIN}`))
+                return message.channel.send(embed.setDescription(`✅ У вас блэкджек!\nВы выиграли **${Math.floor(amount + (amount / 2))}**${COIN}`))
             }
 
             let playerTurn = true;
@@ -130,7 +133,7 @@ module.exports = {
                     }
                 }
             }
-            db.add(`games_${user.id}`, 1)
+
             ops.games.delete(message.channel.id);
 
             let winEmbed = new MessageEmbed()
@@ -139,11 +142,11 @@ module.exports = {
             .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
 
             if (win === true) {
-                db.add(`money_${user.id}`, amount);
-                return message.channel.send(winEmbed.setDescription(`✅ **${reason}, Вы выиграли ${COIN}${amount}**!`));
+                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount}});
+                return message.channel.send(winEmbed.setDescription(`✅ **${reason}, Вы выиграли ${COIN}${Math.floor(amount)}**!`));
             }else if (!win){
-              db.subtract(`money_${user.id}`, amount);
-              return message.channel.send(noEmbed.setDescription(`❌ **${reason}, Вы проиграли ${COIN}${amount}**!`));
+              await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: -amount}});
+              return message.channel.send(noEmbed.setDescription(`❌ **${reason}, Вы проиграли ${COIN}${Math.floor(amount)}**!`));
 
             } else {
                 let Nembed = new MessageEmbed()

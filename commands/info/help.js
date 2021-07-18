@@ -1,6 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { readdirSync } = require("fs");
-const db = require('quick.db');
+const serverModel = require("../../serverSchema")
 const { stripIndents } = require("common-tags");
 const { cyan } = require("../../JSON/colours.json");
 const { PREFIX } = require('../../config');
@@ -16,13 +16,14 @@ module.exports = {
     },
     run: async (bot, message, args) => {
         let prefix;
-        let fetched = await db.fetch(`prefix_${message.guild.id}`);
+        let serverData = await serverModel.findOne({ serverID: message.guild.id });
+        if(!serverData) {
+          let server = await serverModel.create({
+            serverID: message.guild.id,
+          })
+        server.save()}
 
-        if (fetched === null) {
-            prefix = PREFIX
-        } else {
-            prefix = fetched
-        }
+        prefix = serverData.prefix;
 
         const embed = new MessageEmbed()
             .setColor(cyan)

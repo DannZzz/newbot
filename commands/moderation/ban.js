@@ -1,6 +1,8 @@
 const {MessageEmbed} = require('discord.js');
 let db = require('quick.db');
 const {greenlight, redlight} = require('../../JSON/colours.json');
+const serverModel = require("../../serverSchema");
+
 
 module.exports = {
   config: {
@@ -20,11 +22,11 @@ module.exports = {
               if (!message.member.hasPermission("BAN_MEMBERS")) return message.channel.send(banEmbed.setDescription("❌ У вас недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
               if (!message.guild.me.hasPermission("BAN_MEMBERS")) return message.channel.send(banEmbed.setDescription("❌ У меня недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
 
-              if (!args[0]) return message.channel.send(banEmbed.setDescription("❌ Укажите участника, чтобы забанить."))
+              if (!args[0]) return message.channel.send(banEmbed.setDescription("❌ Укажите участника, чтобы забанить.")).then(msg => {msg.delete({timeout: "10000"})});
 
               var banMember = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase());
               if (!banMember) return message.channel.send(banEmbed.setDescription("❌ Пользователь не в сервере.")).then(msg => {msg.delete({timeout: "10000"})});
-
+              let sd = await serverModel.findOne({ serverID: message.guild.id });
               if (banMember.id === message.member.id) return message.channel.send(banEmbed.setDescription("❌ Вы хотите забанить себя? да ну, это не реально."));
 
               if (!banMember.bannable) return message.channel.send(banEmbed.setDescription("❌ Невозможно забанить этого участника.")).then(msg => {msg.delete({timeout: "10000"})})
@@ -53,7 +55,7 @@ module.exports = {
                   .setDescription(`✅ **${banMember.user.username}** был забанен.`)
               message.channel.send(sembed2);
               }
-              let channel = db.fetch(`modlog_${message.guild.id}`)
+              let channel = sd.modLog;
               if (!channel) return;
 
               const embed = new MessageEmbed()

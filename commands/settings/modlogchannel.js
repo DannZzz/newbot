@@ -1,7 +1,9 @@
-const db = require('quick.db');
+
 const {MessageEmbed} = require("discord.js")
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const {PREFIX} = require("../../config");
+const serverModel = require("../../serverSchema");
+
 module.exports = {
       config: {
         name: "мод-лог-канал",
@@ -23,8 +25,10 @@ module.exports = {
 
       if (!message.member.hasPermission("ADMINISTRATOR")) return message.channel.send(logEmbed.setDescription("❌ У вас недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
       if (!message.guild.me.hasPermission("MANAGE_CHANNELS")) return message.channel.send(logEmbed.setDescription("❌ У меня недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
+      let sd = await serverModel.findOne({ serverID: message.guild.id });
     if (!args[0]) {
-      let b = await db.fetch(`modlog_${message.guild.id}`);
+
+      let b = await sd.modLog;
       let channelName = message.guild.channels.cache.get(b);
       if (message.guild.channels.cache.has(b)) {
         return message.channel.send(sembed.setDescription(
@@ -40,13 +44,13 @@ module.exports = {
         if (!channel || channel.type !== 'text') return message.channel.send(logEmbed.setDescription("❌ Укажите доступный текстовый канал.")).then(msg => {msg.delete({timeout: "10000"})});
 
         try {
-            let a = await db.fetch(`modlog_${message.guild.id}`)
+            let a = sd.modLog;
 
             if (channel.id === a) {
                 return message.channel.send(sembed.setDescription(`✅ <#${channel.id}> этот канал уже установлен для модерации.`));
             } else {
                 bot.guilds.cache.get(message.guild.id).channels.cache.get(channel.id).send(sembed.setDescription(`✅ Журнал модерации установлен на этот канал.`));
-                db.set(`modlog_${message.guild.id}`, channel.id)
+                await serverModel.findOneAndUpdate({serverID: message.guild.id}, {$set: {modLog: channel.id}})
 
                 message.channel.send(sembed.setDescription(`✅ <#${channel.id}> установлен новый канал для модерации.`));
             }

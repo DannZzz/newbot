@@ -1,8 +1,10 @@
-const db = require("quick.db");
+
 const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const ms = require('ms');
+const profileModel = require("../../profileSchema");
+
 
 module.exports = {
   config: {
@@ -21,26 +23,28 @@ module.exports = {
       .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
 
      if (!args[0]) return message.channel.send(robEmbed.setDescription("❌ Укажите участника.")).then(msg => {msg.delete({timeout: "10000"})});
-     user2 = message.member;
+     let user2 = message.member;
      let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args[0].toLocaleLowerCase());
-     if (user.user.id === user2.id) return message.channel.send(robEmbed.setDescription("❌ Вы не сможете воровать у себя.")).then(msg => {msg.delete({timeout: "10000"})});
+     if (user.id === user2.id ) return message.channel.send(robEmbed.setDescription("❌ Вы не сможете воровать у себя.")).then(msg => {msg.delete({timeout: "10000"})});
 
-     let target = await db.fetch(`money_${user.id}`);
-     let author = await db.fetch(`rob_${user.id}`);
-     let author2 = await db.fetch(`money_${user2.id}`);
+
+
+     let profileData1 = await profileModel.findOne({ userID: user.id });
+     let profileData = await profileModel.findOne({ userID: user2.id });
+     let target = profileData1.coins;
+     let author = profileData.rob;
 
      let timeout = 86400000;
 
      if (author !== null && timeout - (Date.now() - author) > 0) {
        let time = new Date(timeout - (Date.now() - author));
 
-       return message.channel.send(robEmbed.setDescription(`❌ Вы уже недавно воровали деньги у этого участника.\n\nПопробуй снова через **${time.getUTCHours()} часа(ов) ${time.getMinutes()} минут**.`)).then(msg => {msg.delete({timeout: "10000"})});
+       return message.channel.send(robEmbed.setDescription(`❌ Вы уже недавно воровали недавно.\n\nПопробуй снова через **${time.getUTCHours()} часа(ов) ${time.getMinutes()} минут**.`)).then(msg => {msg.delete({timeout: "10000"})});
      } else {
-       if (author2 < 100) return message.channel.send(robEmbed.setDescription(`❌ Вы должны иметь не менее 100 монет, чтобы воровать у кого-то.`)).then(msg => {msg.delete({timeout: "10000"})});
 
-       let random = target / 100 * (Math.floor(Math.random() * (36 - 10)) + 10);
+       let random = Math.floor(target / 100 * (Math.floor(Math.random() * (36 - 10)) + 10));
 
-       if (target < random) {return message.channel.send(robEmbed.setDescription(`❌ К сожалению вы ничего не смогли воровать.`)).then(msg => {msg.delete({timeout: "10000"})});
+       if (target <= random) {return message.channel.send(robEmbed.setDescription(`❌ К сожалению вы ничего не смогли своровать.`)).then(msg => {msg.delete({timeout: "10000"})});
      } else {
 
 
@@ -52,9 +56,10 @@ module.exports = {
 
        message.channel.send(sembed)
 
-       db.subtract(`money_${user.id}`, random)
-       db.add(`money_${user2.id}`, random)
-       db.set(`rob_${user.id}`, Date.now())
+       await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: -random}});
+       await profileModel.findOneAndUpdate({userID: user2.id},{$inc: {coins: random}});
+       await profileModel.findOneAndUpdate({userID: user2.id},{$set: {rob: Date.now()}});
+
      }
 
 

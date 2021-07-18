@@ -1,7 +1,9 @@
-const db = require('quick.db');
+
 const {MessageEmbed} = require("discord.js")
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const {PREFIX} = require("../../config");
+const serverModel = require("../../serverSchema");
+
 
 module.exports = {
   config: {
@@ -20,11 +22,11 @@ module.exports = {
       .setColor(redlight)
       if (!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send(muteEmbed.setDescription("❌ У вас недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
       if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send(muteEmbed.setDescription("❌ У меня недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
-      let prefix = await db.fetch(`prefix_${message.guild.id}`);
-      if(!prefix) return prefix = PREFIX;
+
       if (!args[0]) return message.channel.send(muteEmbed.setDescription("❌ Укажите участника, чтобы размьютить."))
       var mutee = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase());
-      if (!mutee) return message.channel.send(muteEmbed.setDescription("❌ Укажите участника.\n\`\`${prefix}хелп размьют\`\` - для больше информации.")).then(msg => {msg.delete({timeout: "10000"})});
+      let sd = await serverModel.findOne({ serverID: message.guild.id });
+      if (!mutee) return message.channel.send(muteEmbed.setDescription("❌ Укажите участника.")).then(msg => {msg.delete({timeout: "10000"})});
 
       if (mutee === message.member) return message.channel.send(muteEmbed.setDescription("❌ Невозможно размьютить себя.")).then(msg => {msg.delete({timeout: "10000"})})
       if (mutee.roles.highest.comparePositionTo(message.guild.me.roles.highest) >= 0) return message.channel.send(muteEmbed.setDescription("❌ Невозможно размьютить этого участника.")).then(msg => {msg.delete({timeout: "10000"})});
@@ -40,8 +42,8 @@ module.exports = {
             .map(r => r.id)
 
       let muterole;
-      let dbmute = await db.fetch(`muterole_${message.guild.id}`);
-      let muteerole = message.guild.roles.cache.find(r => r.name === "Muted")
+      let dbmute = sd.muteRole;
+      let muteerole = message.guild.roles.cache.find(r => r.name === "Замучен")
 
       if (!message.guild.roles.cache.has(dbmute)) {
         muterole = muteerole
@@ -56,7 +58,7 @@ module.exports = {
                     .setColor(greenlight)
                     .setTimestamp()
                     .setAuthor(message.guild.name, message.guild.iconURL())
-                    .setDescription(`❌ Укажите участника.\n\`\`${prefix}хелп размьют\`\` - для больше информации.`)
+                    .setDescription(`❌ Укажите участника.`)
                 message.channel.send(sembed);
                 } else {
                     const sembed2 = new MessageEmbed()
@@ -68,7 +70,7 @@ module.exports = {
                 message.channel.send(sembed2);
                 }
 
-      let channel = db.fetch(`modlog_${message.guild.id}`)
+      let channel = sd.modLog;
       if (!channel) return;
 
       let embed = new MessageEmbed()

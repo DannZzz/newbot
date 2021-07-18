@@ -1,7 +1,9 @@
 const {MessageEmbed} = require("discord.js");
-const db = require("quick.db");
 const {cyan, redlight} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
+
+const profileModel = require("../../profileSchema");
+
 
 module.exports = {
   config: {
@@ -18,15 +20,10 @@ module.exports = {
     .setColor(redlight)
     .setTimestamp()
 
-    let bal = await db.fetch(`money_${member.id}`);
 
-    if (bal === null) bal = 0;
+    profileData = await profileModel.findOne({ userID: member.id });
 
-    let bank = await db.fetch(`bank_${member.id}`)
 
-    if (bank === null) bank = 0;
-
-    let totalMoney = bal + bank;
 
     if (member) {
       let moneyEmbed = new MessageEmbed()
@@ -34,7 +31,7 @@ module.exports = {
         .setTimestamp()
         .setAuthor(member.user.username, member.user.displayAvatarURL({dynamic: true}))
         .setDescription(
-          `Баланс: ${COIN}**${bal}**\nБанк: ${BANK}**${bank}**\n\nНа счету: ${COIN}**${totalMoney}**`
+          `Баланс: ${COIN}**${profileData.coins}**\nБанк: ${BANK}**${profileData.bank}**\n\nНа счету: ${COIN}**${profileData.bank + profileData.coins}**`
         );
       message.channel.send(moneyEmbed);
     } else {

@@ -24,7 +24,7 @@ module.exports = {
 
     let member = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase()) || message.member;
     if (!member) return message.channel.send(nickEmbed.setDescription("❌ Укажите участника.")).then(msg => {msg.delete({timeout: "10000"})})
-
+    let sd = await serverModel.findOne({ serverID: message.guild.id });
     let authorHighestRole = message.member.roles.highest.position;
     let mentionHighestRole = member.roles.highest.position;
     if(mentionHighestRole >= authorHighestRole) {
@@ -47,7 +47,7 @@ module.exports = {
             return message.channel.send(nickEmbed.setDescription("❌ У меня недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
         }
 
-    let channel = db.fetch(`modlog_${message.guild.id}`)
+    let channel = sd.modLog;
         if (!channel) return;
 
         const sembed = new MessageEmbed()
