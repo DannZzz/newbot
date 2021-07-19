@@ -21,11 +21,11 @@ module.exports = {
       let page = 1;
 
       let description =
-        `Все сервера - ${bot.guilds.cache.size}\n\n` +
+        `Все сервера - ${bot.guilds.cache.size} | Все участники - ${bot.users.cache.size}\n\n` +
         bot.guilds.cache
           .sort((a, b) => b.memberCount - a.memberCount)
           .map(r => r)
-          .map((r, i) => `**${i + 1}** - ${r.name} | ${r.memberCount} Участники\nID - ${r.id}`)
+          .map((r, i) => `**${i + 1} - ${r.name} | ${r.memberCount} Участники**\nID - ${r.id}`)
           .slice(0, 10)
           .join("\n");
 
@@ -66,12 +66,12 @@ module.exports = {
           }
 
           description =
-            `Все сервера - ${bot.guilds.cache.size}\n\n` +
+            `Все сервера - ${bot.guilds.cache.size} | Все участники - ${bot.users.cache.size}\n\n` +
             bot.guilds.cache
               .sort((a, b) => b.memberCount - a.memberCount)
               .map(r => r)
               .map(
-                (r, i) => `**${i + 1}** - ${r.name} | ${r.memberCount} Участники`
+                (r, i) => `**${i + 1}** - ${r.name} | ${r.memberCount} Участники**`
               )
               .slice(i0, i1)
               .join("\n");
@@ -102,12 +102,12 @@ module.exports = {
           }
 
           description =
-            `Все сервера - ${bot.guilds.cache.size}\n\n` +
+            `Все сервера - ${bot.guilds.cache.size} | Все участники - ${bot.users.cache.size}\n\n` +
             bot.guilds.cache
               .sort((a, b) => b.memberCount - a.memberCount)
               .map(r => r)
               .map(
-                (r, i) => `**${i + 1}** - ${r.name} | ${r.memberCount} Участники`
+                (r, i) => `**${i + 1} - ${r.name} | ${r.memberCount} Участники**`
               )
               .slice(i0, i1)
               .join("\n");
