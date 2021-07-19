@@ -1,7 +1,10 @@
 const { MessageEmbed } = require('discord.js');
-const db = require('quick.db');
+
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
+const db = require("mongoose");
+let profileModel = require("../../profileSchema.js")
+const commaNumber = require("comma-number");
 
 module.exports = {
     config: {
@@ -13,29 +16,33 @@ module.exports = {
         accessableby: "Для всех"
     },
     run: async (bot, message, args) => {
-        let money = db.all().filter(data => data.ID.startsWith(`bank_`)).sort((a, b) => b.data - a.data);
+    let msg = await message.channel.send("**Секунду**");
+    const users = await profileModel.find({serverID: message.guild.id})
+    const userss = await profileModel.find()
 
-        if (!money.length) {
-            let noEmbed = new MessageEmbed()
-                .setAuthor(message.member.displayName, message.author.displayAvatarURL())
-                .setColor(cyan)
-                .setFooter('Тут пока некого.')
-            return message.channel.send(noEmbed)
-        };
+    const lbb = userss
+              .slice(0)
+              .sort(({ bank: a }, { bank: b }) => b - a)
+              .map(
 
-        money.length = 10;
-        var finalLb = "";
-        for (var i in money) {
-            if (money[i].data === null) money[i].data = 0
-            finalLb += `${money.indexOf(money[i]) + 1}. **${message.guild.members.cache.get(money[i].ID.split('_')[1]) ? message.guild.members.cache.get(money[i].ID.split('_')[1]) : "НепонятныйУчастник#0000"}** - ${COIN}${money[i].data}\n`;
-        };
+                ({ userID, bank }, pos) => `__${pos + 1}.__ <@${userID}> - **${commaNumber(bank)}** ${COIN}`,
+              );
+    const lb = users
+              .slice(0)
+              .sort(({ bank: a }, { bank: b }) => b - a)
+              .map(
 
-        const embed = new MessageEmbed()
-            .setTitle(`Банк сервера - ${message.guild.name}`)
-            .setColor(cyan)
-            .setDescription(finalLb)
-            .setFooter(bot.user.tag, bot.user.displayAvatarURL())
-            .setTimestamp()
-        message.channel.send(embed);
-    }
-};
+                ({ userID, bank }, pos) => `__${pos + 1}.__ <@${userID}> - **${commaNumber(bank)}** ${COIN}`,
+              );
+
+          const newnew =     lb.slice(0, 10)
+            const news =     lb.slice(0, 15)
+            const embed = new MessageEmbed()
+              .setTitle('Самые богатые участники по Банку - Top 10')
+              .setDescription(newnew)
+              .addField("Глобальный топ по Банку - Top 15", news, true)
+              .setColor('RANDOM')
+    message.channel.send(embed)
+    msg.delete()
+  }
+}
