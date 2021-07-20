@@ -14,7 +14,7 @@ module.exports = {
     config: {
         name: 'блэкджек',
         aliases: ['bj', 'blackjack', 'бж'],
-        category: 'economy',
+        category: 'c_economy',
         usage: '[число колод 1-8] <ставка>',
         description: 'Игра Блэкджек!',
         accessableby: 'Для всех'
