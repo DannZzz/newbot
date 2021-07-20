@@ -33,9 +33,9 @@ module.exports = {
               )
               .map(
 
-                ({ userID, bank }, pos) => `__${pos + 1}.__ <@${userID}> - **${commaNumber(bank)}** ${COIN}`
+                ({ userID, bank }, pos) => `__${pos + 1}.__ ${message.guild.member(userID)} - **${commaNumber(bank)}** ${COIN}`
               )
-              
+
 
 
           const newnew =     lb.slice(0, 15)
