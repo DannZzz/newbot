@@ -1,3 +1,4 @@
+const Discord = require('discord.js');
 const { MessageEmbed } = require('discord.js');
 
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
@@ -22,23 +23,24 @@ module.exports = {
     const lb = users
               .slice(0)
               .sort(({ bank: a }, { bank: b }) => b - a)
-              .slice(0, 15)
+              .slice(0, 16)
               .filter(
                 function({userID}) {
                   let guild = bot.guilds.cache.get(message.guild.id)
 
-                  return guild.member(userID)
+                  let is =  guild.member(userID);
+                  return guild.members.cache.find(mem => mem === is)
 
                 }
               )
               .map(
 
-                ({ userID, bank }, pos) => `__${pos + 1}.__ ${message.guild.member(userID)} - **${commaNumber(bank)}** ${COIN}`
+                ({ userID, bank }, pos) => `__${pos + 1}.__ <@${userID}> - **${commaNumber(bank)}** ${COIN}`
               )
 
 
 
-          const newnew =     lb.slice(0, 15)
+          const newnew =     lb.slice(0, 16)
             const embed = new MessageEmbed()
               .setTitle('Самые богатые участники по Банку - Top 15')
               .setDescription(newnew)
