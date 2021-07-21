@@ -35,7 +35,7 @@ module.exports = {
           .addField('🟢 Онлайн:', server.members.cache.filter(m => m.presence.status === "online").size, true)
           .addField('🔴 Не беспокоить:', server.members.cache.filter(m => m.presence.status === "dnd").size, true)
           .addField('🟡 Неактивен:', server.members.cache.filter(m => m.presence.status === "idle").size, true)
-          .addField('👻 Невидимый:', server.members.cache.filter(m => m.presence.status === "invisible").size, true)
+          .addField('💀 Оффлайн:', server.members.cache.filter(m => m.presence.status === "offline").size, true)
           .addField('🔖 Категории:', server.channels.cache.filter(c => c.type === "category").size, true)
           .addField('#️⃣ Текст. каналы:', server.channels.cache.filter(t => t.type === "text").size, true)
           .addField('🔊 Голос. каналы:', server.channels.cache.filter(v => v.type === "voice").size, true)
