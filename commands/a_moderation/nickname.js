@@ -1,6 +1,7 @@
 const db = require('quick.db');
 const { MessageEmbed } = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
+const serverModel = require("../../serverSchema");
 
 module.exports = {
   config: {
