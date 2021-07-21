@@ -29,8 +29,8 @@ module.exports = {
                   let guild = bot.guilds.cache.get(message.guild.id)
 
                   let is =  guild.member(userID);
-                  let a = guild.members.cache.find(mem => mem === is)
-                  return bot.users.cache.find(mem => mem.id === a).user.username
+                  return guild.members.cache.find(mem => mem === is)
+
 
                 }
               )
