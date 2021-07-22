@@ -8,7 +8,7 @@ const fs = require('fs');
 const mongoose = require('mongoose');
 const mc = require('discord-mongo-currency')
 
-mongoose.connect('mongodb+srv://DannTest:DannTestDiscord@botdiscord.hkvvx.mongodb.net/test', {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect('mongodb+srv://CelebritiesBot:vard04mak@botdiscord.hkvvx.mongodb.net/test', {useNewUrlParser: true, useUnifiedTopology: true})
 mongoose.set('useFindAndModify', false)
 
 const serverModel = require("./models/serverSchema");
