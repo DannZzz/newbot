@@ -3,7 +3,7 @@ const ms = require("ms");
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const { MessageEmbed } = require('discord.js');
-const profileModel = require("../../profileSchema");
+const profileModel = require("../../models/profileSchema");
 
 
 function randomRange(min, max) {

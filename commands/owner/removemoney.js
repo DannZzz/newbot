@@ -4,7 +4,7 @@ const {greenlight, redlight} = require('../../JSON/colours.json');
 let ownerID = '382906068319076372';
 let dariusID = '803618695687307264';
 const { COIN, BANK } = require('../../config');
-const profileModel = require("../../profileSchema");
+const profileModel = require("../../models/profileSchema");
 
 module.exports = {
   config: {

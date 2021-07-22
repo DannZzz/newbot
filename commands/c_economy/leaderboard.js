@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const db = require("mongoose");
-let profileModel = require("../../profileSchema.js")
+let profileModel = require("../../models/profileSchema.js")
 const commaNumber = require("comma-number");
 
 module.exports = {

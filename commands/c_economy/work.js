@@ -5,7 +5,7 @@ const Jwork = require('../../JSON/works.json');
 const JworkR = Jwork[Math.floor(Math.random() * Jwork.length)];
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
-const profileModel = require("../../profileSchema");
+const profileModel = require("../../models/profileSchema");
 
 module.exports = {
     config: {

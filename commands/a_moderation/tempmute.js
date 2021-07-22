@@ -3,7 +3,7 @@ const ms = require('ms');
 
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const {PREFIX} = require("../../config");
-const serverModel = require("../../serverSchema");
+const serverModel = require("../../models/serverSchema");
 
 module.exports = {
   config: {

@@ -1,6 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { readdirSync } = require("fs");
-const serverModel = require("../../serverSchema")
+const serverModel = require("../../models/serverSchema")
 const { stripIndents } = require("common-tags");
 const { cyan } = require("../../JSON/colours.json");
 const { PREFIX } = require('../../config');

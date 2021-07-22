@@ -1,6 +1,6 @@
 const {MessageEmbed} = require('discord.js');
 const {cyan} = require("../../JSON/colours.json");
-const serverModel = require("../../serverSchema");
+const serverModel = require("../../models/serverSchema");
 
 module.exports = {
     config: {

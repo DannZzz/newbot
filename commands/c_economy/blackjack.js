@@ -7,7 +7,7 @@ const standWords = ['оставить', 'stand'];
 const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
-const profileModel = require("../../profileSchema");
+const profileModel = require("../../models/profileSchema");
 
 
 module.exports = {
@@ -20,6 +20,7 @@ module.exports = {
         accessableby: 'Для всех'
     },
     run: async (bot, message, args, ops) => {
+
         let noEmbed = new MessageEmbed()
         .setColor(redlight)
         .setTimestamp()
