@@ -1,16 +1,19 @@
 const {Client, MessageEmbed, Collection} = require('discord.js');
 
 const {PREFIX, TOKEN} = require('./config')
+const disbut = require("discord-buttons");
 const bot = new Client({disableMentions: "everyone"});
+disbut(bot);
 const fs = require('fs');
 const mongoose = require('mongoose');
 const mc = require('discord-mongo-currency')
 
-mongoose.connect('mongodb+srv://DannDev:vard04mak@cluster0.fcdo0.mongodb.net/test', {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect('mongodb+srv://DannTest:DannTestDiscord@botdiscord.hkvvx.mongodb.net/test', {useNewUrlParser: true, useUnifiedTopology: true})
 mongoose.set('useFindAndModify', false)
 
-const serverModel = require("./serverSchema");
-const profileModel = require("./profileSchema");
+const serverModel = require("./models/serverSchema");
+const profileModel = require("./models/profileSchema");
+const memberModel = require("./models/memberSchema");
 
 bot.commands = new Collection();
 bot.aliases = new Collection();
@@ -32,7 +35,7 @@ bot.on("guildCreate", async guild => {
     })
   server.save()}
 
-  guild.members.cache.forEach(async member => {
+
     let profileData = await profileModel.findOne({ userID: member.id });
     if (!profileData) {
     let profile = await profileModel.create({
@@ -49,9 +52,17 @@ bot.on("guildCreate", async guild => {
     profile.save()}
   })
 
-})
+
 
 bot.on("guildMemberAdd", async member => {
+    let sd = await serverModel.findOne({serverID: member.guild.id})
+    if(sd.autoRoleOn){
+      var role = member.guild.roles.cache.find(role => role.id == sd.autoRole);
+      if (role) {
+        member.roles.add(role);
+      }
+    }
+
   let profileData = await profileModel.findOne({ userID: member.id });
   if (!profileData) {
   let profile = await profileModel.create({

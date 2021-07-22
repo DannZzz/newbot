@@ -15,6 +15,7 @@
     "amethyste-api": "^1.1.5",
     "comma-number": "^2.1.0",
     "common-tags": "^1.8.0",
+    "discord-buttons": "^4.0.0",
     "discord-mongo-currency": "^1.0.4",
     "discord.js": "^12.5.3",
     "fs": "0.0.1-security",

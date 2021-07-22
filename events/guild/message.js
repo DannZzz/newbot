@@ -1,7 +1,8 @@
 
 const { PREFIX } = require('../../config');
-const profileModel = require("../../profileSchema");
-const serverModel = require("../../serverSchema");
+const profileModel = require("../../models/profileSchema");
+const serverModel = require("../../models/serverSchema");
+const memberModel = require("../../models/memberSchema");
 const queue2 = new Map();
 const queue3 = new Map();
 const queue = new Map();
@@ -11,6 +12,7 @@ module.exports = async (bot, message) => {
     try {
       let profileData;
       let serverData;
+      let memberData;
   try {
     profileData = await profileModel.findOne({ userID: message.author.id });
     if (!profileData) {
