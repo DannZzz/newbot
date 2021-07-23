@@ -1,6 +1,6 @@
 const {Client, MessageEmbed, Collection} = require('discord.js');
 
-const {PREFIX, TOKEN} = require('./config')
+const {PREFIX, TOKEN, MONGO} = require('./config')
 const disbut = require("discord-buttons");
 const bot = new Client({disableMentions: "everyone"});
 disbut(bot);
@@ -8,12 +8,14 @@ const fs = require('fs');
 const mongoose = require('mongoose');
 const mc = require('discord-mongo-currency')
 
-mongoose.connect('mongodb+srv://DannDev:vard04mak@cluster0.fcdo0.mongodb.net/test', {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(MONGO, {useNewUrlParser: true, useUnifiedTopology: true})
 mongoose.set('useFindAndModify', false)
 
 const serverModel = require("./models/serverSchema");
 const profileModel = require("./models/profileSchema");
 const memberModel = require("./models/memberSchema");
+const begModel = require("./models/begSchema");
+const vipModel = require("./models/vipSchema");
 
 bot.commands = new Collection();
 bot.aliases = new Collection();
@@ -35,12 +37,26 @@ bot.on("guildCreate", async guild => {
     })
   server.save()}
 
+  for (let member in guild.members){
+    let vipData = await vipModel.findOne({ userID: member.id });
+    if (!vipData) {
+    let vip = await vipModel.create({
+      userID: member.id
+    })
+    vip.save()}
+    let begData = await begModel.findOne({ userID: member.id });
+    if(!begData) {
+      let beg = await begModel.create({
+        userID: member.id,
+      })
+      beg.save();
+    }
 
     let profileData = await profileModel.findOne({ userID: member.id });
     if (!profileData) {
     let profile = await profileModel.create({
       userID: member.id,
-      serverID: member.guild.id,
+      serverID: guild.id,
       coins: 1000,
       bank: 0,
       slots: 0,
@@ -50,8 +66,8 @@ bot.on("guildCreate", async guild => {
       daily: 0
     })
     profile.save()}
-  })
-
+  }
+})
 
 
 bot.on("guildMemberAdd", async member => {
@@ -62,6 +78,21 @@ bot.on("guildMemberAdd", async member => {
         member.roles.add(role);
       }
     }
+
+    let vipData = await vipModel.findOne({ userID: member.id });
+    if (!vipData) {
+    let vip = await vipModel.create({
+      userID: member.id
+    })
+    vip.save()}
+
+  let begData = await begModel.findOne({ userID: member.id });
+  if(!begData) {
+    let beg = await begModel.create({
+      userID: member.id,
+    })
+    beg.save();
+  }
 
   let profileData = await profileModel.findOne({ userID: member.id });
   if (!profileData) {

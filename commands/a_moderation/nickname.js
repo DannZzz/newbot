@@ -41,7 +41,7 @@ module.exports = {
         member.setNickname(nick)
         const embed = new MessageEmbed()
             .setColor(greenlight)
-            .setDescription(`Новый никнейм: ${nick} для участника: ${member.displayName}`)
+            .setDescription(`Новый никнейм: \`\`${nick}\`\` для участника: ${member}`)
             .setAuthor(message.guild.name, message.guild.iconURL())
         message.channel.send(embed)
         } catch {

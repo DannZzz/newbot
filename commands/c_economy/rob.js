@@ -1,4 +1,4 @@
-
+const begModel = require("../../models/begSchema");
 const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
@@ -25,6 +25,8 @@ module.exports = {
      if (!args[0]) return message.channel.send(robEmbed.setDescription("❌ Укажите участника.")).then(msg => {msg.delete({timeout: "10000"})});
      user2 = message.member;
      let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args[0].toLocaleLowerCase());
+     let bag = await begModel.findOne({userID: user.id});
+     if(bag["vip1"]) return message.channel.send(robEmbed.setDescription("❌ Невозможно воровать у **VIP** участников.")).then(msg => {msg.delete({timeout: "10000"})});
      if (user.user.id === user2.id) return message.channel.send(robEmbed.setDescription("❌ Вы не сможете воровать у себя.")).then(msg => {msg.delete({timeout: "10000"})});
 
 

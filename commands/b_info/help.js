@@ -47,6 +47,9 @@ module.exports = {
                 else if (category === "owner") {
                   category = "Для разработчика"
                 }
+                else if (category === "g_vip") {
+                  category = "VIP"
+                }
                 else if (category === "e_fun") {
                   category = "Фан"
                 }
@@ -83,6 +86,9 @@ module.exports = {
             }
             else if (category === "e_fun") {
               category = "Фан"
+            }
+            else if (category === "g_vip") {
+              category = "VIP"
             }
             else if (category === "d_reaction") {
               category = "Реакционные"

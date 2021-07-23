@@ -4,6 +4,7 @@ const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const { MessageEmbed } = require('discord.js');
 const profileModel = require("../../models/profileSchema");
+const begModel = require("../../models/begSchema");
 
 
 function randomRange(min, max) {
@@ -23,6 +24,7 @@ module.exports = {
 
         let user = message.author;
         let profileData = await profileModel.findOne({ userID: user.id });
+        let beg = await begModel.findOne({userID: user.id});
 
         if (!args[0]) {
 
@@ -37,7 +39,7 @@ module.exports = {
             const fishh = fishes[rarity];
             const worth = randomRange(fishh.min, fishh.max);
 
-            let timeout = 180000;
+            let timeout = 180 * 1000;
             let fishtime = profileData.fish;
 
             if (fishtime !== null && timeout - (Date.now() - fishtime) > 0) {
@@ -54,10 +56,14 @@ module.exports = {
             let embed = new MessageEmbed()
                 .setColor(greenlight)
                 .setTimestamp()
-                .setDescription(`**🎣 Вы забросили свою удочку и поймали ${fishh.symbol}, И это было продано за ${COIN}${worth}**!`)
+                .setDescription(`**🎣 Вы забросили свою удочку и поймали ${fishh.symbol}**!`)
             message.channel.send(embed);
+            if (rarity === "junk") await begModel.findOneAndUpdate({userID: user.id},{$inc: {junk: 1}})
+            else if (rarity === "common") await begModel.findOneAndUpdate({userID: user.id},{$inc: {common: 1}})
+            else if (rarity === "uncommon") await begModel.findOneAndUpdate({userID: user.id},{$inc: {uncommon: 1}})
+            else if (rarity === "rare") await begModel.findOneAndUpdate({userID: user.id},{$inc: {rare: 1}})
+            else if (rarity === "legendary") await begModel.findOneAndUpdate({userID: user.id},{$inc: {legendary: 1}})
 
-            await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: worth}})
             await profileModel.findOneAndUpdate({userID: user.id}, {$set: {fish: Date.now()}})
 
 
@@ -69,12 +75,12 @@ module.exports = {
                 .setTimestamp()
                 .setTitle(`Список рыб, их редкости и цен.`)
                 .setDescription(`
-\`\`\`🔧Хлам      :: Макс: 30, Мин: 10
-🐟Обычная    :: Макс: 70, Мин: 30
-🐠Необычная  :: Макс: 90, Мин: 50
-🦑Редкая      :: Макс: 175, Мин: 130
-🐋Легендарная :: Макс: 500, Мин: 100\`\`\`
-**Все рандомно, от минимальной до максимума.**
+\`\`\`🔧Хлам      :: 20 [ID: 1]
+🐟Обычная    :: 50 [ID: 2]
+🐠Необычная  :: 80 [ID: 3]
+🦑Редкая      :: 150 [ID: 4]
+🐋Легендарная :: 450 [ID: 5]\`\`\`
+
 ​
 `)
                 .setFooter(message.guild.name, message.guild.iconURL())

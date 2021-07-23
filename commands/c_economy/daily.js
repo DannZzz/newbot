@@ -1,8 +1,9 @@
 const { MessageEmbed } = require("discord.js");
 const ms = require("ms");
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
-const { COIN, BANK } = require('../../config');
+const { COIN, BANK, STAR } = require('../../config');
 const profileModel = require("../../models/profileSchema");
+const begModel = require("../../models/begSchema");
 
 module.exports = {
     config: {
@@ -16,10 +17,11 @@ module.exports = {
     run: async (bot, message, args) => {
         let user = message.member;
 
-        let timeout = 86400000;
+        let timeout = 86400 * 1000;
         let amount = 1000;
 
         let profileData = await profileModel.findOne({ userID: user.id });
+        let beg = await begModel.findOne({ userID: user.id })
         let daily = await profileData.daily;
 
         if (daily !== null && timeout - (Date.now() - daily) > 0) {
@@ -34,10 +36,11 @@ module.exports = {
             let moneyEmbed = new MessageEmbed()
                 .setColor(cyan)
                 .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-                .setDescription(`✅ Ваш ежедневный приз ${amount}${COIN}`);
+                .setDescription(`✅ Ваш ежедневный приз ${amount}${COIN} и 3 ${STAR}`);
             message.channel.send(moneyEmbed)
 
             await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount}})
+            await begModel.findOneAndUpdate({userID: user.id},{$inc: {stars: 3}})
             await profileModel.findOneAndUpdate({userID: user.id}, {$set: {daily: Date.now()}})
 
 

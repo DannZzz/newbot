@@ -3,6 +3,8 @@ const { PREFIX } = require('../../config');
 const profileModel = require("../../models/profileSchema");
 const serverModel = require("../../models/serverSchema");
 const memberModel = require("../../models/memberSchema");
+const begModel = require("../../models/begSchema");
+const vipModel = require("../../models/vipSchema");
 const queue2 = new Map();
 const queue3 = new Map();
 const queue = new Map();
@@ -12,8 +14,24 @@ module.exports = async (bot, message) => {
     try {
       let profileData;
       let serverData;
-      let memberData;
+      let begData;
+      let vipData;
   try {
+    vipData = await vipModel.findOne({ userID: message.author.id });
+    if (!vipData) {
+    let vip = await vipModel.create({
+      userID: message.author.id
+    })
+    vip.save()}
+
+    begData = await begModel.findOne({ userID: message.author.id });
+    if (!begData) {
+      let beg = await begModel.create({
+        userID: message.author.id
+      })
+      beg.save()
+    }
+
     profileData = await profileModel.findOne({ userID: message.author.id });
     if (!profileData) {
       let profile = await profileModel.create({
