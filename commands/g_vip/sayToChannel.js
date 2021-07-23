@@ -30,7 +30,7 @@ module.exports = {
     let bag = await begModel.findOne({userID: message.author.id});
 
     let channel = message.mentions.channels.first() ||  message.guild.channels.cache.find(c => c.name.toLowerCase() === args[0].toLocaleLowerCase());
-    if(bag["vip1"] === false) return message.channel.send(embed.setDescription("❌ Эта команда доступна только для **VIP 1** пользователям.")).then(msg => {msg.delete({timeout: "10000"})});
+    if(bag["vip1"] === false) return message.channel.send(embed.setDescription("❌ Эта команда доступна только для **VIP 1** пользователей.")).then(msg => {msg.delete({timeout: "10000"})});
 
     let arg = args.slice(1).join(" ")
     if(!args[0]) return message.channel.send(embed.setDescription("❌ Укажите #текстовый канал.")).then(msg => {msg.delete({timeout: "10000"})});
