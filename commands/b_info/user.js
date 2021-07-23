@@ -21,13 +21,13 @@ module.exports = {
 
         function statusToRus(ups){
           if(ups === "dnd"){
-            return ups = "🔴 Не беспокоить";
+            return ups = "Не беспокоить";
           } else if(ups === "idle"){
-            return ups = '🟡 Неактивен';
+            return ups = 'Неактивен';
           } else if (ups === "online") {
-            return ups = "🟢 Онлайн";
+            return ups = "Онлайн";
           } else {
-            return ups = "💀 Оффлайн";
+            return ups = "Оффлайн";
           }
 
         }
@@ -37,33 +37,37 @@ module.exports = {
       switch (activity.type) {
         case 'CUSTOM_STATUS':
         activities.push(activity.state)
-          UIembed.setDescription(`🌷 **Польз. статус:** ${activities}`)
+          UIembed.setDescription(`**Польз. статус:** \`\`\`${activities}\`\`\``)
           break;
         case 'PLAYING':
-          UIembed.addField(`🎮 Играет в:`, `${activity.name}`, false);
+          UIembed.addField(`**Играет в:**`, `\`\`\`${activity.name}\`\`\``, false);
           break;
         case 'LISTENING':
-          if (member.bot) {UIembed.addField("<:spotify:864446494463885312> Слушает:", `${activity.name}`, false);}
-          else {UIembed.addField(`<:spotify:864448063204360213> Слушает:`, `${activity.state} -- **${activity.details}**`, false)};
+          if (member.bot) {UIembed.addField("Слушает:", `\`\`\`${activity.name}\`\`\``, false);}
+          else {UIembed.addField(`Слушает:`, `\`\`\`${activity.state} -- ${activity.details}\`\`\``, false)};
           break;//
         case 'WATCHING':
-            UIembed.addField(`👀 Смотрит:`, `${activity.name}`, false);
+            UIembed.addField(`**Смотрит:**`, `\`\`\`${activity.name}\`\`\``, false);
           break;
         case 'STREAMING':
-            UIembed.addField(`💻 Стримит:`, `${activity.name}`, false);
+            UIembed.addField(`**Стримит:**`, `\`\`\`${activity.name}\`\`\``, false);
           break;
       }}
 
 
 
-        UIembed.setTitle('📋 Имя пользователя: ' + member.user.tag)
+        UIembed.setTitle('Имя пользователя: \`\`\`' + member.user.tag + '\`\`\`')
         UIembed.setAuthor('Информация об участнике')
-        UIembed.addField('👋 Дата регистрации:', moment(member.user.createdAt).format('DD.MM.YYYY HH:mm'), true)
-        UIembed.addField('🎉 Присоединился:', moment(member.joinedAt).format('DD.MM.YYYY HH:mm'), true)
-        UIembed.addField('🤖 Бот ли?:', booleanToRus(member.user.bot), true)
-        UIembed.addField('🚩 Кол-во ролей на сервере:', member.roles.cache.size-1, true)
-        UIembed.addField('🙌 Самая высокая роль:', member.roles.highest.name, true)
-        UIembed.addField('📱 Статус:', statusToRus(member.user.presence.status), true)
+        UIembed.addField('Дата регистрации:', `\`\`\`${moment(member.user.createdAt).format('DD.MM.YYYY HH:mm')}\`\`\``, true)
+        UIembed.addField('Присоединился:', `\`\`\`${moment(member.joinedAt).format('DD.MM.YYYY HH:mm')}\`\`\``, true)
+        UIembed.addField('\u200B', '\u200B', true);
+        UIembed.addField('Кол-во ролей на сервере:', `\`\`\`${member.roles.cache.size-1}\`\`\``, true)
+        UIembed.addField('Самая высокая роль:', `\`\`\`${member.roles.highest.name}\`\`\``, true)
+        UIembed.addField('\u200B', '\u200B', true);
+        UIembed.addField('Бот ли?:', `\`\`\`${booleanToRus(member.user.bot)}\`\`\``, true)
+        UIembed.addField('Статус:', `\`\`\`${statusToRus(member.user.presence.status)}\`\`\``, true)
+        UIembed.addField('\u200B', '\u200B', true);
+
 
         UIembed.setFooter(`ID: ${member.user.id}`)
 
