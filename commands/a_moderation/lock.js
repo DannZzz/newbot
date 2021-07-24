@@ -9,7 +9,7 @@ module.exports = {
     description: "Закрывать канал.",
     usage: "",
     category: "a_moderation",
-    accessableby: "Нужна права: Управлять каналами.",
+    accessableby: "Нужна права: Администрация.",
     aliases: ["lock"]
   },
   run: async (bot, message, args) => {
@@ -18,7 +18,7 @@ module.exports = {
     .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
     .setColor(redlight)
 
-    if (!message.member.hasPermission("MANAGE_CHANNELS")) return message.channel.send(lockEmbed.setDescription("❌ У вас недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
+    if (!message.member.hasPermission("ADMINISTRATOR")) return message.channel.send(lockEmbed.setDescription("❌ У вас недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
     if (!message.guild.me.hasPermission("MANAGE_CHANNELS")) return message.channel.send(lockEmbed.setDescription("❌ У меня недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
 
     let ow = message.channel.permissionsFor(message.channel.guild.roles.everyone).has("SEND_MESSAGES")
