@@ -33,7 +33,7 @@ module.exports = {
     if(bag["vip1"] === false) return message.channel.send(embed.setDescription("❌ Эта команда доступна только для **VIP 1** пользователей.")).then(msg => {msg.delete({timeout: "10000"})});
 
     let arg = args.slice(2).join(" ")
-
+    if (!message.member.hasPermission("ADMINISTRATOR")) return message.channel.send(embed.setDescription("❌ У вас недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
     if(!args[0]) return message.channel.send(embed.setDescription("❌ Укажите #текстовый канал.")).then(msg => {msg.delete({timeout: "10000"})});
     if(!args[1]) return message.channel.send(embed.setDescription("❌ Укажите цвет эмбед.")).then(msg => {msg.delete({timeout: "10000"})});
     if(!arg) return message.channel.send(embed.setDescription("❌ Укажите текст.")).then(msg => {msg.delete({timeout: "10000"})});
