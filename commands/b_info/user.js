@@ -61,12 +61,12 @@ module.exports = {
         UIembed.addField('Дата регистрации:', `\`\`\`${moment(member.user.createdAt).format('DD.MM.YYYY HH:mm')}\`\`\``, true)
         UIembed.addField('Присоединился:', `\`\`\`${moment(member.joinedAt).format('DD.MM.YYYY HH:mm')}\`\`\``, true)
         UIembed.addField('\u200B', '\u200B', true);
-        UIembed.addField('Кол-во ролей на сервере:', `\`\`\`${member.roles.cache.size-1}\`\`\``, true)
+        UIembed.addField('Кол-во ролей:', `\`\`\`${member.roles.cache.size-1}\`\`\``, true)
         UIembed.addField('Самая высокая роль:', `\`\`\`${member.roles.highest.name}\`\`\``, true)
         UIembed.addField('\u200B', '\u200B', true);
-        UIembed.addField('Бот ли?:', `\`\`\`${booleanToRus(member.user.bot)}\`\`\``, true)
-        UIembed.addField('Статус:', `\`\`\`${statusToRus(member.user.presence.status)}\`\`\``, true)
-        UIembed.addField('\u200B', '\u200B', true);
+        // UIembed.addField('Бот ли?:', `\`\`\`${booleanToRus(member.user.bot)}\`\`\``, true)
+        // UIembed.addField('Статус:', `\`\`\`${statusToRus(member.user.presence.status)}\`\`\``, true)
+        // UIembed.addField('\u200B', '\u200B', true);
 
 
         UIembed.setFooter(`ID: ${member.user.id}`)
