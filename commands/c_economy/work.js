@@ -6,6 +6,7 @@ const JworkR = Jwork[Math.floor(Math.random() * Jwork.length)];
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const profileModel = require("../../models/profileSchema");
+const begModel = require("../../models/begSchema");
 
 module.exports = {
     config: {
@@ -20,9 +21,14 @@ module.exports = {
 
         let user = message.author;
 
-        profileData = await profileModel.findOne({ userID: user.id });
+        let profileData = await profileModel.findOne({ userID: user.id });
+        let bag = await begModel.findOne({ userID: user.id });
         let author = profileData.work;
-        let timeout = 180000;
+        let timeout;
+        if (bag["vip2"] === true) { timeout = 90 * 1000; } else {
+          timeout = 180 * 1000;
+        }
+
         var options = {
           era: 'long',
           year: 'numeric',

@@ -5,6 +5,7 @@ const { COIN, BANK } = require('../../config');
 const { MessageEmbed } = require('discord.js');
 const profileModel = require("../../models/profileSchema");
 const begModel = require("../../models/begSchema");
+const vipModel = require("../../models/vipSchema");
 
 
 function randomRange(min, max) {
@@ -24,6 +25,7 @@ module.exports = {
 
         let user = message.author;
         let profileData = await profileModel.findOne({ userID: user.id });
+
         let beg = await begModel.findOne({userID: user.id});
 
         if (!args[0]) {
@@ -39,7 +41,10 @@ module.exports = {
             const fishh = fishes[rarity];
             const worth = randomRange(fishh.min, fishh.max);
 
-            let timeout = 180 * 1000;
+            let timeout;
+            if (beg["vip2"] === true) { timeout = 90 * 1000; } else {
+              timeout = 180 * 1000;
+            }
             let fishtime = profileData.fish;
 
             if (fishtime !== null && timeout - (Date.now() - fishtime) > 0) {

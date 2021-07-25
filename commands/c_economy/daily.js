@@ -17,12 +17,17 @@ module.exports = {
     run: async (bot, message, args) => {
         let user = message.member;
 
-        let timeout = 86400 * 1000;
+
         let amount = 1000;
 
         let profileData = await profileModel.findOne({ userID: user.id });
         let beg = await begModel.findOne({ userID: user.id })
         let daily = await profileData.daily;
+        let timeout;
+        if (beg["vip2"] === true) { timeout = 43200 * 1000; } else {
+          timeout = 86400 * 1000;
+        }
+
 
         if (daily !== null && timeout - (Date.now() - daily) > 0) {
             let time = new Date(timeout - (Date.now() - daily));

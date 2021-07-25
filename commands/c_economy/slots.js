@@ -4,6 +4,7 @@ const { MessageEmbed } = require('discord.js');
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const profileModel = require("../../models/profileSchema");
+const begModel = require("../../models/begSchema");
 
 
 module.exports = {
@@ -19,6 +20,7 @@ module.exports = {
 
     let user = message.author;
     let profileData = await profileModel.findOne({ userID: user.id });
+    let beg = await begModel.findOne({ userID: user.id });
     let moneydb = profileData.coins;
     let money = parseInt(args[0]);
     let win = false;
@@ -36,7 +38,10 @@ module.exports = {
     .setTimestamp()
     .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
 
-    let timeout = 180000;
+    let timeout;
+    if (beg["vip2"] === true) { timeout = 90 * 1000; } else {
+      timeout = 180 * 1000;
+    };
 
     let author = profileData.slots;
     if (author !== null && timeout - (Date.now() - author) > 0) {

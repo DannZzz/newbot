@@ -23,6 +23,7 @@ module.exports = {
 
     let embed = new MessageEmbed()
     .setTimestamp()
+    .setColor(cyan)
     .setAuthor(`Профиль: ` + member.user.tag , member.user.displayAvatarURL({dynamic: true}))
 
 

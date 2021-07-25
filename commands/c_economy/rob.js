@@ -26,6 +26,7 @@ module.exports = {
      user2 = message.member;
      let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args[0].toLocaleLowerCase());
      let bag = await begModel.findOne({userID: user.id});
+     let bag2 = await begModel.findOne({userID: user2.id});
      if(bag["vip1"]) return message.channel.send(robEmbed.setDescription("❌ Невозможно воровать у **VIP** участников.")).then(msg => {msg.delete({timeout: "10000"})});
      if (user.user.id === user2.id) return message.channel.send(robEmbed.setDescription("❌ Вы не сможете воровать у себя.")).then(msg => {msg.delete({timeout: "10000"})});
 
@@ -36,7 +37,11 @@ module.exports = {
      let target = profileData1.coins;
      let author = profileData.rob;
 
-     let timeout = 86400000;
+     let timeout;
+     if (bag2["vip2"] === true) { timeout = 43200 * 1000; } else {
+       timeout = 86400 * 1000;
+     }
+
 
      if (author !== null && timeout - (Date.now() - author) > 0) {
        let time = new Date(timeout - (Date.now() - author));
