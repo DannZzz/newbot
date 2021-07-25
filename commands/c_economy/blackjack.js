@@ -46,6 +46,7 @@ module.exports = {
         const current = ops.games.get(message.channel.id);
         if (current) return message.channel.send(noEmbed.setDescription(`❌ Пожалуйста подождите пока игра **${current.name}** закончится!`)).then(msg => {msg.delete({timeout: "10000"})})
         try {
+            await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: -amount}});
             ops.games.set(message.channel.id, { name: 'blackjack', data: generateDeck(deckCount) });
             const dealerHand = [];
             draw(message.channel, dealerHand);
@@ -70,9 +71,9 @@ module.exports = {
                 .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
 
                 ops.games.delete(message.channel.id);
-                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor(amount+(amount/2))}});
+                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor((2 * amount)+(amount/2))}});
 
-                return message.channel.send(embed.setDescription(`✅ У вас блэкджек!\nВы выиграли **${Math.floor(amount + (amount / 2))}**${COIN}`))
+                return message.channel.send(embed.setDescription(`✅ У вас блэкджек!\nВы выиграли **${Math.floor((2 * amount) + (amount / 2))}**${COIN}`))
             }
 
             let playerTurn = true;
@@ -143,10 +144,10 @@ module.exports = {
             .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
 
             if (win === true) {
-                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount}});
-                return message.channel.send(winEmbed.setDescription(`✅ **${reason}, Вы выиграли ${COIN}${Math.floor(amount)}**!`));
+                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: 2 * amount}});
+                return message.channel.send(winEmbed.setDescription(`✅ **${reason}, Вы выиграли ${COIN}${Math.floor(2 * amount)}**!`));
             }else if (!win){
-              await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: -amount}});
+              //await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: -amount}});
               return message.channel.send(noEmbed.setDescription(`❌ **${reason}, Вы проиграли ${COIN}${Math.floor(amount)}**!`));
 
             } else {
