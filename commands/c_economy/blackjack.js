@@ -62,7 +62,7 @@ module.exports = {
                 return message.channel.send(noEmbed.setDescription("😂 У вас обоих Блэкджек!"))
             } else if (dealerInitialTotal === 21) {
                 ops.games.delete(message.channel.id);
-                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor(-amount)}});
+                
                 return message.channel.send(noEmbed.setDescription(`❌ У дилера блэкджек!\nВы проиграли **${Math.floor(amount)}**${COIN}`))
             } else if (playerInitialTotal === 21) {
                 let embed = new MessageEmbed()
