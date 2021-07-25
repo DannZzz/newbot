@@ -34,8 +34,8 @@ module.exports = {
     let authorHighestRole = message.member.roles.highest.position;
     let mentionHighestRole = toWarn.roles.highest.position;
     if(mentionHighestRole >= authorHighestRole || mentionHighestRole >= message.guild.me.roles.highest.position) {
-      message.channel.send(warnmbed.setDescription('❌ Вы не сможете снять предупреждения от участника с ролью выше вас, либо себя.')).then(msg => {msg.delete({timeout: "10000"})});
-      return;}
+      return message.channel.send(warnEmbed.setDescription('❌ Вы не сможете снять предупреждения от участника с ролью выше вас, либо себя.')).then(msg => {msg.delete({timeout: "10000"})});
+      }
 
     if (toWarn.user.bot) return message.channel.send(warnEmbed.setDescription("❌ Боты не имеют предупреждения.")).then(msg => {msg.delete({timeout: "10000"})});
 
