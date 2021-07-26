@@ -7,6 +7,8 @@ disbut(bot);
 const fs = require('fs');
 const mongoose = require('mongoose');
 const mc = require('discord-mongo-currency')
+const Levels = require("discord-xp");
+Levels.setURL(MONGO);
 
 mongoose.connect(MONGO, {useNewUrlParser: true, useUnifiedTopology: true})
 mongoose.set('useFindAndModify', false)
@@ -146,6 +148,15 @@ bot.on('message', async message => {
         server.save()}
 
         prefix = serverData.prefix;
+        const server = await serverModel.findOne( {serverID: message.guild.id});
+        if (server.rank) {
+          let random = Math.floor(Math.random() * 9) + 1;
+          if (message.author.bot) return;
+          if (message.channel.type === "dm") return;
+          await Levels.appendXp(message.author.id, message.guild.id, random);
+
+        } 
+
       } catch (e) {
           console.log(e)
   };
