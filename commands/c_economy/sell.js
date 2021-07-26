@@ -65,6 +65,7 @@ module.exports = {
       if(bag['vip1']) exCost = cost + (cost / 2) + (cost / 3)
       if(fish_sell < 10) money = cost * fish_sell;
       else if (fish_sell < 100) money = exCost * fish_sell;
+      else if (fish_sell > 100) money = exCost * fish_sell * (exCost / 2);
 
 
 
