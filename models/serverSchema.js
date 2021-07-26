@@ -7,8 +7,9 @@ const serverSchema = new mongoose.Schema({
   modLog: { type: String },
   muteRole: { type: String },
   autoRole: { type: String },
-  autoRoleOn: { type: Boolean, default: false}, 
+  autoRoleOn: { type: Boolean, default: false},
   shop: {any: {} },
+  rank: { type: Boolean, default: false},
 
 });
 
