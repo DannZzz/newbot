@@ -12,7 +12,7 @@ module.exports = {
     description: "Отправлять сообщение на указанном канале.",
     category: "g_vip",
     aliases: ["channel"],
-    accessableby: "Для всех",
+    accessableby: "Нужна права: Администратор.",
     usage: "[упоминание канала] [ваше сообщение]"
   },
   run: async (bot, message, args) => {

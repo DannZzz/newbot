@@ -8,12 +8,12 @@ const vipModel = require("../../models/vipSchema");
 
 module.exports = {
   config: {
-    name: "профиль-картина",
-    description: "Поставить фоточку на свою профиль.",
+    name: "ранг-картина",
+    description: "Поставить фото на свою ранг-карту.",
     category: "g_vip",
-    aliases: ["set-image"],
+    aliases: ["rank-image"],
     accessableby: "Для всех",
-    usage: "[ссылка на фотку] (Можно и анимационную)"
+    usage: "[ссылка на фотку]"
   },
   run: async (bot, message, args) => {
     let embed = new MessageEmbed()
@@ -33,8 +33,8 @@ module.exports = {
 
     if(!args[0]) return message.channel.send(embed.setDescription("❌ Укажите ссылку")).then(msg => {msg.delete({timeout: "10000"})});
 
-    message.channel.send(sembed.setDescription('✅ Успешно установлена новая картинка профиля.'))
-    await vipModel.findOneAndUpdate({userID: message.author.id}, {$set: {profileImage: args[0]}})
+    message.channel.send(sembed.setDescription('✅ Успешно установлена новая картинка для ранг-карточки.\nОбратите внимание, что ссылка указана правильно.'))
+    await vipModel.findOneAndUpdate({userID: message.author.id}, {$set: {rankImage: args[0]}})
 
   }
 }

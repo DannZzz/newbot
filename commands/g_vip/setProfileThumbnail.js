@@ -9,7 +9,7 @@ const vipModel = require("../../models/vipSchema");
 module.exports = {
   config: {
     name: "профиль-эскиз",
-    description: "Поставить эскиз на свой профиль.",
+    description: "Поставить эскиз на свою профиль.",
     category: "g_vip",
     aliases: ["set-thumbnail"],
     accessableby: "Для всех",

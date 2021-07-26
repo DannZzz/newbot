@@ -8,12 +8,12 @@ const vipModel = require("../../models/vipSchema");
 
 module.exports = {
   config: {
-    name: "профиль-картина",
-    description: "Поставить фоточку на свою профиль.",
+    name: "ранг-цвет",
+    description: "Установить цвет для текста на ранг-карту.",
     category: "g_vip",
-    aliases: ["set-image"],
+    aliases: ["rank-color"],
     accessableby: "Для всех",
-    usage: "[ссылка на фотку] (Можно и анимационную)"
+    usage: "[цвет hex(#00ff00)]"
   },
   run: async (bot, message, args) => {
     let embed = new MessageEmbed()
@@ -31,10 +31,10 @@ module.exports = {
 
     if(bag['vip1'] === false || bag['vip2'] === false) return message.channel.send(embed.setDescription("❌ Эта команда доступна только для **VIP 2** пользователей.")).then(msg => {msg.delete({timeout: "10000"})});
 
-    if(!args[0]) return message.channel.send(embed.setDescription("❌ Укажите ссылку")).then(msg => {msg.delete({timeout: "10000"})});
+    if(!args[0]) return message.channel.send(embed.setDescription("❌ Укажите цвет.\nПример: \`\`#ff00ff или ff00ff\`\`")).then(msg => {msg.delete({timeout: "10000"})});
 
-    message.channel.send(sembed.setDescription('✅ Успешно установлена новая картинка профиля.'))
-    await vipModel.findOneAndUpdate({userID: message.author.id}, {$set: {profileImage: args[0]}})
+    message.channel.send(sembed.setDescription('✅ Успешно установлена новая картинка для ранг-карточки.\nОбратите внимание, что цвет указан правильно.'))
+    await vipModel.findOneAndUpdate({userID: message.author.id}, {$set: {rankColor: args[0]}})
 
   }
 }

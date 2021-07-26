@@ -9,7 +9,7 @@ const vipModel = require("../../models/vipSchema");
 module.exports = {
   config: {
     name: "профиль-био",
-    description: "Поставить био на свой профиль.",
+    description: "Поставить био на свою профиль.",
     category: "g_vip",
     aliases: ["set-bio"],
     accessableby: "Для всех",

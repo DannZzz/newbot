@@ -12,7 +12,7 @@ module.exports = {
     description: "Отправлять сообщение на указанном канале в формате EMBED.",
     category: "g_vip",
     aliases: ["embed"],
-    accessableby: "Для всех",
+    accessableby: "Нужна права: Администратор.",
     usage: "[упоминание канала] [цвет] [ваше сообщение]"
   },
   run: async (bot, message, args) => {
