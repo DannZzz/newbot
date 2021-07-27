@@ -1,4 +1,3 @@
-
 const {MessageEmbed} = require("discord.js")
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const {PREFIX} = require("../../config");
@@ -6,12 +5,12 @@ const serverModel = require("../../models/serverSchema");
 
 module.exports = {
   config: {
-    name: "мьют",
+    name: "мьют-навсегда",
     description: "Замьютить участника.",
     usage: "[тег | никнейм | упоминание | ID]",
     category: "a_moderation",
     accessableby: "Нужна права: Управлять сообщениями.",
-    aliases: ["mute", "m", "м"]
+    aliases: ["forever-mute", "fm", "фм"]
   },
   run: async (bot, message, args) => {
     try {

@@ -7,12 +7,12 @@ const serverModel = require("../../models/serverSchema");
 
 module.exports = {
   config: {
-    name: "темпмьют",
+    name: "мьют",
     description: "Замьютить участника на указанное время.",
     usage: "[тег | никнейм | упоминание | ID] [время: 1m, 1h, 1d]",
     category: "a_moderation",
     accessableby: "Нужна права: Управлять сообщениями.",
-    aliases: ["tempmute", "tm", "тм"]
+    aliases: ["mute", "m", "м"]
   },
   run: async (client, message, args) => {
     try {
@@ -24,7 +24,7 @@ module.exports = {
     if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send(muteEmbed.setDescription("❌ У меня недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
 
     if (!args[0]) return message.channel.send(muteEmbed.setDescription("❌ Укажите участника, чтобы замутить.")).then(msg => {msg.delete({timeout: "10000"})});
-    if (!args[1]) return message.channel.send(muteEmbed.setDescription("❌ Укажите время, чтобы замутить.")).then(msg => {msg.delete({timeout: "10000"})});
+    if (!args[1]) return message.channel.send(muteEmbed.setDescription("❌ Укажите время \`\`1m, 1h\`\`, чтобы замутить.")).then(msg => {msg.delete({timeout: "10000"})});
 
     let mutee = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase());
     if (!mutee) return message.channel.send(muteEmbed.setDescription(`❌ Укажите участника.`)).then(msg => {msg.delete({timeout: "10000"})});
@@ -87,23 +87,29 @@ module.exports = {
           return message.channel.send(muteEmbed.setDescription(`❌ Укажите доступный формат времени: \`\`20s, 1m, 1h, 1d\`\``)).then(msg => {msg.delete({timeout: "5000"})})
         }
         else {
-          const sembed = new MessageEmbed()
-              .setColor(greenlight)
-              .setTimestamp()
-              .setAuthor(message.guild.name, message.guild.iconURL())
-          mutee.roles.add(muterole);
-          message.channel.send(sembed.setDescription(`✅ <@${mutee.id}> замучен на: \`\`${muteTime}\`\``));
+          try {
+            const sembed = new MessageEmbed()
+                .setColor(greenlight)
+                .setFooter("Мьют будет снят: ")
+                .setTimestamp(Date.now() + ms(muteTime))
+                .setAuthor(message.guild.name, message.guild.iconURL())
+            mutee.roles.add(muterole).then(() => message.channel.send(sembed.setDescription(`✅ <@${mutee.id}> получил(а) мьют.`)));
 
-          setTimeout(function(){
-            if(mutee.roles.cache.find(r => r.name === muterole.name)){
-              const sembed = new MessageEmbed()
-                  .setColor(greenlight)
-                  .setTimestamp()
-                  .setAuthor(message.guild.name, message.guild.iconURL())
-              mutee.roles.remove(muterole);
-              message.channel.send(sembed.setDescription(`✅ <@${mutee.id}> вы снова полноценный человек.😊`));
-            }
-          }, ms(muteTime));
+
+            setTimeout(function(){
+              if(mutee.roles.cache.find(r => r.name === muterole.name)){
+                const sembed = new MessageEmbed()
+                    .setColor(greenlight)
+                    .setTimestamp()
+                    .setAuthor(message.guild.name, message.guild.iconURL())
+                mutee.roles.remove(muterole);
+                message.channel.send(sembed.setDescription(`✅ <@${mutee.id}> вы снова полноценный человек.😊`));
+              }
+            }, ms(muteTime));
+          } catch (e) {
+            console.log(e);
+          }
+
         }
       }
 

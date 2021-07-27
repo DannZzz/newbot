@@ -60,10 +60,11 @@ module.exports = {
         else {
           const sembed = new MessageEmbed()
               .setColor(greenlight)
-              .setTimestamp()
+              .setFooter(`Роль будет снята: `)
+              .setTimestamp(Date.now() + ms(muteTime))
               .setAuthor(message.guild.name, message.guild.iconURL())
-          member.roles.add(role);
-          message.channel.send(sembed.setDescription(`✅ <@${member.id}> получил роль: **${role.name}** на  \`\`${muteTime}\`\``));
+          member.roles.add(role).then(() => message.channel.send(sembed.setDescription(`✅ <@${member.id}> получил роль: **${role.name}**.`)));
+
 
           setTimeout(function(){
             if(member.roles.cache.find(r => r.name === role.name)){

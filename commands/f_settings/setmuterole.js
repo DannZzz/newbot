@@ -47,6 +47,8 @@ module.exports = {
       return message.channel.send(mtEmbed.setDescription(`❌ Пожалуйста, укажите доступную роль!`)).then(msg => {msg.delete({timeout: "10000"})});
 
       try {
+        let perms = role.permissions.serialize()
+        if(perms.ADMINISTRATOR === true || perms.MANAGE_ROLES === true) return message.channel.send(mtEmbed.setDescription(`❌ Эта роль не может быть установлен для мьюта.`)).then(msg => {msg.delete({timeout: "10000"})});
         let a = sd.muteRole;
 
         if (role.id === a) {
