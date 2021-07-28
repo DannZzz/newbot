@@ -59,24 +59,25 @@ module.exports = {
         cost = 450
         rarity = fishes['legendary']
       } else {
-        message.channel.send(Embed.setDescription(`Айди рыб не найдено: **${sd.prefix}рыба лист**`))
+        return message.channel.send(Embed.setDescription(`❌ Айди рыб не найдено: **${sd.prefix}рыба лист**`))
       }
       let exCost = cost + (cost / 2)
       if(bag['vip1']) exCost = cost + (cost / 2) + (cost / 3)
+      if(fish_sell === 0) return message.channel.send(Embed.setDescription(`❌ Интересно, как продать "ничего".`))
       if(fish_sell < 10) money = cost * fish_sell;
       else if (fish_sell < 100) money = exCost * fish_sell;
       else if (fish_sell > 100) money = exCost * fish_sell * (exCost / 2);
 
 
 
-      await profileModel.findOneAndUpdate({userID: message.author.id}, {$inc: {coins: money}});
+      await profileModel.findOneAndUpdate({userID: message.author.id}, {$inc: {coins: Math.floor(money)}});
       if (fish_sell === bag.junk) await begModel.findOneAndUpdate({userID: message.author.id},{$set: {junk: 0}})
       else if (fish_sell === bag.common) await begModel.findOneAndUpdate({userID: message.author.id},{$set: {common: 0}})
       else if (fish_sell === bag.uncommon) await begModel.findOneAndUpdate({userID: message.author.id},{$set: {uncommon: 0}})
       else if (fish_sell === bag.rare) await begModel.findOneAndUpdate({userID: message.author.id},{$set: {rare: 0}})
       else if (fish_sell === bag.legendary) await begModel.findOneAndUpdate({userID: message.author.id},{$set: {legendary: 0}})
 
-      message.channel.send(sembed.setDescription(`Вы продали **${fish_sell}**${rarity.symbol} всего за **${money} ${COIN}**`))
+      message.channel.send(sembed.setDescription(`✅ Вы продали **${fish_sell}**${rarity.symbol} всего за **${Math.floor(money)} ${COIN}**`))
 
   }
 }
