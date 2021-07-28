@@ -34,7 +34,7 @@ module.exports = {
      let profileDataAuthor = await profileModel.findOne({ userID: user2.id });
 
      let memberMoney = profileDataAuthor.coins
-     if(memberMoney < args[1]) return message.channel.send(gEmbed.setDescription("❌ У вас недостаточно денег.")).then(msg => {msg.delete({timeout: "10000"})});
+     if(memberMoney <= 0 || memberMoney < args[1]) return message.channel.send(gEmbed.setDescription("❌ У вас недостаточно денег.")).then(msg => {msg.delete({timeout: "10000"})});
      if(10 > args[1]) return message.channel.send(gEmbed.setDescription("❌ Минимальная сумма **10**.")).then(msg => {msg.delete({timeout: "10000"})});
 
 
