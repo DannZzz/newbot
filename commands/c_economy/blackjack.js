@@ -62,7 +62,7 @@ module.exports = {
                 return message.channel.send(noEmbed.setDescription("😂 У вас обоих Блэкджек!"))
             } else if (dealerInitialTotal === 21) {
                 ops.games.delete(message.channel.id);
-                
+
                 return message.channel.send(noEmbed.setDescription(`❌ У дилера блэкджек!\nВы проиграли **${Math.floor(amount)}**${COIN}`))
             } else if (playerInitialTotal === 21) {
                 let embed = new MessageEmbed()
@@ -155,7 +155,7 @@ module.exports = {
                 .setColor(cyan)
                 .setTimestamp()
                 .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-
+                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount}});
                 return message.channel.send(Nembed.setDescription(`👀 **${reason}, У вас ничья!**`));
             }
         } catch (err) {
