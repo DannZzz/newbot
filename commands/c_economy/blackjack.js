@@ -156,7 +156,7 @@ module.exports = {
                 .setColor(cyan)
                 .setTimestamp()
                 .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount}});
+                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount / 2}});
                 return message.channel.send(Nembed.setDescription(`👀 **${reason}, У вас ничья!**`));
             }
         } catch (err) {
