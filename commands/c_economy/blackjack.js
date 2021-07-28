@@ -59,6 +59,7 @@ module.exports = {
 
             if (dealerInitialTotal === 21 && playerInitialTotal === 21) {
                 ops.games.delete(message.channel.id);
+                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount}});
                 return message.channel.send(noEmbed.setDescription("😂 У вас обоих Блэкджек!"))
             } else if (dealerInitialTotal === 21) {
                 ops.games.delete(message.channel.id);
