@@ -42,9 +42,9 @@ module.exports = {
 
     const gg = await Levels.computeLeaderboard(bot, led, true);
 
-    const lb = gg.map(e => `\`\`\`${e.position}. ${e.username}#${e.discriminator} -- Уровень: ${e.level} -- XP: ${e.xp.toLocaleString()}\`\`\``);
-    let as = lb.join("")
-    message.channel.send(embed.setDescription(as))
+    const lb = gg.map(e => `${e.position}. ${e.username}#${e.discriminator} -- Уровень: ${e.level} -- XP: ${e.xp.toLocaleString()}`);
+    let as = lb.join("\n")
+    message.channel.send(embed.setDescription("\`\`\`" + as + "\`\`\`"))
 
   }
 }
