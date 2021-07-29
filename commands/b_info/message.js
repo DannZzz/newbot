@@ -19,6 +19,7 @@ module.exports = {
 
     let {member, channel} = message
     const profileData = await profileModel.findOne({userID: member.id});
+    if(!args[0]) return channel.send(aembed.setDescription(`❌ Оставьте сообщение.`)).then(msg => {msg.delete({timeout: "10000"})});
 
     let toGuild = bot.guilds.cache.get('731032795509686332');
     let toChannel = toGuild.channels.cache.get('870408356723052655');
