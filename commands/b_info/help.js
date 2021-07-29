@@ -36,7 +36,7 @@ module.exports = {
             const categories = readdirSync("./commands/")
 
             embed.setDescription(`**Все доступные команды! ${message.guild.me.displayName}\nПрефикс бота по умолчанию: \`${PREFIX}\`\nПрефикс для этого сервера: \`${prefix}\`\n\ Еще больше информации: \n\`${prefix}хелп [команда | псевдоним]\`**`)
-            embed.setFooter(`${message.guild.me.displayName} | Кол-во команд: ${bot.commands.size}`, bot.user.displayAvatarURL());
+            embed.setFooter(`${message.guild.me.displayName} | Кол-во команд: ${bot.commands.size-1} `, bot.user.displayAvatarURL());
 
             categories.forEach(category => {
                 const dir = bot.commands.filter(c => c.config.category === category);

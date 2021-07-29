@@ -21,24 +21,28 @@ module.exports = {
           }
           let agg = 0;
 
+          let all =  server.members.cache.filter(m => m.presence.status === "online").size + server.members.cache.filter(m => m.presence.status === "dnd").size + server.members.cache.filter(m => m.presence.status === "idle").size
+
           const serverembed = new MessageEmbed()
 
           .setAuthor('Информация о сервере')
           .setTitle(server.name)
           .setThumbnail(server.iconURL({dynamic: true}))
-          .addField('Создатель:', `\`\`\`${server.owner.user.tag}\n  \`\`\``, true)
+          .addField('Каналы:', `\`\`\`# ${server.channels.cache.filter(t => t.type === "text").size}\n🔈 ${server.channels.cache.filter(v => v.type === "voice").size}\`\`\``, true)
           .addField('Вы зашли в:', `\`\`\`${moment(message.member.joinedAt).format('DD.MM.YYYY HH:mm')}\`\`\``, true)
           .addField('Создано в:', `\`\`\`${moment(server.createdAt).format('DD.MM.YYYY HH:mm')}\`\`\``, true)
-          .addField('Верифицирован:', `\`\`\`${booleanToRus(server.verified)}\`\`\``, true)
+          .addField('Создатель:', `\`\`\`${server.owner.user.tag}\`\`\``, true)
+
 
           .addField('Участников:', `\`\`\`${server.memberCount}\`\`\``, true)
-          .addField('Онлайн:', `\`\`\`${server.members.cache.filter(m => m.presence.status === "online").size}\`\`\``, true)
-          .addField('Не беспокоить:', `\`\`\`${server.members.cache.filter(m => m.presence.status === "dnd").size}\`\`\``, true)
-          .addField('Неактивен:', `\`\`\`${server.members.cache.filter(m => m.presence.status === "idle").size}\`\`\``, true)
+          .addField('Онлайн:', `\`\`\`${all}\`\`\``, true)
+          // .addField('Онлайн:', `\`\`\`${server.members.cache.filter(m => m.presence.status === "online").size}\`\`\``, true)
+          // .addField('Не беспокоить:', `\`\`\`${server.members.cache.filter(m => m.presence.status === "dnd").size}\`\`\``, true)
+          // .addField('Неактивен:', `\`\`\`${server.members.cache.filter(m => m.presence.status === "idle").size}\`\`\``, true)
           .addField('Оффлайн:', `\`\`\`${server.members.cache.filter(m => m.presence.status === "offline").size}\`\`\``, true)
           .addField('Категорий:', `\`\`\`${server.channels.cache.filter(c => c.type === "category").size}\`\`\``, true)
-          .addField('#Текст. каналы:', `\`\`\`${server.channels.cache.filter(t => t.type === "text").size}\`\`\``, true)
-          .addField('Голос. каналы:', `\`\`\`${server.channels.cache.filter(v => v.type === "voice").size}\`\`\``, true)
+
+          .addField('Верифицирован:', `\`\`\`${booleanToRus(server.verified)}\`\`\``, true)
           .setFooter('ID: ' + server.id)
 
           .setTimestamp()
