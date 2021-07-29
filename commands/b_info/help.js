@@ -99,14 +99,14 @@ module.exports = {
             else if (category === "f_settings") {
               category = "Настройки"
             }
-            embed.setDescription(stripIndents`**Префикс бота по умолчанию: \`${PREFIX}\`**\n
+            embed.setDescription(stripIndents`**Префикс бота по умолчанию: \`${PREFIX}\`**
             **Префикс для этого сервера: \`${prefix}\`**\n
-            ** Команда: ** ${command.name.slice(0, 1).toUpperCase() + command.name.slice(1)}\n
-            ** Описание:** ${command.description || "Нет описания."}\n
-            **Категория:** ${category}\n
-            ** Применение ** ${command.usage ? `\`${prefix}${command.name} ${command.usage}\`` : "Нет применения."}\n
-            ** Доступен для: ** ${command.accessableby || "Для всех"}\n
-            ** Псевдонимы: ** ${command.aliases ? command.aliases.join(", ") : "Нету."}`)
+            ** Команда: ** \`${command.name.slice(0, 1).toUpperCase() + command.name.slice(1)}\`
+            ** Описание:** \`${command.description || "Нет описания."}\`
+            **Категория:** \`${category}\`
+            ** Применение: ** ${command.usage ? `\`${prefix}${command.name} ${command.usage}\`` : "\`Нет применения.\`"}
+            ** Доступен для: ** \`${command.accessableby || "Для всех"}\`
+            ** Псевдонимы: ** \`${command.aliases ? command.aliases.join(", ")\` : "\`Нету.\`"})
             embed.setFooter(message.guild.name, message.guild.iconURL())
 
             return message.channel.send(embed)
