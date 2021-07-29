@@ -39,14 +39,14 @@ module.exports = {
 
         let amount = parseInt(args[1])
         if (isNaN(args[1])) return message.channel.send(noEmbed.setDescription("❌ Укажите число!")).then(msg => {msg.delete({timeout: "10000"})})
-        if (amount < 100) return message.channel.send(noEmbed.setDescription("❌ Минимальная ставка **100**!")).then(msg => {msg.delete({timeout: "10000"})})
-        if (amount > 100000) return message.channel.send(noEmbed.setDescription("❌ Максимальная ставка **100000**!")).then(msg => {msg.delete({timeout: "10000"})})
+        if (Math.floor(amount) < 100) return message.channel.send(noEmbed.setDescription("❌ Минимальная ставка **100**!")).then(msg => {msg.delete({timeout: "10000"})})
+        if (Math.floor(amount) > 100000) return message.channel.send(noEmbed.setDescription("❌ Максимальная ставка **100000**!")).then(msg => {msg.delete({timeout: "10000"})})
 
-        if (bal < amount) return message.channel.send(noEmbed.setDescription("❌ У вас недостаточно денег!")).then(msg => {msg.delete({timeout: "10000"})})
+        if (bal < Math.floor(amount)) return message.channel.send(noEmbed.setDescription("❌ У вас недостаточно денег!")).then(msg => {msg.delete({timeout: "10000"})})
         const current = ops.games.get(message.channel.id);
         if (current) return message.channel.send(noEmbed.setDescription(`❌ Пожалуйста подождите пока игра **${current.name}** закончится!`)).then(msg => {msg.delete({timeout: "10000"})})
         try {
-            await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: -amount}});
+            await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: -Math.floor(amount)}});
             ops.games.set(message.channel.id, { name: 'blackjack', data: generateDeck(deckCount) });
             const dealerHand = [];
             draw(message.channel, dealerHand);
@@ -59,12 +59,12 @@ module.exports = {
 
             if (dealerInitialTotal === 21 && playerInitialTotal === 21) {
                 ops.games.delete(message.channel.id);
-                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount}});
+                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor(amount)}});
                 return message.channel.send(noEmbed.setDescription("😂 У вас обоих Блэкджек!"))
             } else if (dealerInitialTotal === 21) {
                 ops.games.delete(message.channel.id);
 
-                return message.channel.send(noEmbed.setDescription(`❌ У дилера блэкджек!\nВы проиграли **${Math.floor(amount)}**${COIN}`))
+                return message.channel.send(noEmbed.setDescription(`❌ У дилера блэкджек!\nВы проиграли **${Math.floor(Math.floor(amount))}**${COIN}`))
             } else if (playerInitialTotal === 21) {
                 let embed = new MessageEmbed()
                 .setColor(greenlight)
@@ -72,9 +72,9 @@ module.exports = {
                 .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
 
                 ops.games.delete(message.channel.id);
-                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor((2 * amount)+(amount/2))}});
+                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor((2 * Math.floor(amount))+(Math.floor(amount)/2))}});
 
-                return message.channel.send(embed.setDescription(`✅ У вас блэкджек!\nВы выиграли **${Math.floor((2 * amount) + (amount / 2))}**${COIN}`))
+                return message.channel.send(embed.setDescription(`✅ У вас блэкджек!\nВы выиграли **${Math.floor((2 * Math.floor(amount)) + (Math.floor(amount) / 2))}**${COIN}`))
             }
 
             let playerTurn = true;
@@ -145,18 +145,18 @@ module.exports = {
             .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
 
             if (win === true) {
-                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: 2 * amount}});
-                return message.channel.send(winEmbed.setDescription(`✅ **${reason}, Вы выиграли ${COIN}${Math.floor(2 * amount)}**!`));
+                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: 2 * Math.floor(amount)}});
+                return message.channel.send(winEmbed.setDescription(`✅ **${reason}, Вы выиграли ${COIN}${Math.floor(2 * Math.floor(amount))}**!`));
             }else if (!win){
-              //await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: -amount}});
-              return message.channel.send(noEmbed.setDescription(`❌ **${reason}, Вы проиграли ${COIN}${Math.floor(amount)}**!`));
+              //await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: -Math.floor(amount)}});
+              return message.channel.send(noEmbed.setDescription(`❌ **${reason}, Вы проиграли ${COIN}${Math.floor(Math.floor(amount))}**!`));
 
             } else {
                 let Nembed = new MessageEmbed()
                 .setColor(cyan)
                 .setTimestamp()
                 .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-                await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount / 2}});
+                
                 return message.channel.send(Nembed.setDescription(`👀 **${reason}, У вас ничья!**`));
             }
         } catch (err) {
