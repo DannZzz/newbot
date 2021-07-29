@@ -10,6 +10,7 @@ const profileSchema = new mongoose.Schema({
   fish: { type: Number, default: 0 },
   work: {type: Number, default: 0 },
   daily: {type: Number, default: 0 },
+  bug: {type: Number, default: 0 },
   shopped: {any: {}}
 });
 
