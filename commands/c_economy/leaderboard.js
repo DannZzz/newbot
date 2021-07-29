@@ -12,8 +12,8 @@ module.exports = {
         name: "топ",
         aliases: ['lb', "top", "лидеры"],
         category: 'c_economy',
-        description: 'Показывает топ 10 богатых участников по банку сервера.',
-        usage: ' ',
+        description: 'Показывает топ 15 богатых участников по банку сервера.',
+        usage: '',
         accessableby: "Для всех"
     },
     run: async (bot, message, args) => {
