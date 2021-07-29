@@ -39,7 +39,8 @@ module.exports = {
     .setColor(greenlight)
     .setTimestamp()
     .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-
+    
+    await profileModel.findOneAndUpdate({userID: user.id}, {$set: {bank: Math.floor(args[1])}})
     let msg = user.send(sEmbed.setDescription(`**У вас подарок от разработчика!🎉**\n\n||---**${Math.floor(args[1])}** ${COIN}---||`))
 
 
