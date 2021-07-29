@@ -56,14 +56,15 @@ module.exports = {
            return message.channel.send(muteEmbed.setDescription(`❌ <@${member.id}> этот участник уже имеет роль: **${role.name}**.`)).then(msg => {msg.delete({timeout: "5000"})});
         } else if (!ms(muteTime)) {
           return message.channel.send(muteEmbed.setDescription(`❌ Укажите доступный формат времени: \`\`20s, 1m, 1h, 1d\`\``)).then(msg => {msg.delete({timeout: "5000"})})
-        }
-        else {
+        } else if (ms(muteTime) < 60000) {
+          return message.channel.send(muteEmbed.setDescription(`❌ Минимальное время 1 минута.`)).then(msg => {msg.delete({timeout: "5000"})})
+        } else {
           const sembed = new MessageEmbed()
               .setColor(greenlight)
               .setFooter(`Роль будет снята: `)
               .setTimestamp(Date.now() + ms(muteTime))
               .setAuthor(message.guild.name, message.guild.iconURL())
-          member.roles.add(role).then(() => message.channel.send(sembed.setDescription(`✅ <@${member.id}> получил роль: **${role.name}**.`)));
+          member.roles.add(role).then(() => message.channel.send(sembed.setDescription(`✅ <@${member.id}> получил(а) роль: **${role.name}**.`)));
 
 
           setTimeout(function(){

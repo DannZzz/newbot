@@ -134,6 +134,8 @@ bot.on('message', async message => {
   if (message.channel.type === "dm") return;
 });
 
+
+
 bot.on('message', async message => {
   let Embed = new MessageEmbed()
   .setTimestamp()
@@ -155,7 +157,7 @@ bot.on('message', async message => {
           if (message.channel.type === "dm") return;
           await Levels.appendXp(message.author.id, message.guild.id, random);
 
-        } 
+        }
 
       } catch (e) {
           console.log(e)
@@ -168,5 +170,61 @@ bot.on('message', async message => {
       return;
       };
 });
+
+const checkMutes = async () => {
+  console.log("CHECKING MUTES!");
+
+
+const results = await memberModel.find({ muteTime: { $exists: true } });
+results.map(async user => {
+  const nowDate = new Date()
+  const muteDate = new Date(user.muteTime)
+
+  const guild = bot.guilds.cache.get(user.serverID)
+
+  const member = (await guild.members.fetch()).get(user.userID)
+  if(!member) return
+
+  const server = await serverModel.findOne({serverID: user.serverID})
+
+  if (nowDate < muteDate) return
+
+  let muterole;
+  let dbmute = server.muteRole;
+  let muteerole = guild.roles.cache.find(r => r.name === "Замучен")
+
+  if (!guild.roles.cache.has(dbmute)) {
+    muterole = muteerole
+  } else {
+    muterole = guild.roles.cache.get(dbmute)
+  }
+
+
+    if(member.roles.cache.has(muterole.id)) {
+      member.roles.remove(muterole)
+      await memberModel.updateOne({userID: user.userID, serverID: user.serverID}, {$set: {muteTime: null}})
+    }
+  })
+
+setTimeout(checkMutes, 1000 * 10)
+}
+checkMutes()
+
+bot.on('guildMemberAdd', async member => {
+  const { guild, id} = member
+
+  const currentMute = await memberModel.findOne({
+    userID: id,
+    serverID: guild.id,
+    muteTime: { $exists: true }
+  })
+  if (currentMute) {
+    const server = await serverModel.findOne({serverID: guild.id})
+    const role = guild.roles.cache.find(role => role.id === server.muteRole)
+    if(role) {
+      member.roles.add(role)
+    }
+  }
+})
 
 bot.login(TOKEN)

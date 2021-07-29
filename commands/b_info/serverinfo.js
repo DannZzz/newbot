@@ -39,9 +39,8 @@ module.exports = {
           .addField('Категорий:', `\`\`\`${server.channels.cache.filter(c => c.type === "category").size}\`\`\``, true)
           .addField('#Текст. каналы:', `\`\`\`${server.channels.cache.filter(t => t.type === "text").size}\`\`\``, true)
           .addField('Голос. каналы:', `\`\`\`${server.channels.cache.filter(v => v.type === "voice").size}\`\`\``, true)
-
           .setFooter('ID: ' + server.id)
-          .setImage(isItIn(server.bannerURL({dynamic: true})))
+
           .setTimestamp()
           .setColor(cyan)
 

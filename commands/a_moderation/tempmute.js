@@ -4,6 +4,7 @@ const ms = require('ms');
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const {PREFIX} = require("../../config");
 const serverModel = require("../../models/serverSchema");
+const memberModel = require("../../models/memberSchema");
 
 module.exports = {
   config: {
@@ -14,7 +15,7 @@ module.exports = {
     accessableby: "Нужна права: Управлять сообщениями.",
     aliases: ["mute", "m", "м"]
   },
-  run: async (client, message, args) => {
+  run: async (bot, message, args) => {
     try {
     let muteEmbed = new MessageEmbed()
     .setTimestamp()
@@ -85,27 +86,38 @@ module.exports = {
            return message.channel.send(muteEmbed.setDescription(`❌ <@${mutee.id}> этот учатник уже замучен!`)).then(msg => {msg.delete({timeout: "5000"})});
         } else if (!ms(muteTime)) {
           return message.channel.send(muteEmbed.setDescription(`❌ Укажите доступный формат времени: \`\`20s, 1m, 1h, 1d\`\``)).then(msg => {msg.delete({timeout: "5000"})})
+        } else if (ms(muteTime) < 60000) {
+          return message.channel.send(muteEmbed.setDescription(`❌ Минимальное время 1 минута.`)).then(msg => {msg.delete({timeout: "5000"})})
         }
         else {
           try {
+            let data = await memberModel.findOne({
+              userID: mutee.id,
+              serverID: message.guild.id
+            })
+
+
+            const muteDate = new Date()
+            muteDate.setMilliseconds(muteDate.getMilliseconds() + ms(muteTime))
+
+            if (data) {
+              await memberModel.findOneAndUpdate({userID: mutee.id, serverID: message.guild.id}, {$set: {muteTime: muteDate}})
+            }else if (!data) {
+              let newData = await memberModel.create({
+                userID: mutee.id,
+                serverID: message.guild.id,
+                muteTime: muteDate
+              });
+              newData.save()}
+
             const sembed = new MessageEmbed()
                 .setColor(greenlight)
                 .setFooter("Мьют будет снят: ")
                 .setTimestamp(Date.now() + ms(muteTime))
                 .setAuthor(message.guild.name, message.guild.iconURL())
+
             mutee.roles.add(muterole).then(() => message.channel.send(sembed.setDescription(`✅ <@${mutee.id}> получил(а) мьют.`)));
 
-
-            setTimeout(function(){
-              if(mutee.roles.cache.find(r => r.name === muterole.name)){
-                const sembed = new MessageEmbed()
-                    .setColor(greenlight)
-                    .setTimestamp()
-                    .setAuthor(message.guild.name, message.guild.iconURL())
-                mutee.roles.remove(muterole);
-                message.channel.send(sembed.setDescription(`✅ <@${mutee.id}> вы снова полноценный человек.😊`));
-              }
-            }, ms(muteTime));
           } catch (e) {
             console.log(e);
           }

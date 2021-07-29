@@ -42,7 +42,7 @@ module.exports = {
 
       embed.addField(`**VIP** - ${vip}`, `${STAR} ${data.stars}\n\n`)
       embed.addField(`__Рыбы__\n`,
-    `\`\`\`Хлам(🔧) - ${data.junk}\nОбычная(🐟) - ${data.common}\nНеобычна(🐠) - ${data.uncommon}\nРедкая(🦑) - ${data.rare}\nЛегенd.(🐋) - ${data.legendary}\`\`\`\n`, true)
+    `\`\`\`Хлам(🔧) - ${data.junk}\nОбычная(🐟) - ${data.common}\nНеобычна(🐠) - ${data.uncommon}\nРедкая(🦑) - ${data.rare}\nЛегенда(🐋) - ${data.legendary}\`\`\`\n`, true)
 
 
     if(data["vip1"] && checkVip.profileBio !== null) embed.addField('Обо мне:',checkVip.profileBio, true);

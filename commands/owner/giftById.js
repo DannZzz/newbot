@@ -15,9 +15,7 @@ module.exports = {
     usage: "[ID] [кол-во монет] "
   },
   run: async (bot, message, args) => {
-
-
-     let addEmbed = new MessageEmbed()
+   let addEmbed = new MessageEmbed()
      .setColor(redlight)
      .setTimestamp()
      .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
@@ -38,13 +36,18 @@ module.exports = {
     if(args[1] < 10) return message.channel.send(addEmbed.setDescription("❌ Укажите число больше **10**.")).then(msg => {msg.delete({timeout: "10000"})});
 
     await profileModel.findOneAndUpdate({userID: user.id},{$inc: {bank: Math.floor(args[1])}});
+    let button = new disbut.MessageButton()
+    .setStyle('red') //default: blurple
+    .setLabel('My First Button!') //default: NO_LABEL_PROVIDED
+    .setID('Приз') //note: if you use the style "url" you must provide url using .setURL('https://example.com')
 
     let sEmbed = new MessageEmbed()
     .setColor(greenlight)
     .setTimestamp()
     .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
 
-    user.send(sEmbed.setDescription(`**У вас подарок от разработчика!🎉**\n||**${Math.floor(args[1])}** ${COIN}||`))
+    let msg = user.send(sEmbed.setDescription(`**У вас подарок от разработчика!🎉**\n||**${Math.floor(args[1])}** ${COIN}||`), button)
+
 
 
   }

@@ -31,12 +31,12 @@ module.exports = {
 
     let embed = new MessageEmbed()
     .setTimestamp()
-    .setAuthor(`${message.guild.name}\nТоп 10 активных участников!`, message.guild.iconURL({dynamic: true}))
+    .setAuthor(`${message.guild.name}\nТоп 20 активных участников!`, message.guild.iconURL({dynamic: true}))
     .setColor(cyan)
 
     if (!server.rank) return message.channel.send(Embed.setDescription(`**❌ Система уровней для этого сервера отключена!**`)).then(msg => {msg.delete({timeout: "10000"})});
 
-    const led = await Levels.fetchLeaderboard(message.guild.id, 10)
+    const led = await Levels.fetchLeaderboard(message.guild.id, 20)
     if (led.length <1) return message.channel.send(Embed.setDescription(`**❌ Тут пока никого нет.**`)).then(msg => {msg.delete({timeout: "10000"})});
 
 
