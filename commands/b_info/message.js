@@ -34,7 +34,7 @@ module.exports = {
       channel.send(aembed.setDescription("✅ Спасибо за отзыв, мы рассмотрим ваше сообщение."))
       toChannel.send(aembed.setDescription(
         `
-        **Получено от: **\`${member.user.tag}\`\n**Из сервера: **\`${message.guild.name}\`\n\n**Сообщение:**\n\`${args.join(" ")}\`
+        **Получено от: **\`${member.user.tag}(${member.id})\`\n**Из сервера: **\`${message.guild.name}(${message.guild.id})\`\n\n**Сообщение:**\n\`${args.join(" ")}\`
         `
       ))
 
