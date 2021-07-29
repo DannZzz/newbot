@@ -106,7 +106,7 @@ module.exports = {
             **Категория:** \`${category}\`
             ** Применение: ** ${command.usage ? `\`${prefix}${command.name} ${command.usage}\`` : "\`Нет применения.\`"}
             ** Доступен для: ** \`${command.accessableby || "Для всех"}\`
-            ** Псевдонимы: ** \`${command.aliases ? command.aliases.join(", ")\` : "\`Нету.\`"})
+            ** Псевдонимы: ** \`${command.aliases ? command.aliases.join(", ") : "Нету."}\``)
             embed.setFooter(message.guild.name, message.guild.iconURL())
 
             return message.channel.send(embed)
