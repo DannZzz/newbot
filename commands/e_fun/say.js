@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { greenlight, cyan, redlight } = require("../../JSON/colours.json")
+const embed = require('../../embedConstructor');
 
 module.exports = {
     config: {
@@ -13,19 +14,9 @@ module.exports = {
     run: async (bot, message, args) => {
       try {
         if (args.length === 0){
-            const sayEmbed = new MessageEmbed()
-            .setColor(redlight)
-            .setTimestamp()
-            .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-            return message.channel.send(sayEmbed.setDescription("**Давайте немного текста!**")).then(msg => {msg.delete({timeout: "10000"})});
+            return embed(message).setError("**Давайте немного текста!**").send().then(msg => {msg.delete({timeout: "10000"})});
       }
-
-        const embed = new MessageEmbed()
-            .setFooter(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-            .setDescription(args.join(" "))
-            .setColor(cyan);
-
-        message.channel.send(embed)
+        embed(message).setPrimary(args.join(" ")).send()
       } catch (e) {
           throw e;
       };

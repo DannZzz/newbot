@@ -1,6 +1,7 @@
 const {MessageEmbed} = require("discord.js")
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const {PREFIX} = require("../../config");
+const embed = require('../../embedConstructor');
 
 module.exports = {
     config: {
@@ -12,26 +13,18 @@ module.exports = {
       aliases: ["clear", "purge", "cl", "оч"]
     },
     run: async (bot, message, args) => {
-      let clearEmbed = new MessageEmbed()
-      .setTimestamp()
-      .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-      .setColor(redlight)
-      let sembed = new MessageEmbed()
-      .setTimestamp()
-      .setAuthor(message.guild.name, message.guild.iconURL())
-      .setColor(greenlight)
-        if (!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send(clearEmbed.setDescription("❌ У вас недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
-        if (!message.guild.me.hasPermission("MANAGE_MESSAGES")) return message.channel.send(clearEmbed.setDescription("❌ У меня недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
+        if (!message.member.hasPermission("MANAGE_MESSAGES")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+        if (!message.guild.me.hasPermission("MANAGE_MESSAGES")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
         if (isNaN(args[0]))
-            return message.channel.send(clearEmbed.setDescription("❌ Укажите допустимый формат числ.")).then(msg => {msg.delete({timeout: "10000"})});
+            return embed(message).setError("Укажите допустимый формат числ.").send().then(msg => {msg.delete({timeout: "10000"})});
 
         if (args[0] >= 100)
-            return message.channel.send(clearEmbed.setDescription("❌ Укажите число меньше 100.")).then(msg => {msg.delete({timeout: "10000"})});
+            return embed(message).setError("Укажите число меньше 100.").send().then(msg => {msg.delete({timeout: "10000"})});
 
         if (args[0] < 1)
-            return message.channel.send(clearEmbed.setDescription("❌ Укажите число больше 1.")).then(msg => {msg.delete({timeout: "10000"})});
+            return embed(message).setError("Укажите число больше 1.").send().then(msg => {msg.delete({timeout: "10000"})});
 
         message.channel.bulkDelete(+args[0]+1)
-            .then(messages => message.channel.send(sembed.setDescription(`**Успешно удалено \`${messages.size-1}/${args[0]}\` сообщений**`)).then(msg => msg.delete({ timeout: "10000" }))).catch(() => null)
+            .then(messages => embed(message).setSuccess(`**Успешно удалено \`${messages.size-1}/${args[0]}\` сообщений**`).send().then(msg => msg.delete({ timeout: "10000" }))).catch(() => null)
     }
 }

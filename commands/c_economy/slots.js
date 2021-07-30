@@ -1,8 +1,9 @@
-const slotItems = ["🍇", "🍉", "🍌", "🍎", "🍒"];
-
+//const slotItems = ["🍇", "🍉", "🍌", "🍎", "🍒"];
+const slotItems = ["<a:163:849994358828171296>", "<a:164:849994326025043988>", "<a:170:849994324577878037>", "<a:166:849994325831712798>", "<a:168:849994325441773588>"];
+const embed = require('../../embedConstructor');
 const { MessageEmbed } = require('discord.js');
 const {greenlight, redlight} = require('../../JSON/colours.json');
-const { COIN, BANK } = require('../../config');
+const { COIN, BANK, AGREE, DISAGREE } = require('../../config');
 const profileModel = require("../../models/profileSchema");
 const begModel = require("../../models/begSchema");
 
@@ -25,13 +26,6 @@ module.exports = {
     let money = parseInt(args[0]);
     let win = false;
 
-    let moneymore = new MessageEmbed()
-    .setColor(redlight)
-    .setDescription(`❌ У вас недостаточно денег.`);
-
-    let moneyhelp = new MessageEmbed()
-    .setColor(redlight)
-    .setDescription(`❌ Укажите ставку.`);
 
     let aembed = new MessageEmbed()
     .setColor(redlight)
@@ -47,12 +41,12 @@ module.exports = {
     if (author !== null && timeout - (Date.now() - author) > 0) {
 
       let time = new Date(timeout - (Date.now() - author));
-      return message.channel.send(aembed.setDescription(`❌ Попробуй снова через **${time.getMinutes()} минут ${time.getSeconds()} секунд**.`)).then(msg => {msg.delete({timeout: "10000"})});
+      return embed(message).setError(`Попробуй снова через **${time.getMinutes()} минут ${time.getSeconds()} секунд**.`).send().then(msg => {msg.delete({timeout: "10000"})});
     } else {
-      if (money < 100) return message.channel.send(aembed.setDescription(`❌ Минимальная ставка **100**.`)).then(msg => {msg.delete({timeout: "10000"})});
-      if (!money) return message.channel.send(moneyhelp);
-      if (money > 100000) return message.channel.send(aembed.setDescription(`❌ Максимальная ставка **100000**.`)).then(msg => {msg.delete({timeout: "10000"})});
-      if (money > moneydb) return message.channel.send(moneymore);
+      if (money < 100) return embed(message).setError(`Минимальная ставка **100**.`).send().then(msg => {msg.delete({timeout: "10000"})});
+      if (!money) return embed(message).setError('Укажите ставку.').send();
+      if (money > 100000) return embed(message).setError(`Максимальная ставка **100000**.`).send().then(msg => {msg.delete({timeout: "10000"})});
+      if (money > moneydb) return embed(message).setError(`Укажите ставку.`).send();
       let reward = 0 ;
       let number = []
 
@@ -67,20 +61,12 @@ module.exports = {
           win = true;
       }
       if (win) {
-          let slotsEmbed1 = new MessageEmbed()
-              .setDescription(`${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n✅ Ты выиграл ${money}${COIN}`)
-              .setColor(greenlight)
-              .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-          message.channel.send(slotsEmbed1)
+
+          embed(message).setPrimary(`${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n${AGREE} Ты выиграл ${money}${COIN}`).send()
+
           await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor(money)}});
-
-
       } else {
-          let slotsEmbed = new MessageEmbed()
-              .setDescription(`${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n❌ Ты проиграл ${money}${COIN}`)
-              .setColor(redlight)
-              .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-          message.channel.send(slotsEmbed)
+          embed(message).setPrimary(`${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n${DISAGREE} Ты проиграл ${money}${COIN}`).send()
 
 
 

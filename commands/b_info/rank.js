@@ -7,6 +7,7 @@ const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK, STAR, MONGO } = require('../../config');
 const vipModel = require("../../models/vipSchema");
 const serverModel = require("../../models/serverSchema");
+const embed = require('../../embedConstructor');
 
 const Levels = require("discord-xp");
 Levels.setURL(MONGO);
@@ -24,18 +25,13 @@ module.exports = {
   run: async (bot, message, args) => {
     let server = await serverModel.findOne({serverID: message.guild.id})
 
-    let Embed = new MessageEmbed()
-    .setTimestamp()
-    .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-    .setColor(redlight)
-
-    if (!server.rank) return message.channel.send(Embed.setDescription(`**Система уровней для этого сервера отключена!**`)).then(msg => {msg.delete({timeout: "10000"})});
+    if (!server.rank) return embed(message).setError(`**Система уровней для этого сервера отключена!**`).send().then(msg => {msg.delete({timeout: "10000"})});
 
     let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.member;
     let vip = await vipModel.findOne({userID: user.id})
-    if (user.user.bot) return message.channel.send(Embed.setDescription(`**Боты не имеют профиль!**`)).then(msg => {msg.delete({timeout: "10000"})});
+    if (user.user.bot) return embed(message).setError(`**Боты не имеют профиль!**`).send().then(msg => {msg.delete({timeout: "10000"})});
     let person = await Levels.fetch(user.id, message.guild.id, true)
-    if (!person) return message.channel.send(Embed.setDescription(`**Участник пока не имеет ранг!**`)).then(msg => {msg.delete({timeout: "10000"})});
+    if (!person) return embed(message).setError(`**Участник пока не имеет ранг!**`).send().then(msg => {msg.delete({timeout: "10000"})});
     let customColor = false;
     if (vip.rankColor !== null){
        let a = vip.rankColor.split("")

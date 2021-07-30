@@ -1,4 +1,4 @@
-
+const embed = require('../../embedConstructor');
 const {MessageEmbed} = require("discord.js")
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const {PREFIX} = require("../../config");
@@ -14,36 +14,26 @@ module.exports = {
         aliases: ["autorole", "ar", "ар"]
     },
     run: async (bot, message, args) => {
-      let logEmbed = new MessageEmbed()
-      .setTimestamp()
-      .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-      .setColor(redlight)
-      .setFooter("Убедитесь что моя роль выше!")
-      let sembed = new MessageEmbed()
-      .setTimestamp()
-      .setAuthor(message.guild.name, message.guild.iconURL())
-      .setColor(greenlight)
-      .setFooter("Убедитесь что моя роль выше!")
 
-      if (!message.member.hasPermission("ADMINISTRATOR")) return message.channel.send(logEmbed.setDescription("❌ У вас недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
-      if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send(logEmbed.setDescription("❌ У меня недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
+      if (!message.member.hasPermission("ADMINISTRATOR")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if (!message.guild.me.hasPermission("MANAGE_ROLES")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
       let sd = await serverModel.findOne({ serverID: message.guild.id });
         try {
           if(!args[0] && sd.autoRoleOn) {
             var role = member.guild.roles.cache.find(role => role.id == sd.autoRole);
             if (role) {
-              return message.channel.send(sembed.setDescription(`Авто-роль сервера: **${role.name}**`))
+              return embed(message).setPrimary(`Авто-роль сервера: **${role.name}**\nУбедитесь что моя роль выше!`).send()
             }
           } else if (!args[0]) {
-            return message.channel.send(logEmbed.setDescription(`Укажите роль!`))
+            return embed(message).setError(`Укажите роль!`).send()
           } else {
             let role = message.mentions.roles.first() || bot.guilds.cache.get(message.guild.id).roles.cache.get(args[0]) || message.guild.roles.cache.find(c => c.name.toLowerCase() === args.join(' ').toLocaleLowerCase());
             await serverModel.findOneAndUpdate({serverID: message.guild.id}, {$set: {autoRole: role.id, autoRoleOn: true}})
-            message.channel.send(sembed.setDescription(`Установлена авто-роль сервера: **${role.name}**`))
+            embed(message).setSuccess(`Установлена авто-роль сервера: **${role.name}**\nУбедитесь что моя роль выше!`).send()
           }
 
         } catch {
-            return message.channel.send(logEmbed.setDescription("❌ Недостаточно прав, либо роль не существует.")).then(msg => {msg.delete({timeout: "10000"})});
+            return embed(message).setError("Недостаточно прав, либо роль не существует.").send().then(msg => {msg.delete({timeout: "10000"})});
         }
     }
 };

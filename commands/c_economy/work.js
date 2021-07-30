@@ -1,4 +1,4 @@
-
+const embed = require('../../embedConstructor');
 const { MessageEmbed } = require('discord.js')
 const ms = require("ms");
 const Jwork = require('../../JSON/works.json');
@@ -28,37 +28,13 @@ module.exports = {
         if (bag["vip2"] === true) { timeout = 90 * 1000; } else {
           timeout = 180 * 1000;
         }
-
-        var options = {
-          era: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          weekday: 'long',
-          timezone: 'UTC',
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric'
-        };
-
-
         if (author !== null && timeout - (Date.now() - author) > 0) {
             let time = new Date(timeout - (Date.now() - author));
 
-            let timeEmbed = new MessageEmbed()
-                .setColor(redlight)
-                .setTimestamp()
-                .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-                .setDescription(`❌ Вы уже работали недавно\n\nПопробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**.`);
-            message.channel.send(timeEmbed).then(msg => {msg.delete({timeout: "10000"})});
+            embed(message).setError(`Вы уже работали недавно\n\nПопробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**.`).send().then(msg => {msg.delete({timeout: "10000"})});
         } else {
             let amount = Math.floor(Math.random() * 800) + 1;
-            let embed1 = new MessageEmbed()
-                .setColor(cyan)
-                .setTimestamp()
-                .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-                .setDescription(`✅ **${JworkR} ${amount}**${COIN}`)
-            message.channel.send(embed1)
+            embed(message).setSuccess(`**${JworkR} ${amount}**${COIN}`).send()
 
             await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount}})
             await profileModel.findOneAndUpdate({userID: user.id}, {$set: {work: Date.now()}})

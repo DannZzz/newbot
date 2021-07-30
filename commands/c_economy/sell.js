@@ -6,6 +6,8 @@ const fishes = require('../../JSON/fishes.json');
 const { MessageEmbed } = require('discord.js');
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
+const embed = require('../../embedConstructor');
+
 
 module.exports = {
   config: {
@@ -59,11 +61,11 @@ module.exports = {
         cost = 450
         rarity = fishes['legendary']
       } else {
-        return message.channel.send(Embed.setDescription(`❌ Айди рыб не найдено: **${sd.prefix}рыба лист**`))
+        return embed(message).setError(`Айди рыб не найдено: **${sd.prefix}рыба лист**`).send()
       }
       let exCost = cost + (cost / 2)
       if(bag['vip1']) exCost = cost + (cost / 2) + (cost / 3)
-      if(fish_sell === 0) return message.channel.send(Embed.setDescription(`❌ Интересно, как продать "ничего".`))
+      if(fish_sell === 0) return embed(message).setError(`Интересно, как продать "ничего".`).send()
       if(fish_sell < 10) money = cost * fish_sell;
       else if (fish_sell < 100) money = exCost * fish_sell;
       else if (fish_sell > 100) money = exCost * fish_sell * (exCost / 2);
@@ -77,7 +79,7 @@ module.exports = {
       else if (fish_sell === bag.rare) await begModel.findOneAndUpdate({userID: message.author.id},{$set: {rare: 0}})
       else if (fish_sell === bag.legendary) await begModel.findOneAndUpdate({userID: message.author.id},{$set: {legendary: 0}})
 
-      message.channel.send(sembed.setDescription(`✅ Вы продали **${fish_sell}**${rarity.symbol} всего за **${Math.floor(money)} ${COIN}**`))
+      embed(message).setSuccess(`Вы продали **${fish_sell}**${rarity.symbol} всего за **${Math.floor(money)} ${COIN}**`).send()
 
   }
 }

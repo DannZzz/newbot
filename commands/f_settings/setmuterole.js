@@ -1,7 +1,7 @@
-
+const embed = require('../../embedConstructor');
 const {MessageEmbed} = require("discord.js")
 const {greenlight, redlight} = require('../../JSON/colours.json');
-const {PREFIX} = require("../../config");
+const {PREFIX, AGREE} = require("../../config");
 const serverModel = require("../../models/serverSchema");
 
 
@@ -19,8 +19,8 @@ module.exports = {
     .setTimestamp()
     .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
     .setColor(redlight)
-    if (!message.member.hasPermission("MANAGE_ROLES")) return message.channel.send(mtEmbed.setDescription("❌ У вас недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
-    if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send(mtEmbed.setDescription("❌ У меня недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
+    if (!message.member.hasPermission("MANAGE_ROLES")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (!message.guild.me.hasPermission("MANAGE_ROLES")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
     let sd = await serverModel.findOne({ serverID: message.guild.id });
     if (!args[0]) {
       let b = sd.muteRole;
@@ -30,9 +30,9 @@ module.exports = {
         .setTimestamp()
         .setColor(greenlight)
         .setAuthor(message.guild.name, message.guild.iconURL())
-        return message.channel.send(mtsEmbed.setDescription(`✅ Мьют роль для этого сервера: \`${roleName.name}\`!`))
+        return message.channel.send(mtsEmbed.setDescription(`${AGREE} Мьют роль для этого сервера: \`${roleName.name}\`!`))
       } else {
-        return message.channel.send(mtEmbed.setDescription("❌ Пожалуйста, укажите название роли или ID роли.")).then(msg => {msg.delete({timeout: "10000"})});
+        return embed(message).setError("Пожалуйста, укажите название роли или ID роли.").send().then(msg => {msg.delete({timeout: "10000"})});
       }
     };
 
@@ -44,15 +44,15 @@ module.exports = {
       );
 
     if (!role)
-      return message.channel.send(mtEmbed.setDescription(`❌ Пожалуйста, укажите доступную роль!`)).then(msg => {msg.delete({timeout: "10000"})});
+      return embed(message).setError(`Пожалуйста, укажите доступную роль!`).send().then(msg => {msg.delete({timeout: "10000"})});
 
       try {
         let perms = role.permissions.serialize()
-        if(perms.ADMINISTRATOR === true || perms.MANAGE_ROLES === true) return message.channel.send(mtEmbed.setDescription(`❌ Эта роль не может быть установлен для мьюта.`)).then(msg => {msg.delete({timeout: "10000"})});
+        if(perms.ADMINISTRATOR === true || perms.MANAGE_ROLES === true) return embed(message).setError(`Эта роль не может быть установлен для мьюта.`).send().then(msg => {msg.delete({timeout: "10000"})});
         let a = sd.muteRole;
 
         if (role.id === a) {
-          return message.channel.send(mtEmbed.setDescription(`❌ Эта роль уже установлена.`)).then(msg => {msg.delete({timeout: "10000"})});
+          return embed(message).setError(`Эта роль уже установлена.`).send().then(msg => {msg.delete({timeout: "10000"})});
         } else {
           let mtsEmbed = new MessageEmbed()
           .setTimestamp()
@@ -62,14 +62,14 @@ module.exports = {
 
 
           message.channel.send(mtsEmbed.setDescription(
-            `✅ **\`${role.name}\` успешно установлена новая роль мьюта!**`
+            `${AGREE} **\`${role.name}\` успешно установлена новая роль мьюта!**`
           ));
         }
       } catch (e) {
-        return message.channel.send(mtEmbed.setDescription(
+        return embed(message).setError(
           "Ошибка: `Отсутствующие разрешения  или роль не существует.`",
           `\n${e.message}`
-        ));
+        ).send();
       }
   }
 }

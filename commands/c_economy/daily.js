@@ -4,6 +4,8 @@ const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK, STAR } = require('../../config');
 const profileModel = require("../../models/profileSchema");
 const begModel = require("../../models/begSchema");
+const embed = require('../../embedConstructor');
+
 
 module.exports = {
     config: {
@@ -32,17 +34,9 @@ module.exports = {
         if (daily !== null && timeout - (Date.now() - daily) > 0) {
             let time = new Date(timeout - (Date.now() - daily));
 
-            let timeEmbed = new MessageEmbed()
-                .setColor(redlight)
-                .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-                .setDescription(`❌ Ты уже собрал свой ежедневный приз.\n\nПопробуй еще раз через **${time.getUTCHours()} часа(ов) ${time.getMinutes()} минут.**`);
-            message.channel.send(timeEmbed).then(msg => {msg.delete({timeout: "10000"})});
+            embed(message).setError(`Ты уже собрал свой ежедневный приз.\n\nПопробуй еще раз через **${time.getUTCHours()} часа(ов) ${time.getMinutes()} минут.**`).send().then(msg => {msg.delete({timeout: "10000"})});
         } else {
-            let moneyEmbed = new MessageEmbed()
-                .setColor(cyan)
-                .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-                .setDescription(`✅ Ваш ежедневный приз ${amount}${COIN} и 3 ${STAR}`);
-            message.channel.send(moneyEmbed)
+            embed(message).setSuccess(`Ваш ежедневный приз ${amount}${COIN} и 3 ${STAR}`).send()
 
             await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount}})
             await begModel.findOneAndUpdate({userID: user.id},{$inc: {stars: 3}})

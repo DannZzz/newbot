@@ -3,7 +3,7 @@ const { readdirSync } = require("fs");
 const serverModel = require("../../models/serverSchema")
 const { stripIndents } = require("common-tags");
 const { cyan } = require("../../JSON/colours.json");
-const { PREFIX } = require('../../config');
+const { PREFIX, DISAGREE } = require('../../config');
 
 module.exports = {
     config: {
@@ -74,7 +74,7 @@ module.exports = {
             return message.channel.send(embed)
         } else {
             let command = bot.commands.get(bot.aliases.get(args[0].toLowerCase()) || args[0].toLowerCase())
-            if (!command) return message.channel.send(embed.setTitle("❌ **Не правильная команда!**").setDescription(`**Пишите \`${prefix}хелп\` чтобы посмотреть все доступные команды бота!**`))
+            if (!command) return message.channel.send(embed.setTitle(`${DISAGREE} **Не правильная команда!**`).setDescription(`**Пишите \`${prefix}хелп\` чтобы посмотреть все доступные команды бота!**`))
             command = command.config
             let category = command.category;
             if(category === "b_info") {category = "Информация"}

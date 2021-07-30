@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js');
-const { giphy_API } = require('../../config.js');
+const { giphy_API, DISAGREE } = require('../../config.js');
 const giphy = require('giphy-api')(giphy_API);
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 
@@ -20,7 +20,7 @@ module.exports = {
             const embed = new MessageEmbed()
                 .setColor(redlight)
                 .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-                .setDescription("**Укажите тему!**")
+                .setDescription(`${DISAGREE} **Укажите тему!**`)
             return message.channel.send(embed).then(msg => {msg.delete({timeout: "10000"})});
         }
       try {
@@ -41,7 +41,7 @@ module.exports = {
             message.channel.send({ embed });
         });
       } catch {
-          return message.channel.send(noEmbed.setDescription("**Не найдено!**")).then(msg => {msg.delete({timeout: "10000"})});
+          return message.channel.send(noEmbed.setDescription(`${DISAGREE} **Не найдено!**`)).then(msg => {msg.delete({timeout: "10000"})});
       }
     }
 };

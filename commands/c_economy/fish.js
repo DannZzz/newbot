@@ -6,6 +6,7 @@ const { MessageEmbed } = require('discord.js');
 const profileModel = require("../../models/profileSchema");
 const begModel = require("../../models/begSchema");
 const vipModel = require("../../models/vipSchema");
+const embed = require('../../embedConstructor');
 
 
 function randomRange(min, max) {
@@ -50,19 +51,10 @@ module.exports = {
             if (fishtime !== null && timeout - (Date.now() - fishtime) > 0) {
                 let time = await new Date(timeout - (Date.now() - fishtime));
 
-                let timeEmbed = new MessageEmbed()
-                    .setColor(redlight)
-                    .setTimestamp()
-                    .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-                    .setDescription(`❌ Вы недавно рыбачили.\n\nПопробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**`);
-                return message.channel.send(timeEmbed).then(msg => {msg.delete({timeout: "10000"})});
+                return embed(message).setError(`Вы недавно рыбачили.\n\nПопробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**`).send().then(msg => {msg.delete({timeout: "10000"})});
             }
 
-            let embed = new MessageEmbed()
-                .setColor(greenlight)
-                .setTimestamp()
-                .setDescription(`**🎣 Вы забросили свою удочку и поймали ${fishh.symbol}**!`)
-            message.channel.send(embed);
+            embed(message).setPrimary(`**🎣 Вы забросили свою удочку и поймали ${fishh.symbol}**!`).send();
             if (rarity === "junk") await begModel.findOneAndUpdate({userID: user.id},{$inc: {junk: 1}})
             else if (rarity === "common") await begModel.findOneAndUpdate({userID: user.id},{$inc: {common: 1}})
             else if (rarity === "uncommon") await begModel.findOneAndUpdate({userID: user.id},{$inc: {uncommon: 1}})

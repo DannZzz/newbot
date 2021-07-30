@@ -1,5 +1,6 @@
 const {MessageEmbed} = require('discord.js');
-
+const embed = require('../../embedConstructor');
+const {AGREE} = require('../../config');
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const serverModel = require("../../models/serverSchema");
 
@@ -15,26 +16,23 @@ module.exports = {
     },
     run: async (bot, message, args) => {
           try {
-              let kickEmbed = new MessageEmbed()
-              .setTimestamp()
-              .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-              .setColor(redlight)
-              if (!message.member.hasPermission("KICK_MEMBERS")) return message.channel.send(kickEmbed.setDescription("❌ У вас недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
-              if (!message.guild.me.hasPermission("KICK_MEMBERS")) return message.channel.send(kickEmbed.setDescription("❌ У меня недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
 
-              if (!args[0]) return message.channel.send(kickEmbed.setDescription("❌ Укажите участника, чтобы выгнать.")).then(msg => {msg.delete({timeout: "10000"})});
+              if (!message.member.hasPermission("KICK_MEMBERS")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+              if (!message.guild.me.hasPermission("KICK_MEMBERS")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+
+              if (!args[0]) return embed(message).setError("Укажите участника, чтобы выгнать.").send().then(msg => {msg.delete({timeout: "10000"})});
 
               var kickMember = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase());
-              if (!kickMember) return message.channel.send(kickEmbed.setDescription("❌ Пользователь не в сервере.")).then(msg => {msg.delete({timeout: "10000"})});
+              if (!kickMember) return embed(message).setError("Пользователь не в сервере.").send().then(msg => {msg.delete({timeout: "10000"})});
               let sd = await serverModel.findOne({ serverID: message.guild.id });
-              if (kickMember.id === message.member.id) return message.channel.send("❌ Вы хотите выгнать себя? да ну, это не реально.")
+              if (kickMember.id === message.member.id) return embed(message).setError("Вы хотите выгнать себя? да ну, это не реально.").send();
 
-              if (!kickMember.kickable) return message.channel.send(kickEmbed.setDescription("❌ Невозможно выгнать этого участника.")).then(msg => {msg.delete({timeout: "10000"})})
-              if (kickMember.user.bot) return message.channel.send(kickEmbed.setDescription("❌ Невозможно выгнать этого бота.")).then(msg => {msg.delete({timeout: "10000"})})
+              if (!kickMember.kickable) return embed(message).setError("Невозможно выгнать этого участника.").send().then(msg => {msg.delete({timeout: "10000"})})
+              if (kickMember.user.bot) return embed(message).setError("Невозможно выгнать этого бота.").send().then(msg => {msg.delete({timeout: "10000"})})
               let authorHighestRole = message.member.roles.highest.position;
               let mentionHighestRole = kickMember.roles.highest.position;
               if(mentionHighestRole >= authorHighestRole) {
-                message.channel.send(kickEmbed.setDescription('❌ Вы не сможете выгнать участника с ролью выше вас, либо себя.')).then(msg => {msg.delete({timeout: "10000"})});
+                embed(message).setError('Вы не сможете выгнать участника с ролью выше вас, либо себя.').send().then(msg => {msg.delete({timeout: "10000"})});
                 return;}
 
               var reason = args.slice(1).join(" ");
@@ -44,7 +42,7 @@ module.exports = {
                   .setColor(greenlight)
                   .setTimestamp()
                   .setAuthor(message.guild.name, message.guild.iconURL())
-                  .setDescription(`✅ **${kickMember.user.username}** был выгнан по причине: \`\`${reason}\`\``)
+                  .setDescription(`${AGREE} **${kickMember.user.username}** был выгнан по причине: \`\`${reason}\`\``)
               message.channel.send(sembed);
               } else {
                   kickMember.kick()
@@ -52,13 +50,13 @@ module.exports = {
                   .setColor(greenlight)
                   .setTimestamp()
                   .setAuthor(message.guild.name, message.guild.iconURL())
-                  .setDescription(`✅ **${kickMember.user.username}** был выгнан.`)
+                  .setDescription(`${AGREE} **${kickMember.user.username}** был выгнан.`)
               message.channel.send(sembed2);
               }
               let channel = sd.modLog;
               if (!channel) return;
 
-              const embed = new MessageEmbed()
+              const bembed = new MessageEmbed()
                   .setAuthor(`${message.guild.name} Изменение`, message.guild.iconURL())
                   .setColor(redlight)
                   .setThumbnail(kickMember.user.displayAvatarURL({ dynamic: true }))
@@ -72,7 +70,7 @@ module.exports = {
 
               var sChannel = message.guild.channels.cache.get(channel)
               if (!sChannel) return;
-              sChannel.send(embed)
+              sChannel.send(bembed)
 
             } catch (e) {
               console.log(e);

@@ -1,6 +1,7 @@
 const {MessageEmbed} = require("discord.js");
 const {cyan, redlight} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
+const embed = require('../../embedConstructor');
 
 const profileModel = require("../../models/profileSchema");
 
@@ -35,7 +36,7 @@ module.exports = {
         );
       message.channel.send(moneyEmbed);
     } else {
-      return message.channel.send(noEmbed.setDescription("Укажите участника."));
+      return embed(message).setError("Укажите участника.").send();
     }
   }
 }

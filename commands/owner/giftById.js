@@ -3,7 +3,7 @@ const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN } = require('../../config');
 let ownerID = '382906068319076372';
-
+const embed = require('../../embedConstructor');
 
 module.exports = {
   config: {
@@ -15,33 +15,23 @@ module.exports = {
     usage: "[ID] [кол-во монет] "
   },
   run: async (bot, message, args) => {
-   let addEmbed = new MessageEmbed()
-     .setColor(redlight)
-     .setTimestamp()
-     .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-
-     if(message.member.user.id !== ownerID) return message.channel.send(addEmbed.setDescription("❌ К сожалению вы не разработчик.")).then(msg => {msg.delete({timeout: "10000"})});
-    if (!args[0]) return message.channel.send(addEmbed.setDescription("❌ Укажите участника.")).then(msg => {msg.delete({timeout: "10000"})});
+     if(message.member.user.id !== ownerID) return embed(message).setError("К сожалению вы не разработчик.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (!args[0]) return embed(message).setError("Укажите участника.").send().then(msg => {msg.delete({timeout: "10000"})});
 
     let user = bot.users.cache.get(args[0]);
     try {
       let profileData = await profileModel.findOne({ userID: user.id });
     } catch {
-      return message.channel.send(addEmbed.setDescription("❌ Данные не найдены.")).then(msg => {msg.delete({timeout: "10000"})});
+      return embed(message).setError("Данные не найдены.").send().then(msg => {msg.delete({timeout: "10000"})});
     }
 
-    if(!args[1]) return message.channel.send(addEmbed.setDescription("❌ Укажите кол-во монет, чтобы добавить.")).then(msg => {msg.delete({timeout: "10000"})});
-    if(isNaN(args[1])) return message.channel.send(addEmbed.setDescription("❌ Укажите кол-во монет в виде, чтобы добавить.")).then(msg => {msg.delete({timeout: "10000"})});
-    if(args[1] > 1000000000) return message.channel.send(addEmbed.setDescription("❌ Укажите число меньше **1.000.000.000**.")).then(msg => {msg.delete({timeout: "10000"})});
-    if(args[1] < 10) return message.channel.send(addEmbed.setDescription("❌ Укажите число больше **10**.")).then(msg => {msg.delete({timeout: "10000"})});
+    if(!args[1]) return embed(message).setError("Укажите кол-во монет, чтобы добавить.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if(isNaN(args[1])) return embed(message).setError("Укажите кол-во монет в виде, чтобы добавить.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if(args[1] > 1000000000) return embed(message).setError("Укажите число меньше **1.000.000.000**.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if(args[1] < 10) return embed(message).setError("Укажите число больше **10**.").send().then(msg => {msg.delete({timeout: "10000"})});
 
-    let sEmbed = new MessageEmbed()
-    .setColor(greenlight)
-    .setTimestamp()
-    .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-    
     await profileModel.findOneAndUpdate({userID: user.id}, {$set: {bank: Math.floor(args[1])}})
-    let msg = user.send(sEmbed.setDescription(`**У вас подарок от разработчика!🎉**\n\n||---**${Math.floor(args[1])}** ${COIN}---||`))
+    let msg = user.send(embed(message).setPrimary(`**У вас подарок от разработчика!🎉**\n\n||---**${Math.floor(args[1])}** ${COIN}---||`))
 
 
 

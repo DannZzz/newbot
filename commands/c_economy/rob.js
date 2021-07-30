@@ -4,6 +4,7 @@ const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const ms = require('ms');
 const profileModel = require("../../models/profileSchema");
+const embed = require('../../embedConstructor');
 
 
 module.exports = {
@@ -17,18 +18,18 @@ module.exports = {
   },
   run: async (bot, message, args) => {
     try {
-      let robEmbed = new MessageEmbed()
-      .setColor(redlight)
-      .setTimestamp()
-      .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-
-     if (!args[0]) return message.channel.send(robEmbed.setDescription("❌ Укажите участника.")).then(msg => {msg.delete({timeout: "10000"})});
+     if (!args[0]) return embed(message).setError("Укажите участника.").send().then(msg => {msg.delete({timeout: "10000"})});
      user2 = message.member;
      let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args[0].toLocaleLowerCase());
      let bag = await begModel.findOne({userID: user.id});
      let bag2 = await begModel.findOne({userID: user2.id});
-     if(bag["vip1"]) return message.channel.send(robEmbed.setDescription("❌ Невозможно воровать у **VIP** участников.")).then(msg => {msg.delete({timeout: "10000"})});
-     if (user.user.id === user2.id) return message.channel.send(robEmbed.setDescription("❌ Вы не сможете воровать у себя.")).then(msg => {msg.delete({timeout: "10000"})});
+     try {
+     if(bag["vip1"]) return embed(message).setError("Невозможно воровать у **VIP** участников.").send().then(msg => {msg.delete({timeout: "10000"})});
+   } catch (e) {
+     console.log(e);
+   }
+
+     if (user.user.id === user2.id) return embed(message).setError("Вы не сможете воровать у себя.").send().then(msg => {msg.delete({timeout: "10000"})});
 
 
 
@@ -46,22 +47,14 @@ module.exports = {
      if (author !== null && timeout - (Date.now() - author) > 0) {
        let time = new Date(timeout - (Date.now() - author));
 
-       return message.channel.send(robEmbed.setDescription(`❌ Вы уже недавно воровали деньги у этого участника.\n\nПопробуй снова через **${time.getUTCHours()} часа(ов) ${time.getMinutes()} минут**.`)).then(msg => {msg.delete({timeout: "10000"})});
+       return embed(message).setError(`Вы уже недавно воровали.\n\nПопробуй снова через **${time.getUTCHours()} часа(ов) ${time.getMinutes()} минут**.`).send().then(msg => {msg.delete({timeout: "10000"})});
      } else {
 
        let random = Math.floor(target / 100 * (Math.floor(Math.random() * (36 - 10)) + 10));
 
-       if (target < random) {return message.channel.send(robEmbed.setDescription(`❌ К сожалению вы ничего не смогли воровать.`)).then(msg => {msg.delete({timeout: "10000"})});
+       if (target < random) {return embed(message).setError(`К сожалению вы ничего не смогли воровать.`).send().then(msg => {msg.delete({timeout: "10000"})});
      } else {
-
-
-       let sembed = new MessageEmbed()
-       .setColor(greenlight)
-       .setTimestamp()
-       .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-       .setDescription(`✅ Вам удалось воровать у <@${user.id}> - кол-во денег: ${COIN}**${random}**`)
-
-       message.channel.send(sembed)
+       embed(message).setSuccess(`Вам удалось воровать у <@${user.id}> - кол-во денег: ${COIN}**${random}**`).send()
 
        await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: -random}});
        await profileModel.findOneAndUpdate({userID: user2.id},{$inc: {coins: random}});
