@@ -17,3 +17,7 @@ exports.AME_API = '3229a6d1c6886228c8946c39e5a89f79e62ca7251c10a31fede7679ab8da3
 exports.giphy_API = 'afWlnBmAo2txNzxVgN4m4P34yNZN9PFt';
 
 exports.MONGO = 'mongodb+srv://DannDev:vard04mak@cluster0.fcdo0.mongodb.net/test';
+
+exports.AGREE = '<:check:870675077706940417>';
+
+exports.DISAGREE = '<:cross:870675077790851113>';
