@@ -59,12 +59,11 @@ module.exports = {
                   .setAuthor(`${message.guild.name} Изменение`, message.guild.iconURL())
                   .setColor(redlight)
                   .setThumbnail(banMember.user.displayAvatarURL({ dynamic: true }))
-                  .setFooter(message.guild.name, message.guild.iconURL())
+                  .setFooter("Дата")
                   .addField("**Модерация**", "Бан учатника")
-                  .addField("**Участник**", banMember.user.username)
-                  .addField("**Модератор**", message.author.username)
+                  .addField("**Участник**", banMember.user.tag)
+                  .addField("**Модератор**", message.author.tag)
                   .addField("**Причина**", `${reason || "**Нет причины**"}`)
-                  .addField("**Дата**", message.createdAt.toLocaleString())
                   .setTimestamp();
 
               var sChannel = message.guild.channels.cache.get(channel)

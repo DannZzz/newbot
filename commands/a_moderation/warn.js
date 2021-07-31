@@ -43,6 +43,7 @@ module.exports = {
       data.warns.unshift({
         Moderator: message.author.id,
         Reason: reason,
+        Date: message.createdAt.toLocaleString('ru-ru', {timeZone: 'Europe/Moscow'})
       });
       data.save()
 
@@ -54,6 +55,7 @@ module.exports = {
         warns: [{
           Moderator: message.author.id,
           Reason: reason,
+          Date: message.createdAt.toLocaleString('ru-ru', {timeZone: 'Europe/Moscow'})
         }, ],
       });
       newData.save()
@@ -70,11 +72,10 @@ module.exports = {
           .setThumbnail(toWarn.user.displayAvatarURL({ dynamic: true }))
           .setAuthor(`${message.guild.name} Изменение`, message.guild.iconURL())
           .addField("**Модерация**", "Предупреждение")
-          .addField("**Участник**", toWarn.user.username)
-          .addField("**Модератор**", message.author.username)
+          .addField("**Участник**", toWarn.user.tag)
+          .addField("**Модератор**", message.author.tag)
           .addField("**Причина**", `${reason || "**Нет причины**"}`)
-          .addField("**Дата**", message.createdAt.toLocaleString())
-          .setFooter(message.member.displayName, message.author.displayAvatarURL())
+          .setFooter("Дата")
           .setTimestamp()
 
       var sChannel = message.guild.channels.cache.get(channel)

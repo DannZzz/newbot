@@ -60,12 +60,11 @@ module.exports = {
                   .setAuthor(`${message.guild.name} Изменение`, message.guild.iconURL())
                   .setColor(redlight)
                   .setThumbnail(kickMember.user.displayAvatarURL({ dynamic: true }))
-                  .setFooter(message.guild.name, message.guild.iconURL())
+                  .setFooter("Дата")
                   .addField("**Модерация**", "Кик участника")
-                  .addField("**Участник**", kickMember.user.username)
-                  .addField("**Модератор**", message.author.username)
-                  .addField("**Причина**", `${reason || "**No Reason**"}`)
-                  .addField("**Дата**", message.createdAt.toLocaleString())
+                  .addField("**Участник**", kickMember.user.tag)
+                  .addField("**Модератор**", message.author.tag)
+                  .addField("**Причина**", `${reason || "**Нет причины**"}`)
                   .setTimestamp();
 
               var sChannel = message.guild.channels.cache.get(channel)

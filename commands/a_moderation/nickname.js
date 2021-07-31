@@ -52,12 +52,11 @@ module.exports = {
             .setAuthor(`${message.guild.name} Изменение`, message.guild.iconURL())
             .setColor(greenlight)
             .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-            .setFooter(message.guild.name, message.guild.iconURL())
+            .setFooter("Дата")
             .addField("**Модерация**", "Изменение ника")
-            .addField("**Участник**", member.user.username)
-            .addField("**Модератор**", message.author.username)
+            .addField("**Участник**", member.user.tag)
+            .addField("**Модератор**", message.author.tag)
             .addField("**Новый ник**", args[1])
-            .addField("**Дата**", message.createdAt.toLocaleString())
             .setTimestamp();
 
             var sChannel = message.guild.channels.cache.get(channel)

@@ -39,9 +39,19 @@ module.exports = {
     let finlan = data.warns.length;
 
     if (data && data.warns.length !== 0) {
+      if(!args[1] || isNaN(args[1])) {
       let len = data.warns.length;
       await memberModel.findOneAndUpdate({userID: toWarn.id, serverID: message.guild.id}, {$set: {warns: []}})
       embed(message).setSuccess(`Сняты все предупреждения с участника ${toWarn} модератором:  ${message.author}`).send();
+    } else if (args[1] > data.warns.length) {
+      embed(message).setError('Предупреждение не найдено.').send()
+    } else {
+      finlan = 1
+      let a = args[1] - 1;
+      data.warns.splice(a, 1)
+      data.save()
+      embed(message).setSuccess('Предупреждение успешно снято.').send()
+    }
     } else if (!data || data.warns.length === 0) {
       let pembed = new MessageEmbed()
       .setTimestamp()
@@ -59,11 +69,10 @@ module.exports = {
           .setThumbnail(toWarn.user.displayAvatarURL({ dynamic: true }))
           .setAuthor(`${message.guild.name} Изменение`, message.guild.iconURL())
           .addField("**Модерация**", "Снятие Предупреждений")
-          .addField("**Участник**", toWarn.user.username)
-          .addField("**Модератор**", message.author.username)
+          .addField("**Участник**", toWarn.user.tag)
+          .addField("**Модератор**", message.author.tag)
           .addField("**Кол-во предупреждений**", finlan)
-          .addField("**Дата**", message.createdAt.toLocaleString())
-          .setFooter(message.member.displayName, message.author.displayAvatarURL())
+          .setFooter("Дата")
           .setTimestamp()
 
       var sChannel = message.guild.channels.cache.get(channel)
