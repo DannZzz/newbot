@@ -3,6 +3,7 @@ const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const {PREFIX} = require("../../config");
 const memberModel = require("../../models/memberSchema");
 const serverModel = require("../../models/serverSchema");
+const embed = require('../../embedConstructor');
 
 module.exports = {
   config: {
@@ -26,7 +27,7 @@ module.exports = {
     .setColor(cyan)
 
 
-    if (toWarn.user.bot) return message.channel.send(warnEmbed.setDescription("❌ Бот не может иметь предупреждения.")).then(msg => {msg.delete({timeout: "10000"})});
+    if (toWarn.user.bot) return embed(message).setError("Бот не может иметь предупреждения.").send().then(msg => {msg.delete({timeout: "10000"})});
 
     let data = await memberModel.findOne({
       userID: toWarn.id,
@@ -36,7 +37,7 @@ module.exports = {
 
     if (data && data.warns.length !== 0) {
       let mappedData = data.warns.map(
-        ({Moderator, Reason}, pos) => `__${pos+1}.__ Модер: <@${Moderator}> Причина: \`\`${Reason}\`\``
+        ({Moderator, Reason, Date}, pos) => `__${pos+1}.__ Модер: <@${Moderator}> Причина: \`\`${Reason}\`\` Дата: \`${Date} по мск.\``
       );
 
 
@@ -44,7 +45,7 @@ module.exports = {
     } else if (!data || data.warns.length === 0) {
 
 
-      message.channel.send(sembed.setDescription(`${toWarn} не имеет предупреждений.`))
+      embed(message).setError(`${toWarn} не имеет предупреждений.`).send();
     }
 
   }
