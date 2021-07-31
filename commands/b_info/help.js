@@ -71,6 +71,7 @@ module.exports = {
 
             return message.channel.send(embed)
         }else if(catArray.includes(args[0]) && !args[1]) {
+          let func = c => `**${prefix}${c.config.name}** -  ${c.config.description || "Нет описания."} \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\`\n\`Псевдонимы: ${c.config.aliases ? c.config.aliases.join(", ") : "Нету."}\``
           let description;
           let description1;
           let description2;
@@ -81,54 +82,54 @@ module.exports = {
               message.author.tag,
               message.author.displayAvatarURL({ dynamic: true })
             )
+          let pages;
           if(args[0] === 'модерация' || args[0] === 'модер' || args[0] === 'moder') {
+
             description = new MessageEmbed()
               .setDescription(
-              '**Категория "Модерация"**\n\n' + bot.commands.filter(c => c.config.category === 'a_moderation').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+              '**Категория "Модерация"**\n\n' + bot.commands.filter(c => c.config.category === 'a_moderation').map(func)
                 .slice(0, 5)
                 .join("\n\n"))
             description1 = new MessageEmbed()
               .setDescription(
-              '**Категория "Модерация"**\n\n' + bot.commands.filter(c => c.config.category === 'a_moderation').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+              '**Категория "Модерация"**\n\n' + bot.commands.filter(c => c.config.category === 'a_moderation').map(func)
                 .slice(5, 10)
                 .join("\n\n"))
             description2 = new MessageEmbed()
               .setDescription(
-              '**Категория "Модерация"**\n\n' + bot.commands.filter(c => c.config.category === 'a_moderation').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+              '**Категория "Модерация"**\n\n' + bot.commands.filter(c => c.config.category === 'a_moderation').map(func)
                 .slice(10, 15)
                 .join("\n\n"))
-
 
           } else if(args[0] === 'информация' || args[0] === 'инфо' || args[0] === 'info') {
 
             description = new MessageEmbed()
               .setDescription(
-                '**Категория "Информация"**\n\n' + bot.commands.filter(c => c.config.category === 'b_info').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+                '**Категория "Информация"**\n\n' + bot.commands.filter(c => c.config.category === 'b_info').map(func)
                 .slice(0, 5)
                 .join("\n\n"))
+
             description1 = new MessageEmbed()
               .setDescription(
-              '**Категория "Информация"**\n\n' + bot.commands.filter(c => c.config.category === 'b_info').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+              '**Категория "Информация"**\n\n' + bot.commands.filter(c => c.config.category === 'b_info').map(func)
               .slice(5, 10)
               .join("\n\n"))
-
-
 
           } else if(args[0] === 'экономика' || args[0] === 'economy') {
 
             description = new MessageEmbed()
               .setDescription(
-              '**Категория "Экономика"**\n\n' + bot.commands.filter(c => c.config.category === 'c_economy').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+              '**Категория "Экономика"**\n\n' + bot.commands.filter(c => c.config.category === 'c_economy').map(func)
                 .slice(0, 5)
                 .join("\n\n"))
             description1 = new MessageEmbed()
               .setDescription(
-              '**Категория "Экономика"**\n\n' + bot.commands.filter(c => c.config.category === 'c_economy').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+              '**Категория "Экономика"**\n\n' + bot.commands.filter(c => c.config.category === 'c_economy').map(func)
                 .slice(5, 10)
                 .join("\n\n"))
             description2 = new MessageEmbed()
               .setDescription(
-              '**Категория "Экономика"**\n\n' + bot.commands.filter(c => c.config.category === 'c_economy').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+              '**Категория "Экономика"**\n\n' + bot.commands.filter(c => c.config.category === 'c_economy').map(func)
                 .slice(10, 15)
                 .join("\n\n"))
 
@@ -136,38 +137,40 @@ module.exports = {
 
             description = new MessageEmbed()
               .setDescription(
-                '**Категория "Реакционные"**\n\n' + bot.commands.filter(c => c.config.category === 'd_reaction').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+                '**Категория "Реакционные"**\n\n' + bot.commands.filter(c => c.config.category === 'd_reaction').map(func)
                 .slice(0, 5)
                 .join("\n\n"))
             description1 = new MessageEmbed()
               .setDescription(
-              '**Категория "Реакционные"**\n\n' + bot.commands.filter(c => c.config.category === 'd_reaction').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+              '**Категория "Реакционные"**\n\n' + bot.commands.filter(c => c.config.category === 'd_reaction').map(func)
               .slice(5, 10)
               .join("\n\n"))
+
 
           } else if(args[0] === 'фан' || args[0] === 'fun') {
 
             description = new MessageEmbed()
               .setDescription(
-                '**Категория "Фан"**\n\n' + bot.commands.filter(c => c.config.category === 'e_fun').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+                '**Категория "Фан"**\n\n' + bot.commands.filter(c => c.config.category === 'e_fun').map(func)
                 .slice(0, 5)
                 .join("\n\n"))
             description1 = new MessageEmbed()
               .setDescription(
-              '**Категория "Фан"**\n\n' + bot.commands.filter(c => c.config.category === 'e_fun').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+              '**Категория "Фан"**\n\n' + bot.commands.filter(c => c.config.category === 'e_fun').map(func)
               .slice(5, 10)
               .join("\n\n"))
+
 
           } else if(args[0] === 'настройки' || args[0] === 'settings') {
 
             description = new MessageEmbed()
               .setDescription(
-                '**Категория "Настройки"**\n\n' + bot.commands.filter(c => c.config.category === 'f_settings').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+                '**Категория "Настройки"**\n\n' + bot.commands.filter(c => c.config.category === 'f_settings').map(func)
                 .slice(0, 5)
                 .join("\n\n"))
             description1 = new MessageEmbed()
               .setDescription(
-              '**Категория "Настройки"**\n\n' + bot.commands.filter(c => c.config.category === 'f_settings').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+              '**Категория "Настройки"**\n\n' + bot.commands.filter(c => c.config.category === 'f_settings').map(func)
               .slice(5, 10)
               .join("\n\n"))
 
@@ -175,27 +178,28 @@ module.exports = {
 
             description = new MessageEmbed()
               .setDescription(
-                '**Категория "VIP"**\n\n' + bot.commands.filter(c => c.config.category === 'g_vip').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+                '**Категория "VIP"**\n\n' + bot.commands.filter(c => c.config.category === 'g_vip').map(func)
                 .slice(0, 5)
                 .join("\n\n"))
             description1 = new MessageEmbed()
               .setDescription(
-              '**Категория "VIP"**\n\n' + bot.commands.filter(c => c.config.category === 'g_vip').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
+              '**Категория "VIP"**\n\n' + bot.commands.filter(c => c.config.category === 'g_vip').map(func)
               .slice(5, 10)
               .join("\n\n"))
 
-          } else if(args[0] === 'разработчик' || args[0] === 'developer') {
 
-            description = new MessageEmbed()
-              .setDescription(
-                '**Категория "Разработчик"**\n\n' + bot.commands.filter(c => c.config.category === 'owner').map(c => `**${prefix}${c.config.name} -  ${c.config.description || "Нет описания."}** \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\``)
-                .slice(0, 5)
-                .join("\n\n"))
+          } else if(args[0] === 'разработчик' || args[0] === 'developer') {
+            let e = new MessageEmbed()
+            .setDescription(
+              '**Категория "Разработчик"**\n\n' + bot.commands.filter(c => c.config.category === 'owner').map(func).join('\n\n')
+            )
+            .setFooter('Page 1 / 1')
+            .setColor(cyan)
+             message.channel.send(e)
 
           }
-
-          const pages = [description, description1, description2]
-          if(description2 === undefined) pages.pop()
+          pages = [description, description1, description2]
+          if(!description2) { pages = [description.setColor(cyan), description1.setColor(cyan)] } else { pages = [description.setColor(cyan), description1.setColor(cyan), description2.setColor(cyan)] }
 
           const emojies = ["⬅", "➡"]
 

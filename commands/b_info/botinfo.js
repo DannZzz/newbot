@@ -9,7 +9,7 @@ module.exports = {
     category: "b_info",
     aliases: ["бот", "bot", "botinfo"],
     description: "Выдает информацию о боте.",
-    usage: " ",
+    usage: "",
     accessableby: "Для всех"
   },
   run: async (bot, message, args) => {

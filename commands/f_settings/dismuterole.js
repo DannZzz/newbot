@@ -9,7 +9,7 @@ module.exports = {
         name: "откл-мьют-роль",
         aliases: ['омр', 'dismuterole', 'dmr', 'dmrole'],
         category: 'f_settings',
-        description: 'Отключить мьют роль сервера',
+        description: 'Отключить мьют роль сервера.',
         usage: '[название роли | упоминание роли | ID роли]',
         accessableby: 'Нужна права: Управлять ролями.'
     },

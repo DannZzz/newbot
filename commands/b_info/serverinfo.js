@@ -6,7 +6,7 @@ module.exports = {
     config: {
         name: "сервер",
         description: "Выдает информацию о сервере.",
-        usage: " ",
+        usage: "",
         category: "b_info",
         accessableby: "Для всех",
         aliases: ["server", 'serverinfo', 'си']

@@ -18,7 +18,7 @@ module.exports = {
     name: 'ранг',
     aliases: ['rank'],
     category: 'b_info',
-    description: 'Посмотреть ранг участника.',
+    description: 'Посмотреть ранг участника по активности.',
     usage: '[участник]',
     acessableby: 'Для всех'
   },
