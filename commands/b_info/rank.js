@@ -46,7 +46,7 @@ module.exports = {
         .setAvatar(user.user.displayAvatarURL({format: 'jpg', dynamic: false}))
         .setCurrentXP(person.xp, customColor || "#FFFFFF")
         .setRequiredXP(Levels.xpFor(person.level + 1), customColor || "#FFFFFF")
-        .setStatus(user.presence.status)
+        .setStatus(user.presence.status, true)
         .setLevel(person.level)
         .setRank(person.position)
         .setLevelColor(customColor || "#FFFFFF", customColor || "#FFFFFF")
