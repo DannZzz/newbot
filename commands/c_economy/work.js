@@ -14,7 +14,7 @@ module.exports = {
         aliases: ["wr", "work"],
         category: "c_economy",
         description: "Работайте, чтобы зарабатывать деньги.",
-        usage: " ",
+        usage: "",
         accessableby: "Для всех"
     },
     run: async (bot, message, args) => {

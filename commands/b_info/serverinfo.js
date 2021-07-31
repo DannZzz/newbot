@@ -5,7 +5,7 @@ const moment = require('moment');
 module.exports = {
     config: {
         name: "сервер",
-        description: "Выдает информацию о сервере",
+        description: "Выдает информацию о сервере.",
         usage: " ",
         category: "b_info",
         accessableby: "Для всех",

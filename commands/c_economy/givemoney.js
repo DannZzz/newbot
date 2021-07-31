@@ -12,7 +12,7 @@ module.exports = {
     category: "c_economy",
     aliases: ["give-money", "gm", "pay", "пер"],
     accessableby: "Для всех",
-    usage: "[никнейм участника | упоминание | ID] [кол-во монет] "
+    usage: "[никнейм участника | упоминание | ID] [кол-во монет]"
   },
   run: async (bot, message, args) => {
     try {

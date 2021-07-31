@@ -13,7 +13,7 @@ module.exports = {
         name:"слот",
         aliases: ["sl", "slots", "slot", "сл"],
         category: "c_economy",
-        description: "Слот(slots) | 9x - редкие | 3x - обычные",
+        description: "Игра слоты!",
         usage: "[ставка]",
         accessableby: "Для всех"
     },

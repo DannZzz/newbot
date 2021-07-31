@@ -22,6 +22,7 @@
     "discord-mongo-currency": "^1.0.4",
     "discord-xp": "^1.1.16",
     "discord.js": "^12.5.3",
+    "discord.js-pagination": "^1.0.3",
     "fs": "0.0.1-security",
     "giphy-api": "^2.0.2",
     "lodash": "^4.17.21",

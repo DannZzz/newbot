@@ -7,7 +7,7 @@ module.exports = {
         name: "участник",
         category: "b_info",
         aliases: ["инфо", "уи", "user", "info"],
-        description: "Выдает информацию об участнике",
+        description: "Выдает информацию об участнике.",
         usage: "[тег | никнейм | упоминание | ID]",
         accessableby: "Для всех"
     },

@@ -8,7 +8,7 @@ const serverModel = require("../../models/serverSchema");
 module.exports = {
   config: {
     name: "темпроль",
-    description: "Давать участнику.",
+    description: "Давать временную роль участнику.",
     usage: "[тег | никнейм | упоминание | ID] [название роли | упоминание | ID] [время: 1m, 1h, 1d]",
     category: "a_moderation",
     accessableby: "Нужна права: Управлять ролями.",

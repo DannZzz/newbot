@@ -12,8 +12,8 @@ module.exports = {
         name: "ежедн-приз",
         aliases: ["day", "daily", "еждн"],
         category: "c_economy",
-        description: "Дает 200 монет ежедневно.",
-        usage: " ",
+        description: "Дает 1000 монет и 3 звезд ежедневно.",
+        usage: "",
         accessableby: "Для всех"
     },
     run: async (bot, message, args) => {

@@ -7,7 +7,7 @@ const serverModel = require("../../models/serverSchema");
 module.exports = {
       config: {
         name: "откл-мод-лог-канал",
-        description: "Изменить никнейм участника.",
+        description: "Изменить канал модерация.",
         usage: "[название текстового канала | упоминание | ID]",
         category: "f_settings",
         accessableby: "Нужна права: Администратор.",

@@ -17,7 +17,7 @@ module.exports = {
     name: 'ранги',
     aliases: ['ranks'],
     category: 'b_info',
-    description: 'Смотреть топ 10 участников.',
+    description: 'Посмотреть топ 10 участников.',
     usage: '',
     acessableby: 'Для всех'
   },

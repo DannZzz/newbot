@@ -9,11 +9,11 @@ const profileModel = require("../../models/profileSchema");
 module.exports = {
   config: {
     name: "баланс",
-    description: "Показывает кол-во денег участника",
+    description: "Показывает баланс участника.",
     category: "c_economy",
     aliases: ["бал", "bal", "balance", "кредиты"],
     accessableby: "Для всех",
-    usage: " "
+    usage: ""
   },
   run: async (bot, message, args) => {
     let member = await message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.member;

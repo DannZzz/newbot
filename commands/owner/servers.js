@@ -9,7 +9,7 @@ module.exports = {
     aliases: ["servers", 'лист'],
     category: "owner",
     description: "Показывает все сервера где находится бот!",
-    usage: " ",
+    usage: "",
     accessableby: "Для разработчика"
   },
   run: async (bot, message, args) => {
