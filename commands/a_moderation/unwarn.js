@@ -9,7 +9,7 @@ module.exports = {
   config: {
     name: "снять-пред",
     description: "Снять предупреждения от участника.",
-    usage: "[тег | никнейм | упоминание | ID]",
+    usage: "[тег | никнейм | упоминание | ID] (номер предупреждений)",
     category: "a_moderation",
     accessableby: "Нужна права: Управлять сообщениями.",
     aliases: ["unwarn", "снять"]
