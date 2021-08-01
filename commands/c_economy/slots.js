@@ -23,7 +23,7 @@ module.exports = {
     let profileData = await profileModel.findOne({ userID: user.id });
     let beg = await begModel.findOne({ userID: user.id });
     let moneydb = profileData.coins;
-    let money = parseInt(args[0]);
+    let money = Math.floor(parseInt(args[0]));
     let win = false;
 
 
@@ -45,8 +45,23 @@ module.exports = {
     } else {
       if (money < 100) return embed(message).setError(`Минимальная ставка **100**.`).send().then(msg => {msg.delete({timeout: "10000"})});
       if (!money) return embed(message).setError('Укажите ставку.').send();
-      if (money > 100000) return embed(message).setError(`Максимальная ставка **100000**.`).send().then(msg => {msg.delete({timeout: "10000"})});
-      if (money > moneydb) return embed(message).setError(`Укажите ставку.`).send();
+
+      if (!beg["vip1"] && money > 100000) {
+        return embed(message).setError("Максимальная ставка **100.000**!\nЛибо купите VIP").send().then(msg => {
+          msg.delete({
+            timeout: "10000"
+          })
+        })
+      } else if (!beg["vip2"] && money > 1000000) {
+        return embed(message).setError("Максимальная ставка **1.000.000**!\nЛибо купите VIP 2").send().then(msg => {
+          msg.delete({
+            timeout: "10000"
+          })
+        })
+      }
+
+
+      if (money > moneydb) return embed(message).setError(`У вас недостаточно денег.`).send();
       let reward = 0 ;
       let number = []
 

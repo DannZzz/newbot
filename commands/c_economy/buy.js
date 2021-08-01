@@ -26,9 +26,9 @@ module.exports = {
       if (data['vip1']) {
         return embed(message).setError("Вы уже имеете VIP!").send().then(msg => {msg.delete({timeout: "10000"})});
       } else {
-        if(data.stars >= 1000) {
+        if(data.stars >= 750) {
           await begModel.findOneAndUpdate({userID: message.author.id}, {$set: {'vip1': true}});
-          await begModel.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: -1000}});
+          await begModel.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: -750}});
 
           embed(message).setSuccess(`Вы успешно купили VIP!`).send();
         } else {
@@ -41,9 +41,9 @@ module.exports = {
       if (data['vip2']) {
         return embed(message).setError("Вы уже имеете VIP!").send().then(msg => {msg.delete({timeout: "10000"})});
       } else {
-        if(data.stars >= 10000) {
+        if(data.stars >= 3000) {
           await begModel.findOneAndUpdate({userID: message.author.id}, {$set: {'vip2': true}});
-          await begModel.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: -10000}})
+          await begModel.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: -3000}})
 
           embed(message).setSuccess(`Вы успешно купили VIP!`).send()
         } else {

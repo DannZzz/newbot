@@ -4,7 +4,7 @@ const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK, STAR } = require('../../config');
 const profileModel = require("../../models/profileSchema");
 const vipModel = require("../../models/vipSchema");
-
+const embed = require('../../embedConstructor');
 
 module.exports = {
   config: {
@@ -16,28 +16,17 @@ module.exports = {
     usage: "[упоминание канала] [цвет] [ваше сообщение]"
   },
   run: async (bot, message, args) => {
-    let embed = new MessageEmbed()
-      .setColor(redlight)
-      .setTimestamp()
-      .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-
-
-    let sembed = new MessageEmbed()
-       .setColor(greenlight)
-       .setTimestamp()
-       .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-
     let bag = await begModel.findOne({userID: message.author.id});
 
     let channel = message.mentions.channels.first();
-    if(bag["vip1"] === false) return message.channel.send(embed.setDescription("❌ Эта команда доступна только для **VIP 1** пользователей.")).then(msg => {msg.delete({timeout: "10000"})});
+    if(bag["vip1"] === false) return embed(message).setError("Эта команда доступна только для **VIP 1** пользователей.").send().then(msg => {msg.delete({timeout: "10000"})});
 
     let arg = args.slice(2).join(" ")
-    if (!message.member.hasPermission("ADMINISTRATOR")) return message.channel.send(embed.setDescription("❌ У вас недостаточно прав.")).then(msg => {msg.delete({timeout: "10000"})});
-    if(!args[0]) return message.channel.send(embed.setDescription("❌ Укажите #текстовый канал.")).then(msg => {msg.delete({timeout: "10000"})});
-    if(!args[1]) return message.channel.send(embed.setDescription("❌ Укажите цвет эмбед.")).then(msg => {msg.delete({timeout: "10000"})});
-    if(!arg) return message.channel.send(embed.setDescription("❌ Укажите текст.")).then(msg => {msg.delete({timeout: "10000"})});
-    if(!channel) return message.channel.send(embed.setDescription("❌ Укажите доступный #текстовый канал.")).then(msg => {msg.delete({timeout: "10000"})});
+    if (!message.member.hasPermission("ADMINISTRATOR")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if(!args[0]) return embed(message).setError("Укажите #текстовый канал.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if(!args[1]) return embed(message).setError("Укажите цвет эмбед.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if(!arg) return embed(message).setError("Укажите текст.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if(!channel) return embed(message).setError("Укажите доступный #текстовый канал.").send().then(msg => {msg.delete({timeout: "10000"})});
     let doEmbed = new MessageEmbed()
     .setColor(`${args[1]}`)
     .setTimestamp()

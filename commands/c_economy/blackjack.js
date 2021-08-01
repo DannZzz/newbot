@@ -22,6 +22,7 @@ const {
   BANK
 } = require('../../config');
 const profileModel = require("../../models/profileSchema");
+const begModel = require("../../models/begSchema");
 const embed = require('../../embedConstructor');
 
 module.exports = {
@@ -46,7 +47,7 @@ module.exports = {
         timeout: "10000"
       })
     });
-    if (deckCount <= 0 || deckCount >= 9) return embed(message).setError("Укажите число от 1 до 8!").send().then(msg => {
+    if (deckCount <= 0 || deckCount >= 9) return embed(message).setError("Укажите число колод , от 1 до 8!").send().then(msg => {
       msg.delete({
         timeout: "10000"
       })
@@ -75,11 +76,20 @@ module.exports = {
         timeout: "10000"
       })
     })
-    if (Math.floor(amount) > 100000) return embed(message).setError("Максимальная ставка **100000**!").send().then(msg => {
-      msg.delete({
-        timeout: "10000"
+    let bag = await begModel.findOne({userID: message.author.id})
+    if (!bag["vip1"] && Math.floor(amount) > 100000) {
+      return embed(message).setError("Максимальная ставка **100.000**!\nЛибо купите VIP").send().then(msg => {
+        msg.delete({
+          timeout: "10000"
+        })
       })
-    })
+    } else if (!bag["vip2"] && Math.floor(amount) > 1000000) {
+      return embed(message).setError("Максимальная ставка **1.000.000**!\nЛибо купите VIP 2").send().then(msg => {
+        msg.delete({
+          timeout: "10000"
+        })
+      })
+    }
 
     if (bal < Math.floor(amount)) return embed(message).setError("У вас недостаточно денег!").send().then(msg => {
       msg.delete({
