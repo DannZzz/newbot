@@ -27,7 +27,7 @@ module.exports = {
       let time = new Date(timeout - (Date.now() - author));
       return embed(message).setError(`Попробуй снова через **${time.getMinutes()} минут ${time.getSeconds()} секунд**.`).send().then(msg => {msg.delete({timeout: "10000"})});
     } else {
-      embed(message).setStatus("Спасибо за отзыв, мы рассмотрим ваше сообщение.").send()
+      embed(message).setSuccess("Спасибо за отзыв, мы рассмотрим ваше сообщение.").send()
       toChannel.send(embed(message).setPrimary(
         `
         **Получено от: **\`${member.user.tag}(${member.id})\`\n**Из сервера: **\`${message.guild.name}(${message.guild.id})\`\n\n**Сообщение:**\n\`${args.join(" ")}\`
