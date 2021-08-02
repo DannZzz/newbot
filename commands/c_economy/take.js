@@ -16,15 +16,15 @@ module.exports = {
   run: async (bot, message, args) => {
     try {
 
-      if(!args[0]) return embed(message).setError("❌ Укажите кол-во денег, чтобы обналичить в банк.").send().then(msg => {msg.delete({timeout: "10000"})});
-      if(isNaN(args[0]) && args[0] !== "all") return embed(message).setError("❌ Укажите кол-во денег в виде числ.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if(!args[0]) return embed(message).setError("Укажите кол-во денег, чтобы обналичить в банк.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if(isNaN(args[0]) && args[0] !== "all") return embed(message).setError("Укажите кол-во денег в виде числ.").send().then(msg => {msg.delete({timeout: "10000"})});
       let user = message.author;
       let profileData = await profileModel.findOne({ userID: user.id });
       let bal1 = profileData.coins;
       let bank1 = profileData.bank;
 
-      if(args[0] > bank1) return embed(message).setError("❌ У вас недостаточно денег.").send().then(msg => {msg.delete({timeout: "10000"})});
-      if(args[0] <= 0) return embed(message).setError("❌ Минимальная сумма **1**.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if(args[0] > bank1) return embed(message).setError("У вас недостаточно денег.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if(args[0] <= 0) return embed(message).setError("Минимальная сумма **1**.").send().then(msg => {msg.delete({timeout: "10000"})});
 
 
       if (args[0] === "all") {
