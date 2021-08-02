@@ -78,7 +78,7 @@ module.exports = {
 🦑Редкая      :: 150 [ID: 4]
 🐋Легендарная :: 450 [ID: 5]\`\`\`
 
-​
+​Чем больше рыб, тем большая цена!
 `)
                 .setFooter(message.guild.name, message.guild.iconURL())
             return message.channel.send(lEmbed);
