@@ -61,49 +61,8 @@ module.exports = async (bot, message) => {
             serverID: message.guild.id,
           })
         server.save()}
-        let mes = [
-          'привет',
-          'хай',
-          'всем привет',
-          'Всем привет',
-          'ку',
-          'Хай',
-          'Привет',
-          'Приветик',
-          'приветик',
-          'Ку всем',
-          'Ку',
-          'куу',
-          'Куу',
-          'куку',
-          'Куку',
-          'КуКу',
-          'Хай всем',
-          'доброе утро',
-          'привяю',
-          'Привяю',
-          'Доброе утро'
-        ]
-        let res = [
-          'Заебал',
-          'Куу',
-          'Куку',
-          'Привет',
-          'Хай',
-          'хватит спамить..',
-          'Та привет',
-          'ЭХ недоум..',
-          'Я думал это я бот',
-          'Ку ',
-          'Приветик',
-          'ляяяяяяя',
-          'Пока',
-          "МДээ",
-          'Гыыыы ку-ку'
-        ]
+
         prefix = serverData.prefix;
-        let rand = Math.floor(Math.random() * res.length)
-        if(mes.includes(message.content)) message.reply(res[rand])
 
         let args = message.content.slice(prefix.length).trim().split(/ +/g);
         let cmd = args.shift().toLowerCase();
