@@ -19,15 +19,6 @@ module.exports = {
     acessableby: 'Для всех'
   },
   run: async (bot, message, args) => {
-    let Embed = new MessageEmbed()
-        .setColor(redlight)
-        .setTimestamp()
-        .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
-
-        let sembed = new MessageEmbed()
-            .setColor(greenlight)
-            .setTimestamp()
-            .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL({dynamic: true}))
       let bal = await profileModel.findOne({userID: message.author.id});
       let bag = await begModel.findOne({userID: message.author.id});
       let sd = await serverModel.findOne({serverID: message.guild.id})
@@ -63,23 +54,22 @@ module.exports = {
       } else {
         return embed(message).setError(`Айди рыб не найдено: **${sd.prefix}рыба лист**`).send()
       }
+      const xx = fish_sell
       let exCost = cost + (cost / 2)
       if(bag['vip1']) exCost = cost + (cost / 2) + (cost / 3)
-      if(fish_sell === 0) return embed(message).setError(`Интересно, как продать "ничего".`).send()
-      if(fish_sell < 10) money = cost * fish_sell;
-      else if (fish_sell < 100) money = exCost * fish_sell;
-      else if (fish_sell > 100) money = exCost * fish_sell * (exCost / 2);
+      if(xx === 0) return embed(message).setError(`Интересно, как продать "ничего".`).send()
+      if(xx < 10) money = cost * xx;
+      else if (xx < 100) money = exCost * xx;
+      else if (xx > 100) money = exCost * xx * (exCost / 2);
 
-
-
+      if (args[0] === '1') await begModel.findOneAndUpdate({userID: message.author.id},{$set: {junk: 0}})
+      else if (args[0] === '2') await begModel.findOneAndUpdate({userID: message.author.id},{$set: {common: 0}})
+      else if (args[0] === '3') await begModel.findOneAndUpdate({userID: message.author.id},{$set: {uncommon: 0}})
+      else if (args[0] === '4') await begModel.findOneAndUpdate({userID: message.author.id},{$set: {rare: 0}})
+      else if (args[0] === '5') await begModel.findOneAndUpdate({userID: message.author.id},{$set: {legendary: 0}})
       await profileModel.findOneAndUpdate({userID: message.author.id}, {$inc: {coins: Math.floor(money)}});
-      if (fish_sell === bag.junk) await begModel.findOneAndUpdate({userID: message.author.id},{$set: {junk: 0}})
-      else if (fish_sell === bag.common) await begModel.findOneAndUpdate({userID: message.author.id},{$set: {common: 0}})
-      else if (fish_sell === bag.uncommon) await begModel.findOneAndUpdate({userID: message.author.id},{$set: {uncommon: 0}})
-      else if (fish_sell === bag.rare) await begModel.findOneAndUpdate({userID: message.author.id},{$set: {rare: 0}})
-      else if (fish_sell === bag.legendary) await begModel.findOneAndUpdate({userID: message.author.id},{$set: {legendary: 0}})
 
-      embed(message).setSuccess(`Вы продали **${fish_sell}**${rarity.symbol} всего за **${Math.floor(money)} ${COIN}**`).send()
+      embed(message).setSuccess(`Вы продали **${xx}**${rarity.symbol} всего за **${Math.floor(money)} ${COIN}**`).send()
 
   }
 }
