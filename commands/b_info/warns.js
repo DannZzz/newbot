@@ -37,7 +37,7 @@ module.exports = {
 
     if (data && data.warns.length !== 0) {
       let mappedData = data.warns.map(
-        ({Moderator, Reason, Date}, pos) => `__${pos+1}.__ Модер: <@${Moderator}> Причина: \`\`${Reason}\`\` Дата: \`${Date} по мск.\``
+        ({Moderator, Reason, Date}, pos) => `__${pos+1}.__ Модератор: <@${Moderator}>\nПричина: \`\`${Reason}\`\`\nДата: \`${Date} по мск.\`\n`
       );
 
 
