@@ -1,5 +1,6 @@
-const { MessageEmbed } = require("discord.js")
-const { cyan } = require("../../JSON/colours.json")
+const { MessageEmbed } = require("discord.js");
+const { cyan } = require("../../JSON/colours.json");
+const omg = require("../../models/customSchema");
 const moment = require('moment');
 
 module.exports = {
@@ -48,7 +49,11 @@ module.exports = {
           .setTimestamp()
           .setColor(cyan)
 
-
+          const data = await omg.find({serverID: message.guild.id});
+          const filteredData = data.filter(function({command}) {
+            return command
+          }).map(({command}) => command).join(', ')
+          if(filteredData.length !== 0) serverembed.addField('Пользовательские команды.', '\`\`\`' + filteredData + '\`\`\`', false)
           return message.channel.send(serverembed);
         }
         catch (r ){
