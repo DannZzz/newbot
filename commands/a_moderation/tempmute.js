@@ -35,7 +35,7 @@ module.exports = {
       embed(message).setError('Вы не сможете замутить участника с ролью выше вас, либо себя.').send().then(msg => {msg.delete({timeout: "10000"})});
       return;}
 
-    let reason = args.slice(1).join(" ");
+    let reason = args.slice(2).join(" ");
     if (mutee.user.bot) return embed(message).setError("Невозможно замьютить ботов.").send().then(msg => {msg.delete({timeout: "10000"})});
     const userRoles = mutee.roles.cache
           .filter(r => r.id !== message.guild.id)
@@ -132,6 +132,7 @@ module.exports = {
             .addField("**Участник**", mutee.user.tag)
             .addField("**Модератор**", message.author.tag)
             .addField("**Время**", `${muteTime}`)
+            .addField("**Причина**", `${reason}`)
             .setFooter('Дата')
             .setTimestamp()
 
