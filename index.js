@@ -152,7 +152,7 @@ bot.on('message', async message => {
         prefix = serverData.prefix;
         const server = await serverModel.findOne( {serverID: message.guild.id});
         if (server.rank) {
-          let random = Math.floor(Math.random() * 9) + 1;
+          let random = Math.floor(Math.random() * 4) + 1;
           if (message.author.bot) return;
           if (message.channel.type === "dm") return;
           await Levels.appendXp(message.author.id, message.guild.id, random);
@@ -160,7 +160,7 @@ bot.on('message', async message => {
         }
 
       } catch (e) {
-          console.log(e)
+          console.log('error')
   };
   try {
       if (message.mentions.has(bot.user) && !message.mentions.has(message.guild.id)) {
