@@ -23,7 +23,7 @@ module.exports = {
     const lb = users
               .slice(0)
               .sort(({ bank: a }, { bank: b }) => b - a)
-              .splice(0, 15)
+              //.splice(0, 15)
               .filter(
                 function({userID}) {
                   let guild = bot.guilds.cache.get(message.guild.id)
