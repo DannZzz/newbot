@@ -4,7 +4,7 @@ exports.DEV = "Dann#0006"
 
 exports.botINVITE = "https://discord.com/api/oauth2/authorize?client_id=726784476377514045&permissions=8&scope=bot"
 
-exports.TOKEN = 'NzI2Nzg0NDc2Mzc3NTE0MDQ1.XviUyg.zAp4oQ1h9Y14f2YseoKRe1dBnnw';
+exports.TOKEN = 'NzI2Nzg0NDc2Mzc3NTE0MDQ1.XviUyg.hiH7liSo3naABIrHoQ0CwS1Brag';
 
 exports.COIN = '<a:danncoin:864467182310129674>';
 
