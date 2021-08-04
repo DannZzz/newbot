@@ -17,7 +17,6 @@ module.exports = {
         "https://i.kym-cdn.com/photos/images/original/000/674/446/346.gif",
         "https://i2.wp.com/media1.tenor.com/images/68a4dd239a1103ae266f4197e8a40c01/tenor.gif",
         "https://i.gifer.com/JTSO.gif",
-        "https://i.giphy.com/media/l46Cao9ra1WUA4f6M/giphy.webp",
         "https://i.kym-cdn.com/photos/images/newsfeed/000/943/107/c7e.gif",
         "https://1.bp.blogspot.com/-0cu-3g3bio4/Vx_hCIRUcYI/AAAAAAAAcE8/mcV22O8uolst5z3Rd-reMOPhxoLLMeXaACKgB/s1600/Omake%2BGif%2BAnime%2B-%2BKuma%2BMiko%2B-%2BEpisode%2B4%2B-%2BMachi%2BCheek%2BPoke.gif",
         "https://i.imgur.com/MuHTLun.gif",
@@ -35,7 +34,7 @@ module.exports = {
 
         const sembed = new Discord.MessageEmbed()
         .setColor(cyan)
-        .setDescription(`<@${message.author.id}> тикнул(а) <@${member.user.id}>`)
+        .setDescription(`<@${message.author.id}> тыкнул(а) <@${member.user.id}>`)
         .setImage(gifs[random])
         .setTimestamp()
         message.channel.send(sembed)
