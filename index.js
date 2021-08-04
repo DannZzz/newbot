@@ -74,6 +74,23 @@ bot.on("guildCreate", async guild => {
 
 bot.on("guildMemberAdd", async member => {
     let sd = await serverModel.findOne({serverID: member.guild.id})
+    if(sd.welcome) {
+      let emb = new MessageEmbed()
+      .setTimestamp()
+      .setAuthor(member.user.tag, member.user.displayAvatarURL({dynamic: true}))
+      .setThumbnail(member.guild.iconURL({dynamic: true}))
+      .setColor(sd.welcomeColor || '#2f3136')
+      .setDescription(sd.welcomeText || `Приветствуем тебя уважаемый участник!`)
+      .setImage(sd.welcomeImage)
+
+    let channel = member.guild.channels.cache.get(sd.welcomeChannel);
+    if(channel) {
+      channel.send(emb)
+    } else {
+      return
+    }
+    }
+
     if(sd.autoRoleOn){
       var role = member.guild.roles.cache.find(role => role.id == sd.autoRole);
       if (role) {
