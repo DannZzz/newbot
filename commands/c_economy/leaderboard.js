@@ -23,7 +23,7 @@ module.exports = {
     const lb = users
               .slice(0)
               .sort(({ bank: a }, { bank: b }) => b - a)
-              .slice(0, 16)
+              .splice(0, 15)
               .filter(
                 function({userID}) {
                   let guild = bot.guilds.cache.get(message.guild.id)
@@ -41,7 +41,7 @@ module.exports = {
 
 
 
-          const newnew =     lb.slice(0, 16)
+          const newnew =     lb.splice(0, 15)
             const embed = new MessageEmbed()
               .setTitle('Самые богатые участники по Банку - Top 15')
               .setDescription(newnew)
