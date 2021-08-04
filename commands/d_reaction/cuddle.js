@@ -25,7 +25,7 @@ module.exports = {
 
         const sembed = new Discord.MessageEmbed()
         .setColor(cyan)
-        .setDescription(`Хм, <@${message.author.id}> прижала(а) <@${member.user.id}> к себе!`)
+        .setDescription(`Хм, <@${message.author.id}> прижал(а) <@${member.user.id}> к себе!`)
         .setImage(GIF.url)
         .setTimestamp()
         message.channel.send(sembed)
