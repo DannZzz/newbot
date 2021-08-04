@@ -8,6 +8,11 @@ const serverSchema = new mongoose.Schema({
   muteRole: { type: String },
   autoRole: { type: String },
   autoRoleOn: { type: Boolean, default: false},
+  welcome: { type: Boolean, default: false},
+  welcomeText: { type: String},
+  welcomeChannel: { type: String},
+  welcomeColor: { type: String},
+  welcomeImage: { type: String},
   shop: {any: {} },
   rank: { type: Boolean, default: false},
 
