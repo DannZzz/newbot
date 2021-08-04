@@ -30,7 +30,7 @@ module.exports = {
     if(args[1] > 1000000000) return embed(message).setError("Укажите число меньше **1.000.000.000**.").send().then(msg => {msg.delete({timeout: "10000"})});
     if(args[1] < 10) return embed(message).setError("Укажите число больше **10**.").send().then(msg => {msg.delete({timeout: "10000"})});
 
-    await profileModel.findOneAndUpdate({userID: user.id}, {$set: {bank: Math.floor(args[1])}})
+    await profileModel.findOneAndUpdate({userID: user.id}, {$inc: {bank: Math.floor(args[1])}})
     let msg = user.send(embed(message).setPrimary(`**У вас подарок от разработчика!🎉**\n\n||---**${Math.floor(args[1])}** ${COIN}---||`))
 
 
