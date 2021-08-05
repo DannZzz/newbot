@@ -15,7 +15,8 @@ const serverSchema = new mongoose.Schema({
   welcomeImage: { type: String},
   shop: {any: {} },
   rank: { type: Boolean, default: false},
-
+  voiceCategory: { type: String, default: null},
+  voiceChannel: { type: String, default: null},
 });
 
 const model = mongoose.model("ServerModels", serverSchema);
