@@ -31,15 +31,16 @@ module.exports = {
         serverData.voiceCategory = cat.id;
         serverData.save()
         const mainVoice = await server.channels.create(`🖤 Создать комнату`, {type: 'voice'})
-        .then( channel => {
+        .then( async channel => {
           let findCategory = server.channels.cache.get(serverData.voiceCategory)
           channel.setParent(findCategory.id);
-          serverData.voiceChannel = channel.id
-          serverData.save();
+          await serverModel.findOneAndUpdate({serverID: server.id}, {$set: {voiceChannel: channel.id}})
+
           return embed(message)
           .setSuccess('Система приватных голосовых каналов успешно включена.')
           .send()
-        }).catch(console.error)        
+        }).catch(console.error)
+
       } else {
         return embed(message)
         .setError('Система приватных голосовых каналов уже включена.\nСначала отключите систему.')
