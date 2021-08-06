@@ -214,7 +214,7 @@ module.exports = {
           }
           pages = [description, description1, description2]
           if(!description2) { pages = [description.setColor(cyan), description1.setColor(cyan)] } else { pages = [description.setColor(cyan), description1.setColor(cyan), description2.setColor(cyan)] }
-          if(description3 !== undefined) pages.push(description2.setColor(cyan))
+          if(description3 !== undefined) pages.push(description3.setColor(cyan))
 
           const emojies = ['⏪', '◀️', '⏹️', '▶️', '⏩']
 
