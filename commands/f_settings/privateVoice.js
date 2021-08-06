@@ -36,10 +36,10 @@ module.exports = {
           channel.setParent(findCategory.id);
           serverData.voiceChannel = channel.id
           serverData.save();
-        }).catch(console.error)
-        return embed(message)
-        .setSuccess('Система приватных голосовых каналов успешно включена.')
-        .send()
+          return embed(message)
+          .setSuccess('Система приватных голосовых каналов успешно включена.')
+          .send()
+        }).catch(console.error)        
       } else {
         return embed(message)
         .setError('Система приватных голосовых каналов уже включена.\nСначала отключите систему.')
