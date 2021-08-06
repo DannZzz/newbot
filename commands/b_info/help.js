@@ -5,7 +5,7 @@ const { stripIndents } = require("common-tags");
 const { cyan } = require("../../JSON/colours.json");
 const { PREFIX, DISAGREE } = require('../../config');
 const Embed = require('../../embedConstructor');
-const pagination = require('discord.js-pagination')
+const pagination = require("@xoalone/discordjs-pagination");
 
 module.exports = {
     config: {
@@ -132,6 +132,11 @@ module.exports = {
               '**Категория "Экономика"**\n\n' + bot.commands.filter(c => c.config.category === 'c_economy').map(func)
                 .slice(10, 15)
                 .join("\n\n"))
+            description3 = new MessageEmbed()
+              .setDescription(
+              '**Категория "Экономика"**\n\n' + bot.commands.filter(c => c.config.category === 'c_economy').map(func)
+                .slice(15, 20)
+                .join("\n\n"))
 
           } else if(args[0] === 'реакционные' || args[0] === 'reaction' || args[0] === 'реакция') {
 
@@ -145,7 +150,11 @@ module.exports = {
               '**Категория "Реакционные"**\n\n' + bot.commands.filter(c => c.config.category === 'd_reaction').map(func)
               .slice(5, 10)
               .join("\n\n"))
-
+            description2 = new MessageEmbed()
+              .setDescription(
+              '**Категория "Реакционные"**\n\n' + bot.commands.filter(c => c.config.category === 'd_reaction').map(func)
+              .slice(10, 15)
+              .join("\n\n"))
 
           } else if(args[0] === 'фан' || args[0] === 'fun') {
 
@@ -172,6 +181,11 @@ module.exports = {
               .setDescription(
               '**Категория "Настройки"**\n\n' + bot.commands.filter(c => c.config.category === 'f_settings').map(func)
               .slice(5, 10)
+              .join("\n\n"))
+            description2 = new MessageEmbed()
+              .setDescription(
+              '**Категория "Настройки"**\n\n' + bot.commands.filter(c => c.config.category === 'f_settings').map(func)
+              .slice(10, 15)
               .join("\n\n"))
 
           } else if(args[0] === 'VIP' || args[0] === 'vip') {
@@ -200,12 +214,15 @@ module.exports = {
           }
           pages = [description, description1, description2]
           if(!description2) { pages = [description.setColor(cyan), description1.setColor(cyan)] } else { pages = [description.setColor(cyan), description1.setColor(cyan), description2.setColor(cyan)] }
+          if(description3 !== undefined) pages.push(description2.setColor(cyan))
 
-          const emojies = ["⬅", "➡"]
+          const emojies = ['⏪', '◀️', '⏹️', '▶️', '⏩']
 
           const timeout = '100000'
 
-          pagination(message, pages, emojies, timeout)
+          const userids = [message.author.id]
+
+          pagination(message, pages, emojies, timeout, false, userids)
         } else {
             let command = bot.commands.get(bot.aliases.get(args[0].toLowerCase()) || args[0].toLowerCase())
             if (!command) return message.channel.send(embed.setTitle(`${DISAGREE} **Не правильная команда!**`).setDescription(`**Пишите \`${prefix}хелп\` чтобы посмотреть все доступные команды бота!**`))

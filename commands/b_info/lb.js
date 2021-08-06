@@ -8,7 +8,7 @@ const { COIN, BANK, STAR, MONGO } = require('../../config');
 const vipModel = require("../../models/vipSchema");
 const serverModel = require("../../models/serverSchema");
 const Embed = require('../../embedConstructor');
-const pagination = require('discord.js-pagination')
+const pagination = require("@xoalone/discordjs-pagination");
 
 const Levels = require("discord-xp");
 Levels.setURL(MONGO);
@@ -80,11 +80,13 @@ module.exports = {
         page2.setAuthor(`${message.guild.name}\nТоп 30 активных участников!`, message.guild.iconURL({dynamic: true})),
         page3.setAuthor(`${message.guild.name}\nТоп 30 активных участников!`, message.guild.iconURL({dynamic: true}))] }
 
-      const emojies = ["⬅", "➡"]
+      const emojies = ['⏪', '◀️', '⏹️', '▶️', '⏩']
 
       const timeout = '100000'
 
-      pagination(message, pages, emojies, timeout)
+      const userids = [message.author.id]
+
+      pagination(message, pages, emojies, timeout, false, userids)
     }
 
 
