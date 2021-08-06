@@ -3,9 +3,8 @@ const {greenlight, redlight} = require('../../JSON/colours.json');
 const embed = require('../../embedConstructor');
 const profileModel = require("../../models/profileSchema")
 const begModel = require("../../models/begSchema")
-let Roulette = require('../../constructors/Roulette')
 const {COIN, BANK} = require('../../config');
-const { addUser, game } = Roulette
+
 
 module.exports = {
   config: {
