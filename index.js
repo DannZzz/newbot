@@ -107,9 +107,6 @@ bot.on('voiceStateUpdate', async (oldMember, newMember) => {
       channel: channel.id
       })
 
-    } else if(channel.member.size === 0){
-        return oldUserChannel.delete()
-        // User leaves a voice channel
     }
   }
 })
