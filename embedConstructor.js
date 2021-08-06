@@ -52,7 +52,7 @@ class Embed extends MessageEmbed {
   }
 
   baseEmbed() {
-    this.setAuthor(this.message.author.username, this.message.author.displayAvatarURL())
+    this.setAuthor(this.message.author.username, this.message.author.displayAvatarURL({dynamic: true}))
     this.setTimestamp()
 
     return this
