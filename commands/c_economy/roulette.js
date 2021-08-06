@@ -13,7 +13,7 @@ module.exports = {
         category: "c_economy",
         aliases: ['roulette', 'рул'],
         accessableby: "Для всех",
-        usage: "[ставка] [1-12, 13-24, 25-32]"
+        usage: "[ставка] [промежуток]"
   },
   run: async (bot, message, args) => {
   const types = ['1-12', '13-24', '25-32'];
