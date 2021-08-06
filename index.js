@@ -132,8 +132,8 @@ bot.on("guildMemberAdd", async member => {
     if(sd.welcome) {
       let emb = new MessageEmbed()
       .setTimestamp()
-      .setAuthor(member.user.tag, member.user.displayAvatarURL({dynamic: true}))
-      .setThumbnail(member.guild.iconURL({dynamic: true}))
+      .setAuthor(member.user.tag, member.guild.iconURL({dynamic: true}))
+      .setThumbnail(member.user.displayAvatarURL({dynamic: true}))
       .setColor(sd.welcomeColor || '#2f3136')
       .setDescription(sd.welcomeText || `Приветствуем тебя уважаемый участник!`)
       .setImage(sd.welcomeImage)
