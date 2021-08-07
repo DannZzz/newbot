@@ -3,7 +3,7 @@ const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN } = require('../../config');
 let ownerID = '382906068319076372';
-let dariusID = '803618695687307264';
+let dariusID = '873237782825422968';
 const embed = require('../../embedConstructor');
 
 module.exports = {
