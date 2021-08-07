@@ -114,6 +114,11 @@ module.exports = {
               '**Категория "Информация"**\n\n' + bot.commands.filter(c => c.config.category === 'b_info').map(func)
               .slice(5, 10)
               .join("\n\n"))
+            description2 = new MessageEmbed()
+              .setDescription(
+              '**Категория "Информация"**\n\n' + bot.commands.filter(c => c.config.category === 'b_info').map(func)
+              .slice(5, 10)
+              .join("\n\n"))
 
           } else if(args[0] === 'экономика' || args[0] === 'economy') {
 
