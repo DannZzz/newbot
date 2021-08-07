@@ -23,11 +23,7 @@ module.exports = {
      let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args[0].toLocaleLowerCase());
      let bag = await begModel.findOne({userID: user.id});
      let bag2 = await begModel.findOne({userID: user2.id});
-     try {
-     if(bag["vip1"]) return embed(message).setError("Невозможно воровать у **VIP** участников.").send().then(msg => {msg.delete({timeout: "10000"})});
-   } catch (e) {
-     console.log(e);
-   }
+     
 
      if (user.user.id === user2.id) return embed(message).setError("Вы не сможете воровать у себя.").send().then(msg => {msg.delete({timeout: "10000"})});
 

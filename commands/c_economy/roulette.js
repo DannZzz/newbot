@@ -17,6 +17,7 @@ module.exports = {
   },
   run: async (bot, message, args) => {
   const types = ['1-12', '13-24', '25-32'];
+  const oddEven = ['odd', 'even', 'четное', 'чётное', 'нечетное', 'нечётное']
   const colors = ['red', 'black', 'красный', 'черный', 'чёрный'];
   const numberss = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]
   const numbers = numberss.map(rep => rep + '')
@@ -38,7 +39,7 @@ module.exports = {
 
 if (value === 'help' || value === 'хелп') {
     return embed(message)
-          .setPrimary(`**\`\`?рулетка <ставка> [промежуток]\`\`**\n\nВсе доступные промежутки.\n\`\`\`Цвета: красный, черный\nГруппы: 1-12, 13-24, 25-32\nПрямые ставки: 0, 1, 2 ... 32\`\`\``)
+          .setPrimary(`**\`\`?рулетка <ставка> [промежуток]\`\`**\n\nВсе доступные промежутки.\n\`\`\`Цвета: красный, черный [2x]\nГруппы: 1-12, 13-24, 25-32 [3x]\nПрямые ставки: 0, 1, 2 ... 32 [16x]\nТип числ: четное, нечетное [2x]\`\`\``)
           .send()
   }
 
@@ -79,7 +80,7 @@ if (value === 'help' || value === 'хелп') {
         })
       })
 
-  if (!types.includes(type) && !colors.includes(type) && !numbers.includes(type)) return embed(message)
+  if (!types.includes(type) && !colors.includes(type) && !numbers.includes(type) && !oddEven.includes(type)) return embed(message)
       .setError(`Вы неверно указали промежутки.\n\`\`?рулетка хелп\`\``)
       .send()
       .then(msg => {
@@ -100,6 +101,7 @@ if (value === 'help' || value === 'хелп') {
   let randNum = Math.floor(Math.random() * 32)
   let final;
   let finalColor;
+  let isOdd;
   if (randNum >= 1 && randNum <= 12) final = types[0]
   if (randNum >= 13 && randNum <= 24) final = types[1]
   if (randNum >= 25 && randNum <= 32) final = types[2]
@@ -107,6 +109,12 @@ if (value === 'help' || value === 'хелп') {
   else if (randNum <= 32) {
     finalColor = 'Чёрный'
   }
+  if (randNum % 2 === 0 && randNum !== 0) {
+    isOdd = 'even'
+  } else if (randNum % 2 !== 0 && randNum !== 0) {
+    isOdd = 'odd'
+  }
+
 
   let finalType;
   let winType;
@@ -123,6 +131,13 @@ if (value === 'help' || value === 'хелп') {
   } else if (numbers.includes(type)) {
     finalType = type;
     winType = 3;
+  } else if (oddEven.includes(type)) {
+    if(type === 'четное' || type === 'чётное' || type === 'even') {
+      finalType = 'even';
+    } else if(type === 'нечетное' || type === 'нечётное' || type === 'odd') {
+      finalType = 'odd';
+    }
+    winType = 4;
   }
   setTimeout(async function() {
     if (winType === 1) {
@@ -142,6 +157,12 @@ if (value === 'help' || value === 'хелп') {
         await profileModel.findOneAndUpdate({userID: message.author.id}, {$inc: {coins: value * 16}})
 
         return embed(message).setSuccess(`Выпало: **${finalColor} ${randNum}**\n\nВы выиграли **${value * 16}** ${COIN}`).send()
+      }
+    } else if (winType === 4) {
+      if (finalType === isOdd) {
+        await profileModel.findOneAndUpdate({userID: message.author.id}, {$inc: {coins: value * 2}})
+
+        return embed(message).setSuccess(`Выпало: **${finalColor} ${randNum}**\n\nВы выиграли **${value * 2}** ${COIN}`).send()
       }
     }
     return embed(message).setError(`Выпало: **${finalColor} ${randNum}**\n\nВы проиграли.`).send()

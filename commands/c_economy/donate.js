@@ -24,7 +24,7 @@ module.exports = {
         value: '• Ваш ID\n• Что именно вы хотите, например **Vip 1** или **Vip 2**.',
         inline: false},
         {name: `Цены в рублях.`,
-        value: `• Vip 1 + 300.000 ${COIN} - 30₽\n• Vip 2 + 500.000 ${COIN} - 60₽`,
+        value: `• Vip 1 + 300.000 ${COIN} - 30₽\n• Vip 2 + 500.000 ${COIN} - 100₽`,
         inline: false},
       )
       .setTimestamp()
