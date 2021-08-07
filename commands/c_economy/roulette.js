@@ -33,7 +33,7 @@ module.exports = {
   if (author !== null && timeout - (Date.now() - author) > 0) {
       let time = new Date(timeout - (Date.now() - author));
 
-      return embed(message).setError(`Попробуй еще раз через **${time.getSeconds()} секунд.**.`).send().then(msg => {msg.delete({timeout: "10000"})});
+      return embed(message).setError(`Попробуй еще раз через **${time.getSeconds()} секунд.**`).send().then(msg => {msg.delete({timeout: "10000"})});
   }
 
 
