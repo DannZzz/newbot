@@ -27,9 +27,12 @@ module.exports = {
     if(!args[0]) return embed(message).setError("Укажите действие участника.").send().then(msg => {msg.delete({timeout: "10000"})});
 
     var member = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase());
-    if (!member) return embed(message).setError("Пользователь не в сервере.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (!member) {
+      const User = await Levels.fetch(args[0], message.guild.id)
+      if(!User.userID) return embed(message).setError("Пользователь не найден.").send().then(msg => {msg.delete({timeout: "10000"})});
+    }
 
-    Levels.deleteUser(member.user.id, message.guild.id);
+    Levels.deleteUser(member ? member.user.id : args[0], message.guild.id);
 
     embed(message).setSuccess('Данные успешно удалены.').send()
   }
