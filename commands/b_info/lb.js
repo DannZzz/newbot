@@ -39,7 +39,7 @@ module.exports = {
 
     const gg = await Levels.computeLeaderboard(bot, led, true);
 
-    const lb = gg.map(e => `${e.position}. ${e.username}#${e.discriminator}\nУровень: ${e.level}\nОпыт: ${e.xp.toLocaleString()}`);
+    const lb = gg.map(e => `${e.position}. ${e.username}#${e.discriminator}\n(${e.userID})\nУровень: ${e.level}\nОпыт: ${e.xp.toLocaleString()}`);
 
     let as;
     let page1;
