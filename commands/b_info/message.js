@@ -15,18 +15,19 @@ module.exports = {
   run: async (bot, message, args) => {
     let {member, channel} = message
     const profileData = await profileModel.findOne({userID: member.id});
-    if(!args[0]) return embed(message).setError(`Оставьте сообщение.`).send().then(msg => {msg.delete({timeout: "10000"})});
+
 
     let toGuild = bot.guilds.cache.get('731032795509686332');
     let toChannel = toGuild.channels.cache.get('870408356723052655');
 
-    let timeout = 1000 * 30 * 60;
+    let timeout = 1000 * 10 * 60;
     let author = profileData.bug;
     if (author !== null && timeout - (Date.now() - author) > 0) {
 
       let time = new Date(timeout - (Date.now() - author));
       return embed(message).setError(`Попробуй снова через **${time.getMinutes()} минут ${time.getSeconds()} секунд**.`).send().then(msg => {msg.delete({timeout: "10000"})});
     } else {
+      if(!args[0]) return embed(message).setError(`Оставьте сообщение.`).send().then(msg => {msg.delete({timeout: "10000"})});
       embed(message).setSuccess("Спасибо за отзыв, мы рассмотрим ваше сообщение.").send()
       toChannel.send(embed(message).setPrimary(
         `
