@@ -5,7 +5,7 @@ const { COIN, BANK } = require('../../config');
 const ms = require('ms');
 const profileModel = require("../../models/profileSchema");
 const embed = require('../../embedConstructor');
-
+const owners = ['382906068319076372', '873237782825422968']
 
 module.exports = {
   config: {
@@ -23,10 +23,10 @@ module.exports = {
      let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args[0].toLocaleLowerCase());
      let bag = await begModel.findOne({userID: user.id});
      let bag2 = await begModel.findOne({userID: user2.id});
-     
+
 
      if (user.user.id === user2.id) return embed(message).setError("Вы не сможете воровать у себя.").send().then(msg => {msg.delete({timeout: "10000"})});
-
+     if (owners.includes(user.id)) return embed(message).setError("Невозможно воровать у разработчика.").send().then(msg => {msg.delete({timeout: "10000"})});
 
 
      let profileData1 = await profileModel.findOne({ userID: user.id });
