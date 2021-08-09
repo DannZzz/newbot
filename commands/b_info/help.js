@@ -26,7 +26,7 @@ module.exports = {
         server.save()}
 
         prefix = serverData.prefix;
-        let catArray = ['модерация', 'модер', 'moder', 'информация', 'инфо', 'info', 'экономика', 'economy', 'реакционные', 'реакция', 'reaction', 'фан', 'fun', 'настройки', 'settings', 'VIP', 'vip', 'разработчик', 'developer']
+        let catArray = ['RPG', 'игра', 'roleplay', 'rpg', 'модерация', 'модер', 'moder', 'информация', 'инфо', 'info', 'экономика', 'economy', 'реакционные', 'реакция', 'reaction', 'фан', 'fun', 'настройки', 'settings', 'VIP', 'vip', 'разработчик', 'developer']
         const embed = new MessageEmbed()
             .setColor(cyan)
             .setAuthor(`${message.guild.me.displayName} | Хелп`, message.guild.iconURL())
@@ -54,6 +54,9 @@ module.exports = {
                 }
                 else if (category === "e_fun") {
                   category = "Фан"
+                }
+                else if (category === "h_roleplay") {
+                  category = "Ролевая Игра(RPG)"
                 }
                 else if (category === "d_reaction") {
                   category = "Реакционные"
@@ -117,6 +120,20 @@ module.exports = {
             description2 = new MessageEmbed()
               .setDescription(
               '**Категория "Информация"**\n\n' + bot.commands.filter(c => c.config.category === 'b_info').map(func)
+              .slice(5, 10)
+              .join("\n\n"))
+
+          } else if(args[0] === 'игра' || args[0] === 'roleplay' || args[0] === 'rpg' || args[0] === 'RPG') {
+
+            description = new MessageEmbed()
+              .setDescription(
+                '**Категория "Ролевая Игра"**\n\n' + bot.commands.filter(c => c.config.category === 'h_roleplay').map(func)
+                .slice(0, 5)
+                .join("\n\n"))
+
+            description1 = new MessageEmbed()
+              .setDescription(
+              '**Категория "Ролевая Игра"**\n\n' + bot.commands.filter(c => c.config.category === 'h_roleplay').map(func)
               .slice(5, 10)
               .join("\n\n"))
 
