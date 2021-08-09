@@ -11,7 +11,9 @@ const profileSchema = new mongoose.Schema({
   work: {type: Number, default: 0 },
   daily: {type: Number, default: 0 },
   bug: {type: Number, default: 0 },
+  drag: { type: Number, default: 0},
   roulette: { type: Number, default: 0},
+  rpg: { type: Number, default: 0},
   shopped: {any: {}}
 });
 
