@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const { MessageEmbed } = require('discord.js');
-
+const mc = require('discordjs-mongodb-currency');
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const db = require("mongoose");
@@ -17,36 +17,23 @@ module.exports = {
         accessableby: "Для всех"
     },
     run: async (bot, message, args) => {
-    let msg = await message.channel.send("**Секунду**");
-    const users = await profileModel.find()
 
-    const lb = users
-              .slice(0)
-              .sort(({ bank: a }, { bank: b }) => b - a)
-              //.splice(0, 15)
-              .filter(
-                function({userID}) {
-                  let guild = bot.guilds.cache.get(message.guild.id)
+    const leaderboard = await mc.generateLeaderboard(message.guild.id, 10);
 
-                  let is =  guild.member(userID);
-                  return guild.members.cache.find(mem => mem === is)
+    if (leaderboard.length < 1) return message.channel.send("Тут никого нет.");
 
+    const mappedLeaderboard = leaderboard.map((i, p = 0)=> {
 
-                }
-              )
-              .map(
+      return `${p+1}. <@!${i.userId}> - ${i.coinsInWallet}`
+    });
 
-                ({ userID, bank }, pos) => `__${pos + 1}.__ <@${userID}> - **${commaNumber(bank)}** ${COIN}`
-              )
+    const embed = new MessageEmbed()
+    .setTitle(`Топ - ${message.guild.name}`)
+    .setColor(cyan)
+    .setTimestamp()
+    .setDescription(`${mappedLeaderboard.join('\n')}`);
 
+    message.channel.send(embed);
 
-
-          const newnew =     lb.splice(0, 15)
-            const embed = new MessageEmbed()
-              .setTitle('Самые богатые участники по Банку - Top 15')
-              .setDescription(newnew)
-              .setColor('RANDOM')
-    message.channel.send(embed)
-    msg.delete()
   }
 }
