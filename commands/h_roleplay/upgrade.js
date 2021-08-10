@@ -25,8 +25,9 @@ module.exports = {
     if(!rp || rp.item === null) {
     return embed(message).setError('Вы не имеете героя.').send().then(msg => msg.delete({timeout: "10000"}))
     };
+    let hero = heroes[rp.item]
     let firstLevel = 1;
-    let levelCost = 300000;
+    let levelCost = hero.upgradeCost;
 
     let requiredValue = rp.level * levelCost;
 
@@ -40,7 +41,7 @@ module.exports = {
     await rpg.findOneAndUpdate({userID: message.author.id}, {$inc: {damage: addD}});
     await pd.findOneAndUpdate({userID: message.author.id}, {$inc: {coins: -requiredValue}});
 
-    let hero = heroes[rp.item]
+
     let Embed = new MessageEmbed()
     .setAuthor(`Уровень успешно прокачена до ${rp.level + 1}`)
     .setTitle(`${hero.name} (${hero.nameRus})`)

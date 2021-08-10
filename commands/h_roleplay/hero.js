@@ -21,7 +21,7 @@ module.exports = {
     const user = message.member;
     if(user.user.bot) return embed(message).setError('Бот не может иметь героя.').send().then(msg => msg.delete({timeout: "10000"}))
     const rp = await rpg.findOne({userID: user.id});
-    if (!rp) return embed(message).setError('Участник не имеет героя.').send().then(msg => msg.delete({timeout: "10000"}))
+    if (!rp) return embed(message).setError('Вы не имеете героя.').send().then(msg => msg.delete({timeout: "10000"}))
     if(rp.item !== null) {
     const item = heroes[rp.item]
     let myHero = new MessageEmbed()
@@ -39,7 +39,7 @@ module.exports = {
 
     return message.channel.send(myHero).then(msg => msg.delete({timeout: "5000"}))
   } else {
-    return embed(message).setError('Участник не имеет героя.').send().then(msg => msg.delete({timeout: "10000"}))
+    return embed(message).setError('Вы не имеете героя.').send().then(msg => msg.delete({timeout: "10000"}))
   }
 
   }
