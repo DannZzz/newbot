@@ -1,10 +1,16 @@
-const yes = ['yes', 'y', 'ye', 'yea', 'correct'];
-const no = ['no', 'n', 'nah', 'nope', 'fuck off'];
+const yes = ['yes', 'y', 'ye', 'yea', 'correct', 'да', 'Да'];
+const no = ['no', 'n', 'nah', 'nope', 'fuck off', 'нет', 'Нет', 'не'];
 const MONEY = ['', 'k', 'M', 'G', 'T', 'P', 'E'];
+const pd = require("./models/profileSchema");
 const inviteRegex = /(https?:\/\/)?(www\.|canary\.|ptb\.)?discord(\.gg|(app)?\.com\/invite|\.me)\/([^ ]+)\/?/gi;
 const botInvRegex = /(https?:\/\/)?(www\.|canary\.|ptb\.)?discord(app)\.com\/(api\/)?oauth2\/authorize\?([^ ]+)\/?/gi;
 
 module.exports = {
+  checkValue: async function (user, val) {
+    let pr = await pd.findOne({userID: user.id});
+    if (pr.coins < val || isNaN(val)) return true;
+  },
+
   getMember(message, toFind = '') {
     toFind = toFind.toLowerCase();
 
@@ -140,7 +146,7 @@ module.exports = {
     if (bot) str = str.replace(botInvRegex, text);
     return str;
   },
-  
+
   wrapText (ctx, text, maxWidth) {
 		return new Promise(resolve => {
 			if (ctx.measureText(text).width < maxWidth) return resolve([text]);
