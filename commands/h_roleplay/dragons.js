@@ -24,7 +24,7 @@ module.exports = {
     .setTitle(`${zeenou.name} (${zeenou.nameRus}) ${cVip(zeenou.vip)}`)
     .setThumbnail(zeenou.url)
     .setDescription(zeenou.description)
-    .addField(`Цена: ${zeenou.cost} ${COIN}`, `**Доступен: ${zeenou.available}**`, true)
+    .addField(`Цена: ${zeenou.cost} ${cType(zeenou.costType)}`, `**Доступен: ${zeenou.available}**`, true)
     .addField(`Жизнь: ${zeenou.health} ❤`, `**Атака: ${zeenou.damage}** ⚔`, true)
     allDrags.push(dragon1)
 
