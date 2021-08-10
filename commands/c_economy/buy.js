@@ -26,9 +26,9 @@ module.exports = {
       if (data['vip1']) {
         return embed(message).setError("Вы уже имеете VIP!").send().then(msg => {msg.delete({timeout: "10000"})});
       } else {
-        if(data.stars >= 750) {
+        if(data.stars >= 950) {
           await begModel.findOneAndUpdate({userID: message.author.id}, {$set: {'vip1': true}});
-          await begModel.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: -750}});
+          await begModel.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: -950}});
 
           embed(message).setSuccess(`Вы успешно купили VIP!`).send();
         } else {
@@ -41,24 +41,15 @@ module.exports = {
       if (data['vip2']) {
         return embed(message).setError("Вы уже имеете VIP!").send().then(msg => {msg.delete({timeout: "10000"})});
       } else {
-        if(data.stars >= 3000) {
+        if(data.stars >= 4000) {
           await begModel.findOneAndUpdate({userID: message.author.id}, {$set: {'vip2': true}});
-          await begModel.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: -3000}})
+          await begModel.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: -4000}})
 
           embed(message).setSuccess(`Вы успешно купили VIP!`).send()
         } else {
           return embed(message).setError("У вас недостаточно звезд!").send().then(msg => {msg.delete({timeout: "10000"})});
         }
       }
-    } else if (args[0] === "звезды" || args[0] === 'звёзды'  || args[0] === 'stars') {
-      if (!args[1]) return embed(message).setError(`Укажите кол-во звезд!`).send().then(msg => {msg.delete({timeout: "10000"})});
-      if(isNaN(args[1])) return embed(message).setError(`Укажите кол-во звезд!`).send().then(msg => {msg.delete({timeout: "10000"})});
-      if ((args[1] * 100000) > bal.coins) return embed(message).setError(`У вас недостаточно денег!`).send().then(msg => {msg.delete({timeout: "10000"})});
-      let cost = Math.floor(args[1]) * 100000
-      await profileModel.findOneAndUpdate({userID: message.author.id}, {$inc: {coins: -cost}})
-      await begModel.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: args[1]}})
-
-      embed(message).setSuccess(`Вы успешно купили **${Math.floor(args[1])} ${STAR}** за **${cost} ${COIN}**`).send()
     } else {
       return embed(message).setError("Предмет не найден!").send().then(msg => {msg.delete({timeout: "10000"})});
     }
