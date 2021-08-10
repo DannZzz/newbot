@@ -10,10 +10,21 @@ const customModel = require("../../models/customSchema");
 const queue2 = new Map();
 const queue3 = new Map();
 const queue = new Map();
-const games = new Map()
+const games = new Map();
+const mongoCurrency = require('discordjs-mongodb-currency');
+
 
 module.exports = async (bot, message) => {
+  try {
+    const user = await mongoCurrency.findUser(message.author.id, message.guild.id); // Get the user from the database.
+    if (!user) {
+      mongoCurrency.createUser(message.author.id, message.guild.id)
+    }
+  } catch (e) {
+    console.log(e);
+  }
     try {
+      let memberData;
       let profileData;
       let serverData;
       let begData;
@@ -25,6 +36,14 @@ module.exports = async (bot, message) => {
       userID: message.author.id
     })
     vip.save()}
+
+    memberData = await memberModel.findOne({ userID: message.author.id, serverID: message.guild.id });
+    if (!memberData) {
+    let member = await memberModel.create({
+      userID: message.author.id,
+      serverID: message.guild.id
+    })
+    member.save()}
 
     begData = await begModel.findOne({ userID: message.author.id });
     if (!begData) {

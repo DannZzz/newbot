@@ -6,10 +6,11 @@ const bot = new Client({disableMentions: "everyone"});
 disbut(bot);
 const fs = require('fs');
 const mongoose = require('mongoose');
-const mc = require('discord-mongo-currency')
+const mc = require('discordjs-mongodb-currency')
 const Levels = require("discord-xp");
 Levels.setURL(MONGO);
 
+mc.connect(MONGO)
 mongoose.connect(MONGO, {useNewUrlParser: true, useUnifiedTopology: true})
 mongoose.set('useFindAndModify', false)
 
@@ -41,6 +42,14 @@ bot.on("guildCreate", async guild => {
   server.save()}
 
   for (let member in guild.members){
+    let memberData = await memberModel.findOne({ userID: member.id, serverID: guild.id});
+    if (!memberData) {
+    let memberr = await memberModel.create({
+      userID: member.id,
+      serverID: guild.id,
+    });
+    memberr.save()};
+
     let vipData = await vipModel.findOne({ userID: member.id });
     if (!vipData) {
     let vip = await vipModel.create({
@@ -59,13 +68,7 @@ bot.on("guildCreate", async guild => {
     if (!profileData) {
     let profile = await profileModel.create({
       userID: member.id,
-      serverID: guild.id,
-      coins: 1000,
-      bank: 0,
-      slots: 0,
-      rob: 0,
       fish: 0,
-      work: 0,
       daily: 0
     })
     profile.save()}
@@ -172,20 +175,29 @@ bot.on("guildMemberAdd", async member => {
   if (!profileData) {
   let profile = await profileModel.create({
     userID: member.id,
-    serverID: member.guild.id,
-    coins: 1000,
-    bank: 0,
-    slots: 0,
-    rob: 0,
     fish: 0,
-    work: 0,
     daily: 0
   });
   profile.save()};
+
+  let memberData = await memberModel.findOne({ userID: member.id, serverID: member.guild.id});
+  if (!memberData) {
+  let memberr = await memberModel.create({
+    userID: member.id,
+    serverID: member.guild.id,
+  });
+  memberr.save()};
 })
 
 
 bot.on('message', async message => {
+  let memberData = await memberModel.findOne({ userID: message.author.id, serverID: message.guild.id });
+  if (!memberData) {
+  let member = await memberModel.create({
+    userID: message.author.id,
+    serverID: message.guild.id
+  })
+  member.save()}
   let prefix;
     if (message.author.bot || message.channel.type === "dm") return;
         try {
