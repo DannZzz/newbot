@@ -37,7 +37,7 @@ module.exports = {
     .addField(`🏆 Процент побед:`, `${Math.trunc(rp.wins / rp.totalGames  * 100) || '0'}%`, true)
     .setColor(cyan)
 
-    return message.channel.send(myHero).then(msg => msg.delete({timeout: "5000"}))
+    return message.channel.send(myHero).then(msg => msg.delete({timeout: "20000"}))
   } else {
     return embed(message).setError('Вы не имеете героя.').send().then(msg => msg.delete({timeout: "10000"}))
   }
