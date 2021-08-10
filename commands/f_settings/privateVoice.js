@@ -34,7 +34,7 @@ module.exports = {
         .then( async channel => {
           let findCategory = server.channels.cache.get(serverData.voiceCategory)
           channel.setParent(findCategory.id);
-          await serverModel.findOneAndUpdate({serverID: server.id}, {$set: {voiceChannel: channel.id}})
+          await serverModel.findOneAndUpdate({serverID: server.id}, {$set: {voiceChannel: channel.id}}) 
 
           return embed(message)
           .setSuccess('Система приватных голосовых каналов успешно включена.')

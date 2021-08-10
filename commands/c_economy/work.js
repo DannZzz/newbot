@@ -5,8 +5,9 @@ const Jwork = require('../../JSON/works.json');
 const JworkR = Jwork[Math.floor(Math.random() * Jwork.length)];
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
-const profileModel = require("../../models/profileSchema");
+const memberModel = require("../../models/memberSchema");
 const begModel = require("../../models/begSchema");
+const mc = require('discordjs-mongodb-currency');
 
 module.exports = {
     config: {
@@ -21,9 +22,11 @@ module.exports = {
 
         let user = message.author;
 
-        let profileData = await profileModel.findOne({ userID: user.id });
+        let memberData = await memberModel.findOne({ userID: user.id, serverID: message.guild.id });
         let bag = await begModel.findOne({ userID: user.id });
-        let author = profileData.work;
+
+        let author = memberData.work;
+
         let timeout;
         if (bag["vip2"] === true) { timeout = 90 * 1000; } else {
           timeout = 180 * 1000;
@@ -36,8 +39,8 @@ module.exports = {
             let amount = Math.floor(Math.random() * 800) + 1;
             embed(message).setSuccess(`**${JworkR} ${amount}**${COIN}`).send()
 
-            await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount}})
-            await profileModel.findOneAndUpdate({userID: user.id}, {$set: {work: Date.now()}})
+            await mc.giveCoins(message.member.id, message.guild.id, amount);
+            await memberModel.findOneAndUpdate({userID: user.id, serverID: message.guild.id}, {$set: {work: Date.now()}})
 
         };
     }

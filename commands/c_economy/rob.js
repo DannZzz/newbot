@@ -3,9 +3,10 @@ const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const ms = require('ms');
-const profileModel = require("../../models/profileSchema");
+const memberModel = require("../../models/memberSchema");
 const embed = require('../../embedConstructor');
 const owners = ['382906068319076372', '873237782825422968']
+const mc = require('discordjs-mongodb-currency');
 
 module.exports = {
   config: {
@@ -21,7 +22,7 @@ module.exports = {
      if (!args[0]) return embed(message).setError("Укажите участника.").send().then(msg => {msg.delete({timeout: "10000"})});
      user2 = message.member;
      let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args[0].toLocaleLowerCase());
-     let bag = await begModel.findOne({userID: user.id});
+
      let bag2 = await begModel.findOne({userID: user2.id});
 
 
@@ -29,10 +30,12 @@ module.exports = {
      if (owners.includes(user.id)) return embed(message).setError("Невозможно воровать у разработчика.").send().then(msg => {msg.delete({timeout: "10000"})});
 
 
-     let profileData1 = await profileModel.findOne({ userID: user.id });
-     let profileData = await profileModel.findOne({ userID: user2.id });
-     let target = profileData1.coins;
-     let author = profileData.rob;
+     let profileData1 = await mc.findUser(user.id, message.guild.id)
+     let profileData = await mc.findUser(user2.id, message.guild.id)
+     let target = profileData1.coinsInWallet;
+     if(isNaN(target)) target = 0
+     let memberData = await memberModel.findOne({userID: user2.id, serverID: message.guild.id})
+     let author = memberData.rob;
 
      let timeout;
      if (bag2["vip2"] === true) { timeout = 43200 * 1000; } else {
@@ -52,9 +55,9 @@ module.exports = {
      } else {
        embed(message).setSuccess(`Вам удалось воровать у <@${user.id}> - кол-во денег: ${COIN}**${random}**`).send()
 
-       await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: -random}});
-       await profileModel.findOneAndUpdate({userID: user2.id},{$inc: {coins: random}});
-       await profileModel.findOneAndUpdate({userID: user2.id},{$set: {rob: Date.now()}});
+       await mc.deductCoins(user.id, message.guild.id, random || 1);
+       await mc.giveCoins(user2.id, message.guild.id, random || 1);
+       await memberModel.findOneAndUpdate({userID: user2.id, serverID: message.guild.id},{$set: {rob: Date.now()}});
 
      }
 

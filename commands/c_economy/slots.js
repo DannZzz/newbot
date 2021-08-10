@@ -4,9 +4,9 @@ const embed = require('../../embedConstructor');
 const { MessageEmbed } = require('discord.js');
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN, BANK, AGREE, DISAGREE } = require('../../config');
-const profileModel = require("../../models/profileSchema");
+const memberModel = require("../../models/memberSchema");
 const begModel = require("../../models/begSchema");
-
+const mc = require('discordjs-mongodb-currency');
 
 module.exports = {
     config: {
@@ -20,9 +20,10 @@ module.exports = {
     run: async (bot, message, args) => {
 
     let user = message.author;
-    let profileData = await profileModel.findOne({ userID: user.id });
+    let memberData = await memberModel.findOne({ userID: user.id, serverID: message.guild.id });
     let beg = await begModel.findOne({ userID: user.id });
-    let moneydb = profileData.coins;
+    let data = await mc.findUser(user.id, message.guild.id)
+    let moneydb = data.coinsInWallet;
     let money = Math.floor(parseInt(args[0]));
     let win = false;
 
@@ -37,7 +38,7 @@ module.exports = {
       timeout = 180 * 1000;
     };
 
-    let author = profileData.slots;
+    let author = memberData.slots;
     if (author !== null && timeout - (Date.now() - author) > 0) {
 
       let time = new Date(timeout - (Date.now() - author));
@@ -64,8 +65,8 @@ module.exports = {
       if (money > moneydb) return embed(message).setError(`У вас недостаточно денег.`).send();
       let reward = 0 ;
       let number = []
+      await mc.deductCoins(user.id, message.guild.id, Math.floor(money))
 
-      await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor(-money)}});
       for (let i = 0; i < 3; i++) { number[i] = Math.floor(Math.random() * slotItems.length); }
 
       if (number[0] == number[1] && number[1] == number[2])  {
@@ -78,16 +79,12 @@ module.exports = {
       if (win) {
 
           embed(message).setPrimary(`${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n${AGREE} Ты выиграл ${money}${COIN}`).send()
-
-          await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor(money)}});
+          await mc.giveCoins(user.id, message.guild.id, Math.floor(money))
       } else {
           embed(message).setPrimary(`${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n${DISAGREE} Ты проиграл ${money}${COIN}`).send()
 
-
-
-
       }
-      await profileModel.findOneAndUpdate({userID: user.id},{$set: {slots: Date.now()}});
+      await memberModel.findOneAndUpdate({userID: user.id, serverID: message.guild.id},{$set: {slots: Date.now()}});
 
     }
 

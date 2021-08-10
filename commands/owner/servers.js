@@ -7,7 +7,7 @@ module.exports = {
   config: {
     name: "сервера",
     aliases: ["servers", 'лист'],
-    category: "owner",
+    category: "",
     description: "Показывает все сервера где находится бот!",
     usage: "",
     accessableby: "Для разработчика"

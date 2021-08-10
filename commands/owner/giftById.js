@@ -1,4 +1,4 @@
-const profileModel = require("../../models/profileSchema");
+const begModel = require("../../models/begSchema");
 const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN, AGREE } = require('../../config');
@@ -20,7 +20,7 @@ module.exports = {
 
     let user = bot.users.cache.get(args[0]);
     try {
-      let profileData = await profileModel.findOne({ userID: user.id });
+      let begData = await begModel.findOne({ userID: user.id });
     } catch {
       return embed(message).setError("Данные не найдены.").send().then(msg => {msg.delete({timeout: "10000"})});
     }
@@ -30,7 +30,7 @@ module.exports = {
     if(args[1] > 1000000000) return embed(message).setError("Укажите число меньше **1.000.000.000**.").send().then(msg => {msg.delete({timeout: "10000"})});
     if(args[1] < 10) return embed(message).setError("Укажите число больше **10**.").send().then(msg => {msg.delete({timeout: "10000"})});
 
-    await profileModel.findOneAndUpdate({userID: user.id}, {$inc: {bank: Math.floor(args[1])}})
+    await begModel.findOneAndUpdate({userID: user.id}, {$inc: {stars: Math.floor(args[1])}})
     message.react(`${AGREE}`)
     let msg = user.send(embed(message).setPrimary(`**У вас подарок от разработчика!🎉**\n\n||---**${Math.floor(args[1])}** ${COIN}---||`))
 

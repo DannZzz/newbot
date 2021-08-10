@@ -26,7 +26,7 @@ module.exports = {
         server.save()}
 
         prefix = serverData.prefix;
-        let catArray = ['RPG', 'игра', 'roleplay', 'rpg', 'модерация', 'модер', 'moder', 'информация', 'инфо', 'info', 'экономика', 'economy', 'реакционные', 'реакция', 'reaction', 'фан', 'fun', 'настройки', 'settings', 'VIP', 'vip', 'разработчик', 'developer']
+        let catArray = ['RPG', 'игра', 'roleplay', 'rpg', 'модерация', 'модер', 'moder', 'информация', 'инфо', 'info', 'экономика', 'economy', 'реакционные', 'реакция', 'reaction', 'фан', 'fun', 'настройки', 'settings', 'VIP', 'vip']
         const embed = new MessageEmbed()
             .setColor(cyan)
             .setAuthor(`${message.guild.me.displayName} | Хелп`, message.guild.iconURL())
@@ -38,16 +38,13 @@ module.exports = {
             const categories = readdirSync("./commands/")
 
             embed.setDescription(`**Привет! я ${message.guild.me.displayName}\nМой глобальный префикс: \`${PREFIX}\`\nМой префикс на этом сервере: \`${prefix}\`\nЕще больше информации:\n\`${prefix}хелп [категория]\n${prefix}хелп [команда | псевдоним]\`**`)
-            embed.setFooter(`${message.guild.me.displayName} | Кол-во команд: ${bot.commands.size-4} `, bot.user.displayAvatarURL());
+            embed.setFooter(`${message.guild.me.displayName} | Кол-во команд: ${bot.commands.size-5} `, bot.user.displayAvatarURL());
 
             let a = categories.map(category => {
                 const dir = bot.commands.filter(c => c.config.category === category);
                 if(category === "b_info") {category = "Информация"}
                 else if (category === "a_moderation") {
                   category = "Модерация"
-                }
-                else if (category === "owner") {
-                  category = "Разработчик"
                 }
                 else if (category === "g_vip") {
                   category = "VIP"
@@ -69,8 +66,9 @@ module.exports = {
                 }
                 return category.slice(0, 1).toUpperCase() + category.slice(1) + ` [${dir.size}]`;
 
-            }).join("\n")
-            embed.addField(`Все доступные категории:`, `\`\`\`${a}\`\`\``)
+            })
+            a.pop()
+            embed.addField(`Все доступные категории:`, `\`\`\`${a.join("\n")}\`\`\``)
 
             return message.channel.send(embed)
         }else if(catArray.includes(args[0]) && !args[1]) {
@@ -222,17 +220,6 @@ module.exports = {
               '**Категория "VIP"**\n\n' + bot.commands.filter(c => c.config.category === 'g_vip').map(func)
               .slice(5, 10)
               .join("\n\n"))
-
-
-          } else if(args[0] === 'разработчик' || args[0] === 'developer') {
-            let e = new MessageEmbed()
-            .setDescription(
-              '**Категория "Разработчик"**\n\n' + bot.commands.filter(c => c.config.category === 'owner').map(func).join('\n\n')
-            )
-            .setFooter('Page 1 / 1')
-            .setColor(cyan)
-             message.channel.send(e)
-
           }
           pages = [description, description1, description2]
           if(!description2) { pages = [description.setColor(cyan), description1.setColor(cyan)] } else { pages = [description.setColor(cyan), description1.setColor(cyan), description2.setColor(cyan)] }
@@ -253,9 +240,6 @@ module.exports = {
             if(category === "b_info") {category = "Информация"}
             else if (category === "a_moderation") {
               category = "Модерация"
-            }
-            else if (category === "owner") {
-              category = "Разработчик"
             }
             else if (category === "e_fun") {
               category = "Фан"

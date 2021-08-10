@@ -5,7 +5,7 @@ const serverModel = require("../../models/serverSchema");
 const fishes = require('../../JSON/fishes.json');
 const { MessageEmbed } = require('discord.js');
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
-const { COIN, BANK } = require('../../config');
+const { COIN, BANK, STAR } = require('../../config');
 const embed = require('../../embedConstructor');
 
 
@@ -29,34 +29,34 @@ module.exports = {
 
       if (args[0] === '1') {
         fish_sell = bag.junk;
-        cost = 20
+        cost = 1
         rarity = fishes['junk']
       }
       else if (args[0] === '2') {
         fish_sell = bag.common;
-        cost = 50
+        cost = 2
         rarity = fishes['common']
       }
       else if (args[0] === '3') {
         fish_sell = bag.uncommon;
-        cost = 80
+        cost = 3
         rarity = fishes['uncommon']
       }
       else if (args[0] === '4') {
         fish_sell = bag.rare;
-        cost = 150
+        cost = 4
         rarity = fishes['rare']
       }
       else if (args[0] === '5') {
         fish_sell = bag.legendary;
-        cost = 450
+        cost = 5
         rarity = fishes['legendary']
       } else {
         return embed(message).setError(`Айди рыб не найдено: **${sd.prefix}рыба лист**`).send()
       }
       const xx = fish_sell
-      let exCost = cost + (cost / 2)
-      if(bag['vip1']) exCost = cost + (cost / 2) + (cost / 3)
+      let exCost;
+      if(bag['vip1']) exCost = cost + (cost / 3)
       if(xx === 0) return embed(message).setError(`Интересно, как продать "ничего".`).send()
       if(xx < 10) money = cost * xx;
       else if (xx < 100) money = exCost * xx;
@@ -67,9 +67,9 @@ module.exports = {
       else if (args[0] === '3') await begModel.findOneAndUpdate({userID: message.author.id},{$set: {uncommon: 0}})
       else if (args[0] === '4') await begModel.findOneAndUpdate({userID: message.author.id},{$set: {rare: 0}})
       else if (args[0] === '5') await begModel.findOneAndUpdate({userID: message.author.id},{$set: {legendary: 0}})
-      await profileModel.findOneAndUpdate({userID: message.author.id}, {$inc: {coins: Math.floor(money)}});
+      await begModel.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: Math.floor(money)}});
 
-      embed(message).setSuccess(`Вы продали **${xx}**${rarity.symbol} всего за **${Math.floor(money)} ${COIN}**`).send()
+      embed(message).setSuccess(`Вы продали **${xx}**${rarity.symbol} всего за **${Math.floor(money)} ${STAR}**`).send()
 
   }
 }

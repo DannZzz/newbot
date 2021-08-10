@@ -1,9 +1,10 @@
 const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const embed = require('../../embedConstructor');
-const profileModel = require("../../models/profileSchema")
+const memberModel = require("../../models/memberSchema")
 const begModel = require("../../models/begSchema")
 const {COIN, BANK} = require('../../config');
+const mc = require('discordjs-mongodb-currency');
 
 
 module.exports = {
@@ -21,10 +22,11 @@ module.exports = {
   const colors = ['red', 'black', 'красный', 'черный', 'чёрный'];
   const numberss = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]
   const numbers = numberss.map(rep => rep + '')
-  let data = await profileModel.findOne({userID: message.author.id  })
+  let data1 = await memberModel.findOne({userID: message.author.id, serverID: message.guild.id})
   let beg = await begModel.findOne({ userID: message.author.id });
+  let data = await mc.findUser(message.member.id, message.guild.id)
   var value = args[0]
-  let author = data.roulette;
+  let author = data1.roulette;
   let timeout;
   if (beg["vip2"] === true) { timeout = 31 * 1000; } else {
     timeout = 60 * 1000;
@@ -71,7 +73,7 @@ if (value === 'help' || value === 'хелп') {
 
   var type = args[1]
 
-  if (data.coins < value) return embed(message)
+  if (data.coinsInWallet < value) return embed(message)
       .setError('У вас недостаточно монет.')
       .send()
       .then(msg => {
@@ -89,14 +91,13 @@ if (value === 'help' || value === 'хелп') {
         })
       })
 
-  await profileModel.findOneAndUpdate({ userID: message.author.id }, {
-      $inc: { coins: -value }
-    })
+  await mc.deductCoins(message.member.id, message.guild.id, args[0]);
+
     await embed(message)
         .setSuccess('Вы участвуете в рулетке.')
         .send()
 
-  await profileModel.findOneAndUpdate({userID: message.author.id}, {$set: {roulette: Date.now()}})
+  await memberModel.findOneAndUpdate({userID: message.author.id, serverID: message.guild.id}, {$set: {roulette: Date.now()}})
 
   let randNum = Math.floor(Math.random() * 32)
   let final;
@@ -142,26 +143,24 @@ if (value === 'help' || value === 'хелп') {
   setTimeout(async function() {
     if (winType === 1) {
       if (finalType === final) {
-        await profileModel.findOneAndUpdate({userID: message.author.id}, {$inc: {coins: value * 3}})
+        await mc.giveCoins(message.member.id, message.guild.id, value * 3);
 
         return embed(message).setSuccess(`Выпало: **${finalColor} ${randNum}**\n\nВы выиграли **${value * 3}** ${COIN}`).send()
       }
     } else if (winType === 2) {
       if (finalType === finalColor) {
-        await profileModel.findOneAndUpdate({userID: message.author.id}, {$inc: {coins: value * 2}})
-
+        await mc.giveCoins(message.member.id, message.guild.id, value * 2);
         return embed(message).setSuccess(`Выпало: **${finalColor} ${randNum}**\n\nВы выиграли **${value * 2}** ${COIN}`).send()
       }
     } else if (winType === 3) {
       if (finalType === randNum) {
-        await profileModel.findOneAndUpdate({userID: message.author.id}, {$inc: {coins: value * 16}})
+        await mc.giveCoins(message.member.id, message.guild.id, value * 16);
 
         return embed(message).setSuccess(`Выпало: **${finalColor} ${randNum}**\n\nВы выиграли **${value * 16}** ${COIN}`).send()
       }
     } else if (winType === 4) {
       if (finalType === isOdd) {
-        await profileModel.findOneAndUpdate({userID: message.author.id}, {$inc: {coins: value * 2}})
-
+        await mc.giveCoins(message.member.id, message.guild.id, value * 2);
         return embed(message).setSuccess(`Выпало: **${finalColor} ${randNum}**\n\nВы выиграли **${value * 2}** ${COIN}`).send()
       }
     }

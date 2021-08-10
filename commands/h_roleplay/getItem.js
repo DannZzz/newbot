@@ -52,27 +52,13 @@ module.exports = {
         }
       }
 
-      if (item.costType === "coin" ) {
-        if(await checkValue(user, item.cost)) {
-          return embed(message).setError('У вас недостаточно денег, либо герой недоступен.').send().then(msg => msg.delete({timeout: "10000"}));
-        }
-
-        await pd.findOneAndUpdate({userID: user.id}, {$inc: {coins: -item.cost}});
-        await pd.findOneAndUpdate({userID: user.id}, {$set: {drag: Date.now()}});
-
-        await rpg.findOneAndUpdate({userID: user.id}, {$set: {item: type}});
-        await rpg.findOneAndUpdate({userID: user.id}, {$set: {health: item.health}});
-        await rpg.findOneAndUpdate({userID: user.id}, {$set: {level: 1}});
-        await rpg.findOneAndUpdate({userID: user.id}, {$set: {damage: item.damage}});
-
-        return embed(message).setSuccess(`Вы успешно купили героя **${item.nameRus}.**`).send();
-      } else if (item.costType === "star") {
+      if (item.costType === "star") {
         const stars = bag.stars
         if (item.cost > stars) {
           return embed(message).setError('У вас недостаточно звёзд, либо герой недоступен.').send().then(msg => msg.delete({timeout: "10000"}));
         }
         await bd.findOneAndUpdate({userID: user.id}, {$inc: {stars: -item.cost}});
-
+        await pd.findOneAndUpdate({userID: user.id}, {$set: {drag: Date.now()}})
         await rpg.findOneAndUpdate({userID: user.id}, {$set: {item: type}});
         await rpg.findOneAndUpdate({userID: user.id}, {$set: {health: item.health}});
         await rpg.findOneAndUpdate({userID: user.id}, {$set: {level: 1}});
@@ -80,7 +66,7 @@ module.exports = {
 
         return embed(message).setSuccess(`Вы успешно купили героя **${item.nameRus}.**`).send();
       } else {
-        return embed(message).setError('Герой недоступен для покупки монетами.').send().then(msg => msg.delete({timeout: "10000"}));
+        return embed(message).setError('Герой недоступен для покупки.').send().then(msg => msg.delete({timeout: "10000"}));
       }
 
     } else {

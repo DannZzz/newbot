@@ -2,7 +2,7 @@ const {MessageEmbed} = require("discord.js");
 const {cyan, redlight} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const embed = require('../../embedConstructor');
-
+const mc = require('discordjs-mongodb-currency');
 const profileModel = require("../../models/profileSchema");
 
 
@@ -22,7 +22,7 @@ module.exports = {
     .setTimestamp()
 
 
-    profileData = await profileModel.findOne({ userID: member.id });
+    const data = await mc.findUser(member.id, message.guild.id);
 
 
 
@@ -32,7 +32,7 @@ module.exports = {
         .setTimestamp()
         .setAuthor(member.user.username, member.user.displayAvatarURL({dynamic: true}))
         .setDescription(
-          `Баланс: ${COIN}**${profileData.coins}**\nБанк: ${BANK}**${profileData.bank}**\n\nНа счету: ${COIN}**${profileData.bank + profileData.coins}**`
+          `Баланс: ${COIN}**${data.coinsInWallet}**\nБанк: ${BANK}**${data.coinsInBank}**\n\nНа счету: ${COIN}**${data.coinsInBank + data.coinsInWallet}**`
         );
       message.channel.send(moneyEmbed);
     } else {

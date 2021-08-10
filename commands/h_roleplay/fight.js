@@ -8,6 +8,8 @@ const { MessageEmbed } = require("discord.js");
 const { COIN } = require("../../config");
 const { checkValue } = require("../../functions");
 const embed = require('../../embedConstructor');
+const mc = require('discordjs-mongodb-currency');
+
 
 module.exports = {
   config: {
@@ -21,6 +23,7 @@ module.exports = {
   run: async (bot, message, args) => {
     const bag = await bd.findOne({ userID: message.author.id });
     const profileData = await pd.findOne({ userID: message.author.id });
+
     let author = profileData.rpg;
     let timeout;
     if (bag["vip2"] === true) { timeout = 70 * 1000; } else {
@@ -39,11 +42,11 @@ module.exports = {
 
     if(!args[1] || isNaN(args[1])) return embed(message).setError('Укажите ставку.').send().then(msg => msg.delete({timeout: "10000"}));
     let value = Math.floor(args[1])
-    let data11 = await pd.findOne({userID: user.id});
-    let data22 = await pd.findOne({userID: mUser.id});
+    let data11 = await mc.findUser(user.id, message.guild.id)
+    let data22 = await mc.findUser(mUser.id, message.guild.id)
 
-    let bal = data11.coins
-    let mBal = data22.coins
+    let bal = data11.coinsInWallet
+    let mBal = data22.coinsInWallet
     if (value < 10000) return embed(message).setError(`Минимальная ставка **10000**.`).send().then(msg => {msg.delete({timeout: "10000"})});
 
     if (!bag["vip1"] && value > 100000) {
@@ -84,8 +87,8 @@ module.exports = {
       if((item === mItem && arr[0][0] === mItem && arr[0][1] === mItem) || (arr[0][0] === item && arr[0][1] === mItem) || (arr[0][1] === item && arr[0][0] === mItem)) gifUrl = arr[1]
 
     })
-    await pd.findOneAndUpdate({userID: user.id}, {$inc: {coins: -value}});
-    await pd.findOneAndUpdate({userID: mUser.id}, {$inc: {coins: -value}});
+    await mc.deductCoins(user.id, message.guild.id, value)
+    await mc.deductCoins(mUser.id, message.guild.id, value)
 
     const data1 = heroes[mItem];
     const data2 = heroes[item];
@@ -111,8 +114,8 @@ module.exports = {
   }).then(async (collected) => {
         if(collected.first().content == '-'){
           await wait.delete()
-          await pd.findOneAndUpdate({userID: user.id}, {$inc: {coins: value}});
-          await pd.findOneAndUpdate({userID: mUser.id}, {$inc: {coins: value}});
+          await mc.giveCoins(user.id, message.guild.id, value)
+          await mc.giveCoins(mUser.id, message.guild.id, value)
           return embed(message).setPrimary(`${user} отказался.`).send()
     }
     else if (collected.first().content == '+') {
@@ -165,7 +168,8 @@ module.exports = {
       .addField(`Выигрыш: ${value * 2} ${COIN}`, `**🏆 Процент побед: ${Math.trunc(winData.wins / winData.totalGames * 100) || '0'}%**`, true)
 
       setTimeout(async() => {
-        await pd.findOneAndUpdate({userID: winner.id}, {$inc: {coins: value * 2}});
+        await mc.giveCoins(winner.id, message.guild.id, 2 * value)
+
         await rpg.findOneAndUpdate({userID: winner.id}, {$inc: {wins: 1}})
         await rpg.findOneAndUpdate({userID: loser.id}, {$inc: {loses: 1}})
 
@@ -173,15 +177,15 @@ module.exports = {
       }, 10000)
 
     } else {
-      await pd.findOneAndUpdate({userID: user.id}, {$inc: {coins: value}});
-      await pd.findOneAndUpdate({userID: mUser.id}, {$inc: {coins: value}});
+      await mc.giveCoins(user.id, message.guild.id, value)
+      await mc.giveCoins(mUser.id, message.guild.id, value)
       return embed(message).setError(`Поединок отклонен.`).send();
     }
     console.log('collected :' + collected.first().content)
   }).catch(async() => {
         // what to do if a user takes too long goes here
-    await pd.findOneAndUpdate({userID: user.id}, {$inc: {coins: value}});
-    await pd.findOneAndUpdate({userID: mUser.id}, {$inc: {coins: value}});
+    await mc.giveCoins(user.id, message.guild.id, value)
+    await mc.giveCoins(mUser.id, message.guild.id, value)
     message.reply('Время прошло, ваш соперник не успел принять вызов.')
     });
 

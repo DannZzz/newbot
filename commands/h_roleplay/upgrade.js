@@ -19,8 +19,8 @@ module.exports = {
   },
   run: async (bot, message, args) => {
     const rp = await rpg.findOne({userID: message.author.id});
-    const data = await pd.findOne({userID: message.author.id});
-    const bal = data.coins;
+    const data = await bd.findOne({userID: message.author.id});
+    const bal = data.stars;
 
     if(!rp || rp.item === null) {
     return embed(message).setError('Вы не имеете героя.').send().then(msg => msg.delete({timeout: "10000"}))
@@ -39,7 +39,7 @@ module.exports = {
     await rpg.findOneAndUpdate({userID: message.author.id}, {$inc: {level: 1}});
     await rpg.findOneAndUpdate({userID: message.author.id}, {$inc: {health: addH}});
     await rpg.findOneAndUpdate({userID: message.author.id}, {$inc: {damage: addD}});
-    await pd.findOneAndUpdate({userID: message.author.id}, {$inc: {coins: -requiredValue}});
+    await bd.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: -requiredValue}});
 
 
     let Embed = new MessageEmbed()

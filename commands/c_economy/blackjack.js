@@ -24,6 +24,8 @@ const {
 const profileModel = require("../../models/profileSchema");
 const begModel = require("../../models/begSchema");
 const embed = require('../../embedConstructor');
+const mc = require('discordjs-mongodb-currency');
+
 
 module.exports = {
   config: {
@@ -54,10 +56,8 @@ module.exports = {
     });
 
     let user = message.author;
-    let profileData = await profileModel.findOne({
-      userID: user.id
-    });
-    let bal = profileData.coins;
+    let profileData = await mc.findUser(message.member.id, message.guild.id)
+    let bal = profileData.coinsInWallet;
 
     if (!args[1]) return embed(message).setError("Укажите ставку!").send().then(msg => {
       msg.delete({
@@ -103,13 +103,7 @@ module.exports = {
       })
     })
     try {
-      await profileModel.findOneAndUpdate({
-        userID: user.id
-      }, {
-        $inc: {
-          coins: -Math.floor(amount)
-        }
-      });
+      await mc.deductCoins(message.member.id, message.guild.id, Math.floor(amount))
       ops.games.set(message.channel.id, {
         name: 'blackjack',
         data: generateDeck(deckCount)
@@ -139,14 +133,8 @@ module.exports = {
         return embed(message).setError(`У дилера блэкджек!\nВы проиграли **${Math.floor(Math.floor(amount))}**${COIN}`).send()
       } else if (playerInitialTotal === 21) {
         ops.games.delete(message.channel.id);
-        await profileModel.findOneAndUpdate({
-          userID: user.id
-        }, {
-          $inc: {
-            coins: Math.floor((2 * Math.floor(amount)) + (Math.floor(amount) / 2))
-          }
-        });
 
+        await mc.giveCoins(message.member.id, message.guild.id, Math.floor((2 * Math.floor(amount)) + (Math.floor(amount) / 2)));
         return embed(message).setSuccess(`У вас блэкджек!\nВы выиграли **${Math.floor((2 * Math.floor(amount)) + (Math.floor(amount) / 2))}**${COIN}`).send()
       }
 
@@ -219,19 +207,13 @@ module.exports = {
 
 
       if (win === true) {
-        await profileModel.findOneAndUpdate({
-          userID: user.id
-        }, {
-          $inc: {
-            coins: 2 * Math.floor(amount)
-          }
-        });
+        await mc.giveCoins(message.member.id, message.guild.id, 2 * Math.floor(amount));
         return embed(message).setSuccess(`**${reason}, Вы выиграли ${COIN}${Math.floor(2 * Math.floor(amount))}**!`).send();
       } else if (!win) {
         return embed(message).setError(`**${reason}, Вы проиграли ${COIN}${Math.floor(Math.floor(amount))}**!`).send();
 
       } else {
-        await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor(amount)}});
+        await mc.giveCoins(message.member.id, message.guild.id, Math.floor(amount));
         return embed(message).setPrimary(`👀 **${reason}, У вас ничья!**`).send();
       }
     } catch (err) {

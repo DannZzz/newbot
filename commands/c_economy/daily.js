@@ -12,7 +12,7 @@ module.exports = {
         name: "ежедн-приз",
         aliases: ["day", "daily", "еждн"],
         category: "c_economy",
-        description: "Дает 1000 монет и 3 звезд ежедневно.",
+        description: "Дает 3 звезд ежедневно.",
         usage: "",
         accessableby: "Для всех"
     },
@@ -36,9 +36,7 @@ module.exports = {
 
             embed(message).setError(`Ты уже собрал свой ежедневный приз.\n\nПопробуй еще раз через **${time.getUTCHours()} часа(ов) ${time.getMinutes()} минут.**`).send().then(msg => {msg.delete({timeout: "10000"})});
         } else {
-            embed(message).setSuccess(`Ваш ежедневный приз ${amount}${COIN} и 3 ${STAR}`).send()
-
-            await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: amount}})
+            embed(message).setSuccess(`Ваш ежедневный приз и 3 ${STAR}`).send()
             await begModel.findOneAndUpdate({userID: user.id},{$inc: {stars: 3}})
             await profileModel.findOneAndUpdate({userID: user.id}, {$set: {daily: Date.now()}})
 
