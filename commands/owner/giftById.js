@@ -1,7 +1,7 @@
 const profileModel = require("../../models/profileSchema");
 const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
-const { COIN } = require('../../config');
+const { COIN, AGREE } = require('../../config');
 let ownerID = '382906068319076372';
 const embed = require('../../embedConstructor');
 
@@ -31,6 +31,7 @@ module.exports = {
     if(args[1] < 10) return embed(message).setError("Укажите число больше **10**.").send().then(msg => {msg.delete({timeout: "10000"})});
 
     await profileModel.findOneAndUpdate({userID: user.id}, {$inc: {bank: Math.floor(args[1])}})
+    message.react(`${AGREE}`)
     let msg = user.send(embed(message).setPrimary(`**У вас подарок от разработчика!🎉**\n\n||---**${Math.floor(args[1])}** ${COIN}---||`))
 
 

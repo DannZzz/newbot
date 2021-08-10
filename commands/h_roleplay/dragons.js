@@ -68,6 +68,16 @@ module.exports = {
     .addField(`Жизнь: ${cthulhu.health} ❤`, `**Атака: ${cthulhu.damage}** ⚔`, true)
     allDrags.push(dragon5)
 
+    const zeus = heroes["Zeus"]
+    const dragon6 = new MessageEmbed()
+    .setColor(cyan)
+    .setTitle(`${zeus.name} (${zeus.nameRus}) ${cVip(zeus.vip)}`)
+    .setThumbnail(zeus.url)
+    .setDescription(zeus.description)
+    .addField(`Цена: ${zeus.cost} ${cType(zeus.costType)}`, `**Доступен: ${zeus.available}**`, true)
+    .addField(`Жизнь: ${zeus.health} ❤`, `**Атака: ${zeus.damage}** ⚔`, true)
+    allDrags.push(dragon6)
+
     const emojies = ['⏪', '◀️', '⏹️', '▶️', '⏩']
     const timeout = '100000'
     const userids = [message.author.id]

@@ -1,7 +1,7 @@
 const begModel = require("../../models/begSchema");
 const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
-const { COIN } = require('../../config');
+const { COIN, AGREE } = require('../../config');
 let ownerID = '382906068319076372';
 const embed = require('../../embedConstructor');
 
@@ -35,6 +35,7 @@ module.exports = {
       giftType = 'VIP-1';
       if(bag['vip1'] === false) {
         await begModel.findOneAndUpdate({userID: user.id}, {$set: {"vip1": true}})
+        message.react(`${AGREE}`)
         return user.send(embed(message).setPrimary(`**У вас подарок от разработчика!🎉**\n\n||---**${giftType}**---||`))
       } else {
         return embed(message).setError('Пользователь уже имеет VIP 1.').send().then(msg => {msg.delete({timeout: "10000"})});

@@ -1,7 +1,7 @@
 const profileModel = require("../../models/profileSchema");
 const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
-const { COIN } = require('../../config');
+const { COIN, AGREE } = require('../../config');
 let ownerID = '382906068319076372';
 const embed = require('../../embedConstructor');
 
@@ -24,7 +24,7 @@ module.exports = {
     }
 
     if(!args[1]) return embed(message).setError("Сообщение?").send().then(msg => {msg.delete({timeout: "10000"})});
-
+    message.react(`${AGREE}`)
     let msg = user.send(embed(message).setPrimary(`**У вас сообщение от разработчика!👀**\n\n||**${args.slice(1).join(" ")}**||`))
 
 

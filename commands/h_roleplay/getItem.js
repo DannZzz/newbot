@@ -18,7 +18,7 @@ module.exports = {
     accessableby: "Для всех"
   },
   run: async (bot, message, args) => {
-    const items = ["Zeenou", "Dilan", "Darius", "Selena", "Cthulhu"];
+    const items = ["Zeenou", "Dilan", "Darius", "Selena", "Cthulhu", "Zeus"];
     const user = message.author;
     const coinData = await pd.findOne({userID: user.id});
     let rp = await rpg.findOne({userID: user.id});
@@ -79,6 +79,8 @@ module.exports = {
         await rpg.findOneAndUpdate({userID: user.id}, {$set: {damage: item.damage}});
 
         return embed(message).setSuccess(`Вы успешно купили героя **${item.nameRus}.**`).send();
+      } else {
+        return embed(message).setError('Герой недоступен для покупки монетами.').send().then(msg => msg.delete({timeout: "10000"}));
       }
 
     } else {
