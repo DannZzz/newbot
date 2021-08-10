@@ -38,7 +38,7 @@ module.exports = {
             const categories = readdirSync("./commands/")
 
             embed.setDescription(`**Привет! я ${message.guild.me.displayName}\nМой глобальный префикс: \`${PREFIX}\`\nМой префикс на этом сервере: \`${prefix}\`\nЕще больше информации:\n\`${prefix}хелп [категория]\n${prefix}хелп [команда | псевдоним]\`**`)
-            embed.setFooter(`${message.guild.me.displayName} | Кол-во команд: ${bot.commands.size-2} `, bot.user.displayAvatarURL());
+            embed.setFooter(`${message.guild.me.displayName} | Кол-во команд: ${bot.commands.size-4} `, bot.user.displayAvatarURL());
 
             let a = categories.map(category => {
                 const dir = bot.commands.filter(c => c.config.category === category);
