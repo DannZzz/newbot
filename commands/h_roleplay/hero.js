@@ -13,12 +13,12 @@ module.exports = {
     name: "герой",
     aliases: ['hero'],
     category: 'h_roleplay',
-    description: "Посмотреть герой участника.",
+    description: "Посмотреть статистику своего героя.",
     usage: "(участник)",
     accessableby: "Для всех"
   },
   run: async (bot, message, args) => {
-    const user = await message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.member;
+    const user = message.member;
     if(user.user.bot) return embed(message).setError('Бот не может иметь героя.').send().then(msg => msg.delete({timeout: "10000"}))
     const rp = await rpg.findOne({userID: user.id});
     if (!rp) return embed(message).setError('Участник не имеет героя.').send().then(msg => msg.delete({timeout: "10000"}))
@@ -37,7 +37,7 @@ module.exports = {
     .addField(`🏆 Процент побед:`, `${Math.trunc(rp.wins / rp.totalGames  * 100) || '0'}%`, true)
     .setColor(cyan)
 
-    return message.channel.send(myHero)
+    return message.channel.send(myHero).then(msg => msg.delete({timeout: "5000"}))
   } else {
     return embed(message).setError('Участник не имеет героя.').send().then(msg => msg.delete({timeout: "10000"}))
   }
