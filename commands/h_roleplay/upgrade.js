@@ -4,7 +4,7 @@ const pd = require("../../models/profileSchema");
 const bd = require("../../models/begSchema");
 const rpg = require("../../models/rpgSchema");
 const { MessageEmbed } = require("discord.js");
-const { COIN } = require("../../config");
+const { COIN, STAR } = require("../../config");
 const { checkValue } = require("../../functions");
 const embed = require('../../embedConstructor');
 
@@ -31,7 +31,7 @@ module.exports = {
 
     let requiredValue = rp.level * levelCost;
 
-    if (bal < requiredValue) return embed(message).setError(`У вас недостаточно денег.\nСтоимость прокачки до следующего уровня **${requiredValue}**.`).send();
+    if (bal < requiredValue) return embed(message).setError(`У вас недостаточно денег.\nСтоимость прокачки до следующего уровня **${requiredValue}** ${STAR}.`).send();
 
     let addH = 300;
     let addD = 15;
