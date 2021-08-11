@@ -1,7 +1,7 @@
 const begModel = require("../../models/begSchema");
 const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
-const { COIN, AGREE } = require('../../config');
+const { COIN, AGREE, STAR } = require('../../config');
 let ownerID = '382906068319076372';
 const embed = require('../../embedConstructor');
 
@@ -32,7 +32,7 @@ module.exports = {
 
     await begModel.findOneAndUpdate({userID: user.id}, {$inc: {stars: Math.floor(args[1])}})
     message.react(`${AGREE}`)
-    let msg = user.send(embed(message).setPrimary(`**У вас подарок от разработчика!🎉**\n\n||---**${Math.floor(args[1])}** ${COIN}---||`))
+    let msg = user.send(embed(message).setPrimary(`**У вас подарок от разработчика!🎉**\n\n||---**${Math.floor(args[1])}** ${STAR}---||`))
 
 
 
