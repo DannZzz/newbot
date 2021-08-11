@@ -6,6 +6,23 @@ const inviteRegex = /(https?:\/\/)?(www\.|canary\.|ptb\.)?discord(\.gg|(app)?\.c
 const botInvRegex = /(https?:\/\/)?(www\.|canary\.|ptb\.)?discord(app)\.com\/(api\/)?oauth2\/authorize\?([^ ]+)\/?/gi;
 
 module.exports = {
+  progressBar: function (perc, ofMaxValue, size, line = '❤', slider = '🖤') {
+  if (!perc) throw new Error('Perc value is either not provided or invalid');
+  if (!perc && perc !== 0) throw new Error('Perc value is either not provided or invalid');
+  if (isNaN(perc)) throw new Error('Perc value is not an integer');
+  if (isNaN(ofMaxValue)) throw new Error('ofMaxValue value is not an integer');
+  if (isNaN(size)) throw new Error('Size is not an integer');
+  const percentage = perc / ofMaxValue; // Calculate the percentage of the bar
+  const progress = Math.round((size * percentage)); // Calculate the number of square caracters to fill the progress side.
+  const emptyProgress = size - progress; // Calculate the number of dash caracters to fill the empty progress side.
+
+  const progressText = line.repeat(progress); // Repeat is creating a string with progress * caracters in it
+  const emptyProgressText = slider.repeat(emptyProgress); // Repeat is creating a string with empty progress * caracters in it
+  const percentageText = Math.round(percentage * 100) + '%'; // Displaying the percentage of the bar
+
+  const bar = '**[' + progressText + emptyProgressText + ']' + percentageText + '**'; // Creating the bar
+  return bar;
+  },
   checkValue: async function (user, val) {
     let pr = await pd.findOne({userID: user.id});
     if (pr.coins < val || isNaN(val)) return true;
