@@ -60,7 +60,7 @@ module.exports = {
                   .setColor(redlight)
                   .setThumbnail(banMember.user.displayAvatarURL({ dynamic: true }))
                   .setFooter("Дата")
-                  .addField("**Модерация**", "Бан учатника")
+                  .addField("**Модерация**", "Бан участника")
                   .addField("**Участник**", banMember.user.tag)
                   .addField("**Модератор**", message.author.tag)
                   .addField("**Причина**", `${reason || "**Нет причины**"}`)
