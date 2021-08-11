@@ -283,8 +283,8 @@ results.map(async user => {
     muterole = guild.roles.cache.get(dbmute)
   }
 
-
-    if(member.roles.cache.has(muterole.id || muteerole.id)) {
+    if (!muterole) {muterole = muteerole}
+    if(member.roles.cache.has(muterole.id)) {
       member.roles.remove(muterole)
       await memberModel.updateOne({userID: user.userID, serverID: user.serverID}, {$set: {muteTime: null}})
     }
