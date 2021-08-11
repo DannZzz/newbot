@@ -25,6 +25,7 @@ module.exports = {
     if (!rp) {
       let newData = await rpg.create({
         userID: user.id,
+        surviveLevel: 1
       });
       newData.save()
     }

@@ -26,7 +26,7 @@ module.exports = {
     const item = heroes[rp.item]
     let myHero = new MessageEmbed()
     .setAuthor(`Герой ${user.user.tag}`)
-    .setTitle(`${item.name} (${item.nameRus})\nУровень: ${rp.level}`)
+    .setTitle(`${item.name} (${item.nameRus})\nУровень: ${rp.level}  Приключения: ${rp.surviveLevel}-й`)
     .setDescription(item.description)
     .setThumbnail(item.url)
     .addField(`❤ Общая жизнь:`, `${rp.health}`, true)
