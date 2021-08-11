@@ -36,7 +36,7 @@ module.exports = {
 
             embed(message).setError(`Ты уже собрал свой ежедневный приз.\n\nПопробуй еще раз через **${time.getUTCHours()} часа(ов) ${time.getMinutes()} минут.**`).send().then(msg => {msg.delete({timeout: "10000"})});
         } else {
-            embed(message).setSuccess(`Ваш ежедневный приз и 3 ${STAR}`).send()
+            embed(message).setSuccess(`Ваш ежедневный приз: 3 ${STAR}`).send()
             await begModel.findOneAndUpdate({userID: user.id},{$inc: {stars: 3}})
             await profileModel.findOneAndUpdate({userID: user.id}, {$set: {daily: Date.now()}})
 
