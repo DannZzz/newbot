@@ -44,15 +44,7 @@ module.exports = {
     const getTime = await pd.findOne({userID: user.id})
     const author = getTime.survive || 0;
 
-  let timeoutt;
-    if (bag["vip2"] === true) { timeoutt = 1800000; } else {
-      timeoutt = 3559000;
-    }
-    if (author !== null && timeoutt - (Date.now() - author) > 0) {
-        let time = new Date(timeoutt - (Date.now() - author));
 
-        return embed(message).setError(`Вы недавно вернулись из приключений. Отдыхай **${time.getMinutes()} минут ${time.getSeconds()} секунд.**.`).send().then(msg => {msg.delete({timeout: "10000"})});
-    }
 
     let enemyHealth = nowLevel >= 3 ? Math.floor(enemy.health * (nowLevel / 2)) : Math.floor(enemy.health * nowLevel);
     let enemyDamage = nowLevel >= 3 ? Math.floor(enemy.damage * (nowLevel / 2)) : Math.floor(enemy.damage * nowLevel);
@@ -74,6 +66,7 @@ module.exports = {
     .setImage("https://i.ibb.co/wrsPgsQ/killin.gif")
 
     if (args[0] && argsWords.includes(args[0])) {
+
       const levMes = new MessageEmbed()
       .setColor(cyan)
       .setAuthor(`${user.username}, ваш текущий уровень приключений: ${nowLevel}`)
@@ -85,6 +78,15 @@ module.exports = {
 
       return message.channel.send(levMes);
     } else {
+      let timeoutt;
+        if (bag["vip2"] === true) { timeoutt = 1800000; } else {
+          timeoutt = 3559000;
+        }
+        if (author !== null && timeoutt - (Date.now() - author) > 0) {
+            let time = new Date(timeoutt - (Date.now() - author));
+
+            return embed(message).setError(`Вы недавно вернулись из приключений. Отдыхай **${time.getMinutes()} минут ${time.getSeconds()} секунд.**.`).send().then(msg => {msg.delete({timeout: "10000"})});
+        }
       let rand = Math.floor(Math.random() * 32)
       if (rand < 16) {
         while (true) {
@@ -112,7 +114,7 @@ module.exports = {
         }
       }
     }
-    
+
     await pd.findOneAndUpdate({userID: user.id}, {$set: {survive: Date.now()}})
     let winner;
     win ? winner = hero : winner = enemy
