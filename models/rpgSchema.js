@@ -9,7 +9,8 @@ const rpgSchema = new mongoose.Schema({
   damage: { type: Number, default: null },
   wins: { type: Number, default: 0 },
   loses: { type: Number, default: 0 },
-  totalGames: { type: Number, default: 0 }
+  totalGames: { type: Number, default: 0 },
+  surviveLevel: { type: Number, default: 0}
 });
 
 const model = mongoose.model("RpgModels", rpgSchema);

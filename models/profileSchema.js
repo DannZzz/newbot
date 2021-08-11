@@ -7,6 +7,7 @@ const profileSchema = new mongoose.Schema({
   bug: {type: Number, default: 0 },
   drag: { type: Number, default: 0},
   rpg: { type: Number, default: 0},
+  survive: { type: Number, default: 0},
   shopped: {any: {}}
 });
 
