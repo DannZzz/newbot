@@ -3,7 +3,7 @@ const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const profileModel = require("../../models/profileSchema");
-
+const mc = require('discordjs-mongodb-currency');
 
 module.exports = {
   config: {
@@ -22,25 +22,25 @@ module.exports = {
      if (user.user.id === user2.id) return embed(message).setError("Вы не сможете перевести деньги самому себе.").send().then(msg => {msg.delete({timeout: "10000"})});
 
      if(!args[1]) return embed(message).setError("Укажите кол-во монет, чтобы перевести.").send().then(msg => {msg.delete({timeout: "10000"})});
-     if(isNaN(args[1]) && args[1] !== "all") return embed(message).setError("Укажите кол-во монет в виде числ, чтобы перевести.").send().then(msg => {msg.delete({timeout: "10000"})});
+     if(isNaN(args[1]) && args[1] !== "all" && args[1] !== 'все') return embed(message).setError("Укажите кол-во монет в виде числ, чтобы перевести.").send().then(msg => {msg.delete({timeout: "10000"})});
 
-     let profileDataMember = await profileModel.findOne({ userID: user.id });
-     let profileDataAuthor = await profileModel.findOne({ userID: user2.id });
+     let profileDataMember = await mc.findUser(user.id, message.guild.id)
+     let profileDataAuthor = await mc.findUser(user2.id, message.guild.id)
 
-     let memberMoney = profileDataAuthor.coins
+     let memberMoney = profileDataAuthor.coinsInWallet
      if(memberMoney <= 0 || memberMoney < args[1]) return embed(message).setError("У вас недостаточно денег.").send().then(msg => {msg.delete({timeout: "10000"})});
      if(10 > args[1]) return embed(message).setError("Минимальная сумма **10**.").send().then(msg => {msg.delete({timeout: "10000"})});
 
 
 
 
-     if (args[1] === "all") {
+     if (args[1] === "all" || args[1] === 'все') {
        args[1] = memberMoney;
-       await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor(args[1])}})
-       await profileModel.findOneAndUpdate({userID: user2.id},{$inc: {coins: Math.floor(-args[1])}})
+       await mc.giveCoins(user.id, message.guild.id, Math.floor(args[1]));
+       await mc.deductCoins(user2.id, message.guild.id, Math.floor(args[1]));
      } else {
-       await profileModel.findOneAndUpdate({userID: user.id},{$inc: {coins: Math.floor(args[1])}})
-       await profileModel.findOneAndUpdate({userID: user2.id},{$inc: {coins: Math.floor(-args[1])}})
+       await mc.giveCoins(user.id, message.guild.id, Math.floor(args[1]));
+       await mc.deductCoins(user2.id, message.guild.id, Math.floor(args[1]));
      }
 
 
