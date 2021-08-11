@@ -112,7 +112,8 @@ module.exports = {
         }
       }
     }
-
+    
+    await pd.findOneAndUpdate({userID: user.id}, {$set: {survive: Date.now()}})
     let winner;
     win ? winner = hero : winner = enemy
 
@@ -140,7 +141,7 @@ module.exports = {
       .setThumbnail(hero.url)
       .setImage(enemy.url)
 
-      await pd.findOneAndUpdate({userID: user.id}, {$set: {survive: Date.now()}})
+
     }
     let msg = await message.channel.send(lonely);
     setTimeout(function(){
