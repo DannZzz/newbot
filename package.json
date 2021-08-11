@@ -7,8 +7,7 @@
   "description": "discord bot v2",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Dann#0006",
   "license": "ISC",
