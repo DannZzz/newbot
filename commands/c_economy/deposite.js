@@ -31,11 +31,11 @@ module.exports = {
 
       if(args[0] === 'all' || args[0] === 'все') {
         args[0] = bal1
-        await mc.deposit(message.member.id, message.guild.id, args[0]);
-        await mc.deductCoins(message.member.id, message.guild.id, args[0]);
+        await mc.deposit(message.member.id, message.guild.id, Math.floor(args[0]));
+        await mc.deductCoins(message.member.id, message.guild.id, Math.floor(args[0]));
       } else {
-      await mc.deposit(message.member.id, message.guild.id, args[0]);
-      await mc.deductCoins(message.member.id, message.guild.id, args[0]);
+      await mc.deposit(message.member.id, message.guild.id, Math.floor(args[0]));
+      await mc.deductCoins(message.member.id, message.guild.id, Math.floor(args[0]));
 
     }
       embed(message).setPrimary(`Изменение баланса: Вложение\n\nКол-во денег: ${COIN}**${Math.floor(args[0])}**`).send()

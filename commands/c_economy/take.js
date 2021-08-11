@@ -20,6 +20,7 @@ module.exports = {
       if(!args[0]) return embed(message).setError("Укажите кол-во денег, чтобы обналичить в банк.").send().then(msg => {msg.delete({timeout: "10000"})});
       if(isNaN(args[0]) && args[0] !== "all" && args[0] !== 'все') return embed(message).setError("Укажите кол-во денег в виде числ.").send().then(msg => {msg.delete({timeout: "10000"})});
       let user = message.author;
+      //args[0] = parseInt(args[0])
       let profileData = await mc.findUser(message.member.id, message.guild.id)
 
       let bal1 = profileData.coinsInWallet;//
@@ -31,11 +32,11 @@ module.exports = {
 
       if (args[0] === "all" || args[0] === 'все') {
         args[0] = bank1;
-        await mc.withdraw(message.member.id, message.guild.id, args[0]);
-        await mc.giveCoins(message.member.id, message.guild.id, args[0]);
+        await mc.withdraw(message.member.id, message.guild.id, Math.floor(args[0]));
+        await mc.giveCoins(message.member.id, message.guild.id, Math.floor(args[0]));
       }else {
-        await mc.withdraw(message.member.id, message.guild.id, args[0]);
-        await mc.giveCoins(message.member.id, message.guild.id, args[0]);
+        await mc.withdraw(message.member.id, message.guild.id, Math.floor(args[0]));
+        await mc.giveCoins(message.member.id, message.guild.id, Math.floor(args[0]));
       }
       embed(message).setPrimary(`Изменение баланса: Обналичивание\n\nКол-во денег: ${COIN}**${Math.floor(args[0])}**`).send();
     } catch (e) {
