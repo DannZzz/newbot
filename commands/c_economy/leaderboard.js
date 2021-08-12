@@ -44,7 +44,7 @@ module.exports = {
     //
     const mappedLeaderboard = leaderboard.map((i, p = 0)=> {
 
-      return `\`\`${p+1}. ${`\`\`**${bot.users.cache.get(i.userId).username || false}**\`\`#${bot.users.cache.get(i.userId).discriminator}\`\`` ? `\`\`**${bot.users.cache.get(i.userId).username}**\`\`#${bot.users.cache.get(i.userId).discriminator}\`\`` : `**Неизвестный**\`\`#0000\`\``} — \`\`${i.coinsInBank}\`\` <a:danndollar:875448360830644225>`});
+      return `\`\`${p+1}. ${`\`\`**${bot.users.cache.get(i.userId || false).username || false}**\`\`#${bot.users.cache.get(i.userId).discriminator}\`\`` ? `\`\`**${bot.users.cache.get(i.userId).username}**\`\`#${bot.users.cache.get(i.userId).discriminator}\`\`` : `**Неизвестный**\`\`#0000\`\``} — \`\`${i.coinsInBank}\`\` <a:danndollar:875448360830644225>`});
 
     const embed = new MessageEmbed()
     .setTitle(`Топ 15 — ${message.guild.name}`)
