@@ -14,7 +14,7 @@ module.exports = {
     aliases: ['upgrade'],
     category: 'h_roleplay',
     description: "Прокачать уровень героя.",
-    usage: "",
+    usage: "(инфо | info)",
     accessableby: "Для всех"
   },
   run: async (bot, message, args) => {
