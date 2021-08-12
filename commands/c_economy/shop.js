@@ -1,4 +1,4 @@
-const db = require("quick.db");
+
 const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK, STAR } = require('../../config');
