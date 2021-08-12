@@ -6,6 +6,7 @@ const { COIN, BANK } = require('../../config');
 const db = require("mongoose");
 let profileModel = require("../../models/profileSchema.js")
 const commaNumber = require("comma-number");
+const mongoose = require("mongoose")
 
 module.exports = {
     config: {
@@ -17,18 +18,34 @@ module.exports = {
         accessableby: "Для всех"
     },
     run: async (bot, message, args) => {
+      const CurrencySchema = new mongoose.Schema({
+          guildId: String,
+          userId: String,
+          coinsInWallet: Number,
+          coinsInBank: Number,
+          bankSpace: Number
+      });
+      let asd
+      try {
+        asd = mongoose.model('currencies')
+      } catch (e) {
+        asd = mongoose.model('currencies', CurrencySchema);
+      }
 
-    const leaderboard = await mc.generateLeaderboard(message.guild.id, 10);
+      const getTop = await asd.find({guildId: message.guild.id}).sort([['coinsInBank', 'descending']]).exec();
 
-    if (leaderboard.length < 1) return message.channel.send("Тут никого нет.");
-
+      const leaderboard = getTop.slice(0, 15);
+      if (leaderboard.length < 1) return message.channel.send("Тут никого нет.");
+    // const leaderboard = await mc.generateLeaderboard(message.guild.id, 10);
+    //
+    // if (leaderboard.length < 1) return message.channel.send("Тут никого нет.");
+    //
     const mappedLeaderboard = leaderboard.map((i, p = 0)=> {
 
-      return `${p+1}. <@!${i.userId}> - ${i.coinsInWallet}`
-    });
+      return `\`\`${p+1}.\`\` **${bot.users.cache.get(i.userId).username}**\`\`#${bot.users.cache.get(i.userId).discriminator}\`\` — \`\`${i.coinsInBank}\`\` <a:danndollar:875448360830644225>`});
 
     const embed = new MessageEmbed()
-    .setTitle(`Топ - ${message.guild.name}`)
+    .setTitle(`Топ 15 — ${message.guild.name}`)
     .setColor(cyan)
     .setTimestamp()
     .setDescription(`${mappedLeaderboard.join('\n')}`);
