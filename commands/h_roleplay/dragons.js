@@ -78,6 +78,16 @@ module.exports = {
     .addField(`Жизнь: ${zeus.health} ❤`, `**Атака: ${zeus.damage}** ⚔`, true)
     allDrags.push(dragon6)
 
+    const perfectDuo = heroes["PerfectDuo"]
+    const dragon7 = new MessageEmbed()
+    .setColor(cyan)
+    .setTitle(`${perfectDuo.name} (${perfectDuo.nameRus}) ${cVip(perfectDuo.vip)}`)
+    .setThumbnail(perfectDuo.url)
+    .setDescription(perfectDuo.description)
+    .addField(`Цена: ${perfectDuo.cost} ${cType(perfectDuo.costType)}`, `**Доступен: ${perfectDuo.available}**`, true)
+    .addField(`Жизнь: ${perfectDuo.health} ❤`, `**Атака: ${perfectDuo.damage}** ⚔`, true)
+    allDrags.push(dragon7)
+
     const emojies = ['⏪', '◀️', '⏹️', '▶️', '⏩']
     const timeout = '100000'
     const userids = [message.author.id]

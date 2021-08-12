@@ -24,7 +24,7 @@ module.exports = {
     const bag = await bd.findOne({userID: user.id})
     let rp = await rpg.findOne({userID: user.id});
     if(!rp || rp.item === null) {
-      return embed(message).setError(`Сначала купите героя...\`\`?приобрести\`\``).send()
+      return embed(message).setError(`Сначала купите героя...\`\`?получить\`\``).send()
     }
     if (!rp.surviveLevel || rp.surviveLevel === null) await rpg.findOneAndUpdate({userID: user.id}, {$set: {surviveLevel: 1}});
     rp = await rpg.findOne({userID: user.id});

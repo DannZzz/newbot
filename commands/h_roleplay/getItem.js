@@ -18,7 +18,7 @@ module.exports = {
     accessableby: "Для всех"
   },
   run: async (bot, message, args) => {
-    const items = ["Zeenou", "Dilan", "Darius", "Selena", "Cthulhu", "Zeus"];
+    const items = ["Zeenou", "Dilan", "Darius", "Selena", "Cthulhu", "Zeus", "PerfectDuo"];
     const user = message.author;
     const coinData = await pd.findOne({userID: user.id});
     let rp = await rpg.findOne({userID: user.id});
