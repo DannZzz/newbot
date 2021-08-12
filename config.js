@@ -6,11 +6,11 @@ exports.botINVITE = "https://discord.com/api/oauth2/authorize?client_id=72678447
 
 exports.TOKEN = 'NzI2Nzg0NDc2Mzc3NTE0MDQ1.XviUyg.G-P3n41_nDUFA-1hAy1O90Kf-Og';
 
-exports.COIN = '<a:danncoin:864467182310129674>';
+exports.COIN = '<a:danndollar:875448360830644225>';
 
 exports.BANK = '<a:dannbank:864469749400600586>';
 
-exports.STAR = '<a:stargif:868096581344305173>';
+exports.STAR = '<a:dannstar:875453906283528282>';
 
 exports.AME_API = '3229a6d1c6886228c8946c39e5a89f79e62ca7251c10a31fede7679ab8da35794c44a5beacd17993117918809096fec0aac9a1c973d3a42d7eb638eda77b6692';
 
