@@ -35,9 +35,7 @@ module.exports = {
       const getTop = await asd.find({guildId: message.guild.id}).sort([['coinsInBank', 'descending']]).exec();
 
       const leaderboard = getTop.slice(0, 15);
-      leaderboard.forEach((item, i) => {
-        if(!bot.users.cache.get(item.userId)) leaderboard.splice(item)
-      });
+
 
       if (leaderboard.length < 1) return message.channel.send("Тут никого нет.");
     // const leaderboard = await mc.generateLeaderboard(message.guild.id, 10);
@@ -46,7 +44,7 @@ module.exports = {
     //
     const mappedLeaderboard = leaderboard.map((i, p = 0)=> {
 
-      return `\`\`${p+1}. ${`\`\`**${bot.users.cache.get(i.userId).username}**\`\`#${bot.users.cache.get(i.userId).discriminator}\`\`` ? `\`\`**${bot.users.cache.get(i.userId).username}**\`\`#${bot.users.cache.get(i.userId).discriminator}\`\`` : `**Неизвестный**\`\`#0000\`\``} — \`\`${i.coinsInBank}\`\` <a:danndollar:875448360830644225>`});
+      return `\`\`${p+1}. ${`\`\`**${bot.users.cache.get(i.userId || undefined).username}**\`\`#${bot.users.cache.get(i.userId).discriminator}\`\`` ? `\`\`**${bot.users.cache.get(i.userId).username}**\`\`#${bot.users.cache.get(i.userId).discriminator}\`\`` : `**Неизвестный**\`\`#0000\`\``} — \`\`${i.coinsInBank}\`\` <a:danndollar:875448360830644225>`});
 
     const embed = new MessageEmbed()
     .setTitle(`Топ 15 — ${message.guild.name}`)
