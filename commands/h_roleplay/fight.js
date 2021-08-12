@@ -156,18 +156,20 @@ module.exports = {
 
       await rpg.findOneAndUpdate({userID: winner.id}, {$inc: {totalGames: 1}})
       await rpg.findOneAndUpdate({userID: loser.id}, {$inc: {totalGames: 1}})
-      let winData = await rpg.findOne({userID: winner.id})
 
-      let hero = heroes[winData.item]
-      let winEmb = new MessageEmbed()
-      .setTitle(`Победитель: ${winner.tag || winner.user.tag} (${hero.nameRus})`)
-      .setDescription(`Поединок между: ${user}, ${mUser}`)
-      .setImage(hero.url)
-      .setColor(cyan)
-      .addField(`❤ Общая жизнь: ${winData.health}`, `**⚔ Общая атака: ${winData.damage}**`, true)
-      .addField(`Выигрыш: ${value * 2} ${COIN}`, `**🏆 Процент побед: ${Math.trunc(winData.wins / winData.totalGames * 100) || '0'}%**`, true)
 
       setTimeout(async() => {
+        let winData = await rpg.findOne({userID: winner.id})
+
+        let hero = heroes[winData.item]
+        let winEmb = new MessageEmbed()
+        .setTitle(`Победитель: ${winner.tag || winner.user.tag} (${hero.nameRus})`)
+        .setDescription(`Поединок между: ${user}, ${mUser}`)
+        .setImage(hero.url)
+        .setColor(cyan)
+        .addField(`❤ Общая жизнь: ${winData.health}`, `**⚔ Общая атака: ${winData.damage}**`, true)
+        .addField(`Выигрыш: ${value * 2} ${COIN}`, `**🏆 Процент побед: ${Math.trunc(winData.wins / winData.totalGames * 100) || '0'}%**`, true)
+
         await mc.giveCoins(winner.id, message.guild.id, 2 * value)
 
         await rpg.findOneAndUpdate({userID: winner.id}, {$inc: {wins: 1}})

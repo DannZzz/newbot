@@ -31,10 +31,27 @@ module.exports = {
 
     let requiredValue = rp.level * levelCost;
 
+    const resp = ['инфо', 'info']
+
+    let addH = 150;
+    let addD = 10;
+
+    if(args[0] && resp.includes(args[0])) {
+      const newEmb = new MessageEmbed()
+      .setColor(cyan)
+      .setTimestamp()
+      .setAuthor(`Информация о прокачке уровня до ${rp.level+1}`)
+      .setTitle(`${hero.name} (${hero.nameRus})`)
+      .setDescription(`**Стоимость прокачки: ${requiredValue} ${STAR}**`)
+      .addField(`❤ Общая жизнь:`, `${rp.health} + ${addH}`, true)
+      .addField(`⚔ Общая атака:`, `${rp.damage} + ${addD}`, true)
+      .setThumbnail(hero.url)
+
+      return message.channel.send(newEmb)
+    }
     if (bal < requiredValue) return embed(message).setError(`У вас недостаточно денег.\nСтоимость прокачки до следующего уровня **${requiredValue}** ${STAR}.`).send();
 
-    let addH = 300;
-    let addD = 15;
+
 
     await rpg.findOneAndUpdate({userID: message.author.id}, {$inc: {level: 1}});
     await rpg.findOneAndUpdate({userID: message.author.id}, {$inc: {health: addH}});
