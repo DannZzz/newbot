@@ -159,6 +159,11 @@ module.exports = {
 
 
       setTimeout(async() => {
+        await mc.giveCoins(winner.id, message.guild.id, 2 * value)
+
+        await rpg.findOneAndUpdate({userID: winner.id}, {$inc: {wins: 1}})
+        await rpg.findOneAndUpdate({userID: loser.id}, {$inc: {loses: 1}})
+
         let winData = await rpg.findOne({userID: winner.id})
 
         let hero = heroes[winData.item]
@@ -169,11 +174,6 @@ module.exports = {
         .setColor(cyan)
         .addField(`❤ Общая жизнь: ${winData.health}`, `**⚔ Общая атака: ${winData.damage}**`, true)
         .addField(`Выигрыш: ${value * 2} ${COIN}`, `**🏆 Процент побед: ${Math.trunc(winData.wins / winData.totalGames * 100) || '0'}%**`, true)
-
-        await mc.giveCoins(winner.id, message.guild.id, 2 * value)
-
-        await rpg.findOneAndUpdate({userID: winner.id}, {$inc: {wins: 1}})
-        await rpg.findOneAndUpdate({userID: loser.id}, {$inc: {loses: 1}})
 
         return msg.edit(winEmb)
       }, 10000)
