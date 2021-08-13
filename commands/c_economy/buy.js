@@ -15,7 +15,7 @@ module.exports = {
     category: "c_economy",
     aliases: ['buy'],
     accessableby: "Для всех",
-    usage: ""
+    usage: "[номер предмета]"
   },
   run: async (bot, message, args) => {
     const user = await mc.findUser(message.author.id, message.guild.id)

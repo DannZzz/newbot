@@ -23,9 +23,6 @@ module.exports = {
         {name: `Всё, что нужно указать!`,
         value: '• Ваш ID\n• Что именно вы хотите, например **Vip 1** или **Vip 2**.',
         inline: false},
-        {name: `Цены в рублях.`,
-        value: `• Vip 1 + 100 ${STAR} - 30₽\n• Vip 2 + 200 ${STAR} - 100₽\n• Zeus (Зевс) - 200₽`,
-        inline: false},
       )
       .setTimestamp()
       .setFooter("Отправьте ваши вопросы командой ?сообщение")
