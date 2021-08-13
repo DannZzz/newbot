@@ -1,19 +1,24 @@
-
+const respGlob = ['global', 'g', 'глобал', 'г'];
+const respServ = ["server", 's', 'сервер', 'с'];
 const {MessageEmbed} = require("discord.js");
+const sd = require('../../models/serverSchema.js')
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK, STAR } = require('../../config');
 const ms = require('ms');
+const embed = require('../../embedConstructor');
 
 module.exports = {
   config: {
     name: "магазин",
-    description: "Глобальный магазин бота.",
+    description: "Посмотреть доступные магазины.",
     category: "c_economy",
     aliases: ["shop", "store", "магаз", 'шоп'],
     accessableby: "Для всех",
-    usage: ""
+    usage: "(сервер | глобал)"
   },
   run: async (bot, message, args) => {
+    const resp = args[0]
+    if (respGlob.includes(resp)) {
       let embed = new MessageEmbed()
       .setColor(cyan)
       .setAuthor("Вся информация о переводах: ?donate")
@@ -29,6 +34,43 @@ module.exports = {
       .setTimestamp()
       .setFooter("Отправьте ваши вопросы командой ?сообщение")
 
-      message.channel.send(embed)
+      return message.channel.send(embed)
+    } else if (respServ.includes(resp)) {
+      const server = message.guild
+      const data = await sd.findOne({serverID: server.id})
+
+      if (data.shop.length < 1) return embed(message).setError(`Тут ничего нет.`).send().then(msg => msg.delete({timeout: 10000}))
+
+      let shopEmb = new MessageEmbed()
+      .setColor(cyan)
+      .setTimestamp()
+      .setTitle(`Магазин сервера — ${server.name}`)
+
+      data.shop.forEach((item, i) => {
+        return shopEmb.addField(`\`\`${i + 1}\`\` Название: **${item.Name}**`, `**Цена:** ${item.Cost ? `\`\`${item.Cost}\`\`${COIN}` : "\`\`Отсуствует\`\`"}\n**Роль:** ${server.roles.cache.get(item.Role) ? `<@&${item.Role}>` : `\`\`Отсуствует\`\``}\n**Описание:** \`\`${item.Description ? item.Description : 'Отсуствует'}\`\``, false)
+      });
+
+      return message.channel.send(shopEmb)
+
+
+    } else {
+      const server = message.guild
+      const data = await sd.findOne({serverID: server.id})
+      return embed(message).setPrimary(`
+**Оооо, пора выбрать магазин**
+
+**Глобальный магазин**
+\`\`${data.prefix}магазин глобал\`\`
+\`\`\`
+Вещи где можно тащить с собой куда угодно.
+\`\`\`
+**Магазин сервера**
+\`\`${data.prefix}магазин сервер\`\`
+\`\`\`
+Можешь купить себе роли, на этом сервер.\`\`\``).send()
+
+    }
+
+
   }
 }
