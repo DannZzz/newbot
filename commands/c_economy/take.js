@@ -4,6 +4,8 @@ const { COIN, BANK } = require('../../config');
 const profileModel = require("../../models/profileSchema");
 const embed = require('../../embedConstructor');
 const mc = require('discordjs-mongodb-currency');
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 module.exports = {
   config: {
@@ -15,6 +17,9 @@ module.exports = {
     usage: "[кол-во монет] "
   },
   run: async (bot, message, args) => {
+    let limited = rateLimiter.take(message.author.id)
+    if(limited) return
+
     try {
 
       if(!args[0]) return embed(message).setError("Укажите кол-во денег, чтобы обналичить в банк.").send().then(msg => {msg.delete({timeout: "10000"})});

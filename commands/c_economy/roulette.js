@@ -5,6 +5,8 @@ const memberModel = require("../../models/memberSchema")
 const begModel = require("../../models/begSchema")
 const {COIN, BANK} = require('../../config');
 const mc = require('discordjs-mongodb-currency');
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 
 module.exports = {
@@ -17,6 +19,9 @@ module.exports = {
         usage: "[ставка] [промежуток]"
   },
   run: async (bot, message, args) => {
+    let limited = rateLimiter.take(message.author.id)
+    if(limited) return
+  
   const types = ['1-12', '13-24', '25-32'];
   const oddEven = ['odd', 'even', 'четное', 'чётное', 'нечетное', 'нечётное']
   const colors = ['red', 'black', 'красный', 'черный', 'чёрный'];

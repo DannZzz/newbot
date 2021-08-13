@@ -5,7 +5,8 @@ const { COIN, BANK, STAR } = require('../../config');
 const profileModel = require("../../models/profileSchema");
 const begModel = require("../../models/begSchema");
 const embed = require('../../embedConstructor');
-
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 module.exports = {
     config: {
@@ -17,6 +18,8 @@ module.exports = {
         accessableby: "Для всех"
     },
     run: async (bot, message, args) => {
+      let limited = rateLimiter.take(message.author.id)
+      if(limited) return
         let user = message.member;
 
 

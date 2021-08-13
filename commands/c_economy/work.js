@@ -8,6 +8,8 @@ const { COIN, BANK } = require('../../config');
 const memberModel = require("../../models/memberSchema");
 const begModel = require("../../models/begSchema");
 const mc = require('discordjs-mongodb-currency');
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 module.exports = {
     config: {
@@ -19,7 +21,8 @@ module.exports = {
         accessableby: "Для всех"
     },
     run: async (bot, message, args) => {
-
+        let limited = rateLimiter.take(message.author.id)
+        if(limited) return
         let user = message.author;
 
         let memberData = await memberModel.findOne({ userID: user.id, serverID: message.guild.id });

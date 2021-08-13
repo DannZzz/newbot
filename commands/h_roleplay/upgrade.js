@@ -7,6 +7,8 @@ const { MessageEmbed } = require("discord.js");
 const { COIN, STAR } = require("../../config");
 const { checkValue } = require("../../functions");
 const embed = require('../../embedConstructor');
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 module.exports = {
   config: {
@@ -18,6 +20,9 @@ module.exports = {
     accessableby: "Для всех"
   },
   run: async (bot, message, args) => {
+    let limited = rateLimiter.take(message.author.id)
+    if(limited) return
+    
     const rp = await rpg.findOne({userID: message.author.id});
     const data = await bd.findOne({userID: message.author.id});
     const bal = data.stars;

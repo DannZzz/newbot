@@ -7,7 +7,8 @@ const profileModel = require("../../models/profileSchema");
 const begModel = require("../../models/begSchema");
 const vipModel = require("../../models/vipSchema");
 const embed = require('../../embedConstructor');
-
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 function randomRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -23,7 +24,9 @@ module.exports = {
         acessableby: 'Для всех'
     },
     run: async (bot, message, args) => {
-
+      let limited = rateLimiter.take(message.author.id)
+      if(limited) return
+      
         let user = message.author;
         let profileData = await profileModel.findOne({ userID: user.id });
 

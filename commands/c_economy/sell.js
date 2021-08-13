@@ -7,7 +7,8 @@ const { MessageEmbed } = require('discord.js');
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK, STAR } = require('../../config');
 const embed = require('../../embedConstructor');
-
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 module.exports = {
   config: {
@@ -19,6 +20,8 @@ module.exports = {
     acessableby: 'Для всех'
   },
   run: async (bot, message, args) => {
+    let limited = rateLimiter.take(message.author.id)
+    if(limited) return
       let bal = await profileModel.findOne({userID: message.author.id});
       let bag = await begModel.findOne({userID: message.author.id});
       let sd = await serverModel.findOne({serverID: message.guild.id})
@@ -26,6 +29,17 @@ module.exports = {
       let rarity;
       let money;
       let cost;
+      let author = bal.sell;
+
+      let timeout;
+      if (bag["vip2"] === true) { timeout = 10 * 1000; } else {
+        timeout = 20 * 1000;
+      }
+      if (author !== null && timeout - (Date.now() - author) > 0) {
+          let time = new Date(timeout - (Date.now() - author));
+
+          embed(message).setError(`Попробуй еще раз через **${time.getSeconds()} секунд.**.`).send().then(msg => {msg.delete({timeout: "10000"})});
+      }
 
       if (args[0] === '1') {
         fish_sell = bag.junk;

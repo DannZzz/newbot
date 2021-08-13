@@ -7,6 +7,8 @@ const memberModel = require("../../models/memberSchema");
 const embed = require('../../embedConstructor');
 const owners = ['382906068319076372', '873237782825422968']
 const mc = require('discordjs-mongodb-currency');
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 module.exports = {
   config: {
@@ -18,6 +20,8 @@ module.exports = {
     usage: "[никнейм участника | упоминание | ID]"
   },
   run: async (bot, message, args) => {
+    let limited = rateLimiter.take(message.author.id)
+    if(limited) return
     try {
      if (!args[0]) return embed(message).setError("Укажите участника.").send().then(msg => {msg.delete({timeout: "10000"})});
      user2 = message.member;

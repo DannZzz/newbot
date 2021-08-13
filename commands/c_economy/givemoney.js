@@ -4,6 +4,8 @@ const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const profileModel = require("../../models/profileSchema");
 const mc = require('discordjs-mongodb-currency');
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 module.exports = {
   config: {
@@ -15,6 +17,9 @@ module.exports = {
     usage: "[никнейм участника | упоминание | ID] [кол-во монет]"
   },
   run: async (bot, message, args) => {
+    let limited = rateLimiter.take(message.author.id)
+    if(limited) return
+    
     try {
      if (!args[0]) return embed(message).setError("Укажите участника.").send().then(msg => {msg.delete({timeout: "10000"})});
      user2 = message.member;
