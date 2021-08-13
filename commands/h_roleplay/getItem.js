@@ -10,8 +10,8 @@ const embed = require('../../embedConstructor');
 
 module.exports = {
   config: {
-    name: "купить",
-    aliases: ['get', "buy", 'получить'],
+    name: "получить",
+    aliases: ['get'],
     category: 'h_roleplay',
     description: "Приобретать героя.",
     usage: "[название героя]",
