@@ -53,6 +53,7 @@ module.exports = {
 
                 return embed(message).setError(`Вы недавно рыбачили.\n\nПопробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**`).send().then(msg => {msg.delete({timeout: "10000"})});
             }
+            await profileModel.findOneAndUpdate({userID: user.id}, {$set: {fish: Date.now()}})
 
             embed(message).setPrimary(`**🎣 Вы забросили свою удочку и поймали ${fishh.symbol}**!`).send();
             if (rarity === "junk") await begModel.findOneAndUpdate({userID: user.id},{$inc: {junk: 1}})

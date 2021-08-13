@@ -36,11 +36,12 @@ module.exports = {
 
             embed(message).setError(`Вы уже работали недавно\n\nПопробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**.`).send().then(msg => {msg.delete({timeout: "10000"})});
         } else {
+            await memberModel.findOneAndUpdate({userID: user.id, serverID: message.guild.id}, {$set: {work: Date.now()}})
+
             let amount = Math.floor(Math.random() * 800) + 1;
             embed(message).setSuccess(`**${JworkR} ${amount}**${COIN}`).send()
 
             await mc.giveCoins(message.member.id, message.guild.id, amount);
-            await memberModel.findOneAndUpdate({userID: user.id, serverID: message.guild.id}, {$set: {work: Date.now()}})
 
         };
     }

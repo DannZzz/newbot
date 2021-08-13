@@ -53,11 +53,12 @@ module.exports = {
 
        if (target < random) {return embed(message).setError(`К сожалению вы ничего не смогли воровать.`).send().then(msg => {msg.delete({timeout: "10000"})});
      } else {
+       await memberModel.findOneAndUpdate({userID: user2.id, serverID: message.guild.id},{$set: {rob: Date.now()}});
+
        embed(message).setSuccess(`Вам удалось воровать у <@${user.id}> - кол-во денег: ${COIN}**${random}**`).send()
 
        await mc.deductCoins(user.id, message.guild.id, random || 1);
        await mc.giveCoins(user2.id, message.guild.id, random || 1);
-       await memberModel.findOneAndUpdate({userID: user2.id, serverID: message.guild.id},{$set: {rob: Date.now()}});
 
      }
 

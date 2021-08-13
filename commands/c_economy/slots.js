@@ -63,6 +63,7 @@ module.exports = {
 
 
       if (money > moneydb) return embed(message).setError(`У вас недостаточно денег.`).send();
+      await memberModel.findOneAndUpdate({userID: user.id, serverID: message.guild.id},{$set: {slots: Date.now()}});
       let reward = 0 ;
       let number = []
       await mc.deductCoins(user.id, message.guild.id, Math.floor(money))
@@ -84,7 +85,7 @@ module.exports = {
           embed(message).setPrimary(`${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n${DISAGREE} Ты проиграл ${money}${COIN}`).send()
 
       }
-      await memberModel.findOneAndUpdate({userID: user.id, serverID: message.guild.id},{$set: {slots: Date.now()}});
+
 
     }
 
