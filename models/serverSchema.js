@@ -13,7 +13,7 @@ const serverSchema = new mongoose.Schema({
   welcomeChannel: { type: String},
   welcomeColor: { type: String},
   welcomeImage: { type: String},
-  shop: {any: {} },
+  shop: { type: Array, default: [] },
   rank: { type: Boolean, default: false},
   voiceCategory: { type: String, default: null},
   voiceChannel: { type: String, default: null},
