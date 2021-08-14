@@ -16,11 +16,17 @@ module.exports = {
     accessableby: "Для всех",
     usage: "[кол-во монет] "
   },
-  run: async (bot, message, args) => {
+  run: async (bot, message, args, ops) => {
     let limited = rateLimiter.take(message.author.id)
     if(limited) return
 
     try {
+      const current = ops.queue.get(message.author.id);
+      if (current) return embed(message).setError(`Пожалуйста подождите.`).send().then(msg => {
+        msg.delete({
+          timeout: "10000"
+        })
+      })
       if(!args[0]) return embed(message).setError("Укажите кол-во денег, чтобы вложить в банк.").send().then(msg => {msg.delete({timeout: "10000"})});
       if(isNaN(args[0]) && args[0] !== 'all' && args[0] !== 'все') return embed(message).setError("Укажите кол-во денег в виде числ.").send().then(msg => {msg.delete({timeout: "10000"})});
       let user = message.author;
@@ -34,9 +40,9 @@ module.exports = {
       if(args[0] <= 0 || bal1 === 0) return embed(message).setError("Минимальная сумма **1**.").send().then(msg => {msg.delete({timeout: "10000"})});
       let value = args[0]
       if(args[0] === 'all' || args[0] === 'все') value = bal1
-
+      if(args[0] > bal1) return
       embed(message).setPrimary(`Изменение баланса: Вложение\n\nКол-во денег: ${COIN}**${Math.floor(value)}**`).send()
-      setTimeout(async () => {
+
         if(args[0] === 'all' || args[0] === 'все') {
           args[0] = bal1
           if(args[0] > bal1) return
@@ -48,7 +54,7 @@ module.exports = {
         await mc.deductCoins(message.member.id, message.guild.id, Math.floor(args[0]));
 
       }
-    }, 4000)
+
 
     } catch (e) {
       console.log(e);
