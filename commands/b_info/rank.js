@@ -42,10 +42,12 @@ module.exports = {
        }
        customColor = a
     }
+    let nowLevelToReq = Levels.xpFor(person.level + 1) - Levels.xpFor(person.level)
+    let nowLevelToZero = person.xp - Levels.xpFor(person.level)
     const rank = new canvacord.Rank()
         .setAvatar(user.user.displayAvatarURL({format: 'jpg', dynamic: false}))
-        .setCurrentXP(person.xp, customColor || "#FFFFFF")
-        .setRequiredXP(Levels.xpFor(person.level + 1), customColor || "#FFFFFF")
+        .setCurrentXP(nowLevelToZero, customColor || "#FFFFFF")
+        .setRequiredXP(nowLevelToReq, customColor || "#FFFFFF")
         .setStatus(user.presence.status, true)
         .setLevel(person.level)
         .setRank(person.position)
