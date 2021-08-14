@@ -39,15 +39,18 @@ module.exports = {
      if (args[1] === "all" || args[1] === 'все') value = memberMoney;
 
      embed(message).setPrimary(`Изменение баланса: Перевод\n\nКому: <@${user.id}>\nКол-во монет: ${COIN}**${Math.floor(value)}**`).send();
-     if(memberMoney <= 0 || memberMoney < args[1]) return
-     if (args[1] === "all" || args[1] === 'все') {
-       args[1] = memberMoney;
-       await mc.giveCoins(user.id, message.guild.id, Math.floor(args[1]));
-       await mc.deductCoins(user2.id, message.guild.id, Math.floor(args[1]));
-     } else {
-       await mc.giveCoins(user.id, message.guild.id, Math.floor(args[1]));
-       await mc.deductCoins(user2.id, message.guild.id, Math.floor(args[1]));
-     }
+     setTimeout(async ()=>{
+       if(memberMoney <= 0 || memberMoney < args[1]) return
+       if (args[1] === "all" || args[1] === 'все') {
+         args[1] = memberMoney;
+         await mc.giveCoins(user.id, message.guild.id, Math.floor(args[1]));
+         await mc.deductCoins(user2.id, message.guild.id, Math.floor(args[1]));
+       } else {
+         await mc.giveCoins(user.id, message.guild.id, Math.floor(args[1]));
+         await mc.deductCoins(user2.id, message.guild.id, Math.floor(args[1]));
+       }
+
+     }, 4000)
 
     } catch (e) {
      console.log(e);

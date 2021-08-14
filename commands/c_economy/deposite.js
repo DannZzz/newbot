@@ -32,8 +32,10 @@ module.exports = {
 
       if(args[0] > bal1) return embed(message).setError("У вас недостаточно денег.").send().then(msg => {msg.delete({timeout: "10000"})});
       if(args[0] <= 0 || bal1 === 0) return embed(message).setError("Минимальная сумма **1**.").send().then(msg => {msg.delete({timeout: "10000"})});
+      let value = args[0]
+      if(args[0] === 'all' || args[0] === 'все') value = bal1
 
-
+      embed(message).setPrimary(`Изменение баланса: Вложение\n\nКол-во денег: ${COIN}**${Math.floor(value)}**`).send()
       if(args[0] === 'all' || args[0] === 'все') {
         args[0] = bal1
         if(args[0] > bal1) return
@@ -45,8 +47,6 @@ module.exports = {
       await mc.deductCoins(message.member.id, message.guild.id, Math.floor(args[0]));
 
     }
-      embed(message).setPrimary(`Изменение баланса: Вложение\n\nКол-во денег: ${COIN}**${Math.floor(args[0])}**`).send()
-
     } catch (e) {
       console.log(e);
     }
