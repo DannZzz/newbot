@@ -34,6 +34,7 @@ module.exports = {
 
         return embed(message).setError(`Попробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**.`).send().then(msg => {msg.delete({timeout: "10000"})});
     }
+    if (!args[0]) return embed(message).setError('Укажите участника.').send().then(msg => msg.delete({timeout: "10000"}));
     const user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args[0].toLocaleLowerCase());
     if(!user) return embed(message).setError('Участник не найден.').send().then(msg => msg.delete({timeout: "10000"}));
     if(user.user.bot) return embed(message).setError('Поединок с ботом...хм').send().then(msg => msg.delete({timeout: "10000"}));
