@@ -42,7 +42,7 @@ module.exports = {
        if (args[1] === "all" || args[1] === 'все') value = memberMoney;
 
        embed(message).setPrimary(`Изменение баланса: Перевод\n\nКому: <@${user.id}>\nКол-во монет: ${COIN}**${Math.floor(value)}**`).send().then(async () => {
-         if(memberMoney <= 0 || memberMoney < args[1])
+         if(memberMoney <= 0 || memberMoney < args[1]) return
          if (args[1] === "all" || args[1] === 'все') {
            args[1] = memberMoney;
            await mc.giveCoins(user.id, message.guild.id, Math.floor(args[1]));
