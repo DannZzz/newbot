@@ -4,7 +4,6 @@ const { COIN, BANK, MONGO } = require('../../config');
 const embed = require('../../embedConstructor');
 const mc = require('discordjs-mongodb-currency');
 const profileModel = require("../../models/profileSchema");
-const DiscordCanvas = require('@kuroxi/discord-canvas')
 const mongoose = require("mongoose")
 
 
@@ -46,20 +45,17 @@ module.exports = {
     let getFinal = await getRank.find(i => i.userId === member.id)
     let rank = getRank.indexOf(getFinal)
     if (member) {
-      const template = new DiscordCanvas.Currency()
-          .setBackground('#353535')
-          .setProfile(member.user.displayAvatarURL({ format: 'png' }) || member.displayAvatarURL({ format: 'png' }))
-          .setUsername(member.user.username || member.username)
-          .setDiscriminator(member.user.discriminator || member.discriminator)
-          .setRank(rank + 1 )
-          .setWallet(data.coinsInWallet)
-          .setBank(data.coinsInBank)
-          .setSeperator('#FFFFFF', 1)
+      const newEmbed = new MessageEmbed()
+      .setColor(cyan)
+      .setThumbnail(member.user.displayAvatarURL({dynamic: true}) || member.displayAvatarURL({dynamic: true}))
+      .setAuthor(member.user.tag)
+      .setTimestamp()
+      .setDescription(`
+**Баланс:** ${new Intl.NumberFormat('de-DE').format(data.coinsInWallet)} ${COIN}
+**Банк:** ${new Intl.NumberFormat('de-DE').format(data.coinsInBank)} ${COIN}
+**Место в топе:** **${rank+1}**-й`)
 
-      template.build().then((data) => {
-          const attachment = new MessageAttachment(data, 'image-name.png')
-          return message.channel.send(attachment)
-        })
+      message.channel.send(newEmbed)
     } else {
       return embed(message).setError("Укажите участника.").send();
     }

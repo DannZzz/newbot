@@ -132,7 +132,7 @@ module.exports = {
             .addField("**Участник**", mutee.user.tag)
             .addField("**Модератор**", message.author.tag)
             .addField("**Время**", `${muteTime}`)
-            .addField("**Причина**", `${reason}`)
+            .addField("**Причина**", `${reason || 'Нет причины'}`)
             .setFooter('Дата')
             .setTimestamp()
 

@@ -49,7 +49,7 @@ module.exports = {
       .setTitle(`Магазин сервера — ${server.name}`)
 
       data.shop.forEach((item, i) => {
-        return shopEmb.addField(`\`\`${i + 1}\`\` Название: **${item.Name}**`, `**Цена:** ${item.Cost ? `\`\`${item.Cost}\`\`${COIN}` : "\`\`Отсуствует\`\`"}\n**Роль:** ${server.roles.cache.get(item.Role) ? `<@&${item.Role}>` : `\`\`Отсуствует\`\``}\n**Описание:** \`\`${item.Description ? item.Description : 'Отсуствует'}\`\``, false)
+        return shopEmb.addField(`\`\`${i + 1}\`\` Название: **${item.Name}**`, `**Цена:** ${item.Cost ? `\`\`${new Intl.NumberFormat('de-DE').format(item.Cost)}\`\`${COIN}` : "\`\`Отсуствует\`\`"}\n**Роль:** ${server.roles.cache.get(item.Role) ? `<@&${item.Role}>` : `\`\`Отсуствует\`\``}\n**Описание:** \`\`${item.Description ? item.Description : 'Отсуствует'}\`\``, false)
       });
 
       return message.channel.send(shopEmb)
