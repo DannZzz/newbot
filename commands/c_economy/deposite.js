@@ -19,7 +19,7 @@ module.exports = {
   run: async (bot, message, args) => {
     let limited = rateLimiter.take(message.author.id)
     if(limited) return
-    
+
     try {
       if(!args[0]) return embed(message).setError("Укажите кол-во денег, чтобы вложить в банк.").send().then(msg => {msg.delete({timeout: "10000"})});
       if(isNaN(args[0]) && args[0] !== 'all' && args[0] !== 'все') return embed(message).setError("Укажите кол-во денег в виде числ.").send().then(msg => {msg.delete({timeout: "10000"})});
@@ -36,9 +36,11 @@ module.exports = {
 
       if(args[0] === 'all' || args[0] === 'все') {
         args[0] = bal1
+        if(args[0] > bal1) return
         await mc.deposit(message.member.id, message.guild.id, Math.floor(args[0]));
         await mc.deductCoins(message.member.id, message.guild.id, Math.floor(args[0]));
       } else {
+        if(args[0] > bal1) return
       await mc.deposit(message.member.id, message.guild.id, Math.floor(args[0]));
       await mc.deductCoins(message.member.id, message.guild.id, Math.floor(args[0]));
 

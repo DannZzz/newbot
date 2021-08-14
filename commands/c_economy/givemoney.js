@@ -19,7 +19,7 @@ module.exports = {
   run: async (bot, message, args) => {
     let limited = rateLimiter.take(message.author.id)
     if(limited) return
-    
+
     try {
      if (!args[0]) return embed(message).setError("Укажите участника.").send().then(msg => {msg.delete({timeout: "10000"})});
      user2 = message.member;
@@ -35,10 +35,11 @@ module.exports = {
      let memberMoney = profileDataAuthor.coinsInWallet
      if(memberMoney <= 0 || memberMoney < args[1]) return embed(message).setError("У вас недостаточно денег.").send().then(msg => {msg.delete({timeout: "10000"})});
      if(10 > args[1]) return embed(message).setError("Минимальная сумма **10**.").send().then(msg => {msg.delete({timeout: "10000"})});
+     let value = args[1]
+     if (args[1] === "all" || args[1] === 'все') value = memberMoney;
 
-
-
-
+     embed(message).setPrimary(`Изменение баланса: Перевод\n\nКому: <@${user.id}>\nКол-во монет: ${COIN}**${Math.floor(value)}**`).send();
+     if(memberMoney <= 0 || memberMoney < args[1]) return
      if (args[1] === "all" || args[1] === 'все') {
        args[1] = memberMoney;
        await mc.giveCoins(user.id, message.guild.id, Math.floor(args[1]));
@@ -48,8 +49,6 @@ module.exports = {
        await mc.deductCoins(user2.id, message.guild.id, Math.floor(args[1]));
      }
 
-
-     embed(message).setPrimary(`Изменение баланса: Перевод\n\nКому: <@${user.id}>\nКол-во монет: ${COIN}**${Math.floor(args[1])}**`).send();
     } catch (e) {
      console.log(e);
     }

@@ -37,9 +37,11 @@ module.exports = {
 
       if (args[0] === "all" || args[0] === 'все') {
         args[0] = bank1;
+        if(args[0] > bank1) return
         await mc.withdraw(message.member.id, message.guild.id, Math.floor(args[0]));
         await mc.giveCoins(message.member.id, message.guild.id, Math.floor(args[0]));
       }else {
+        if(args[0] > bank1) return
         await mc.withdraw(message.member.id, message.guild.id, Math.floor(args[0]));
         await mc.giveCoins(message.member.id, message.guild.id, Math.floor(args[0]));
       }
