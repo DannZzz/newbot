@@ -36,17 +36,20 @@ module.exports = {
       if(args[0] === 'all' || args[0] === 'все') value = bal1
 
       embed(message).setPrimary(`Изменение баланса: Вложение\n\nКол-во денег: ${COIN}**${Math.floor(value)}**`).send()
-      if(args[0] === 'all' || args[0] === 'все') {
-        args[0] = bal1
-        if(args[0] > bal1) return
+      setTimeout(async () => {
+        if(args[0] === 'all' || args[0] === 'все') {
+          args[0] = bal1
+          if(args[0] > bal1) return
+          await mc.deposit(message.member.id, message.guild.id, Math.floor(args[0]));
+          await mc.deductCoins(message.member.id, message.guild.id, Math.floor(args[0]));
+        } else {
+          if(args[0] > bal1) return
         await mc.deposit(message.member.id, message.guild.id, Math.floor(args[0]));
         await mc.deductCoins(message.member.id, message.guild.id, Math.floor(args[0]));
-      } else {
-        if(args[0] > bal1) return
-      await mc.deposit(message.member.id, message.guild.id, Math.floor(args[0]));
-      await mc.deductCoins(message.member.id, message.guild.id, Math.floor(args[0]));
 
-    }
+      }
+    }, 4000)
+
     } catch (e) {
       console.log(e);
     }
