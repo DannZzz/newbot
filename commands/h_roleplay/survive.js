@@ -23,7 +23,7 @@ module.exports = {
   run: async (bot, message, args) => {
     let limited = rateLimiter.take(message.author.id)
     if(limited) return
-    
+
     const data = await bd.findOne({userID: message.author.id})
     const user = message.author;
     const bag = await bd.findOne({userID: user.id})
@@ -40,7 +40,11 @@ module.exports = {
 
     const hero = heroes[rp.item];
     let enemy;
-    if (nowLevel % 4 === 0) {
+    if (nowLevel % 10 === 0) {
+      enemy = enemies["D'Lord"]
+    } else if (nowLevel % 5 === 0) {
+      enemy = enemies["Arthas"];
+    } else if (nowLevel % 4 === 0) {
       enemy = enemies["Cousin"];
     } else {
       enemy = enemies["Jorj"];
@@ -51,8 +55,8 @@ module.exports = {
 
 
 
-    let enemyHealth = nowLevel >= 3 ? Math.floor(enemy.health * (nowLevel / 2)) : Math.floor(enemy.health * nowLevel);
-    let enemyDamage = nowLevel >= 3 ? Math.floor(enemy.damage * (nowLevel / 2)) : Math.floor(enemy.damage * nowLevel);
+    let enemyHealth = Math.floor(enemy.health * nowLevel);
+    let enemyDamage = Math.floor(enemy.damage * nowLevel);
 
     let myHealth = rp.health;
     let myDamage = rp.damage;
@@ -60,7 +64,7 @@ module.exports = {
 
     const lonely = new MessageEmbed()
     .setColor(cyan)
-    .setTimestamp()
+    .setTimestamp()//
     .setTitle(`Бой начался.`)
     .addField(`${user.username}`, `(${hero.nameRus})`, true)
     .addField(`❤ Общая жизнь: ${myHealth}`, `**⚔ Общая атака: ${myDamage}**`, true)
@@ -120,7 +124,7 @@ module.exports = {
       }
     }
 
-    await pd.findOneAndUpdate({userID: user.id}, {$set: {survive: Date.now()}})
+
     let winner;
     win ? winner = hero : winner = enemy
 
@@ -147,7 +151,7 @@ module.exports = {
       .setDescription(`Вернитесь через некоторое время.`)
       .setThumbnail(hero.url)
       .setImage(enemy.url)
-
+      await pd.findOneAndUpdate({userID: user.id}, {$set: {survive: Date.now()}})
 
     }
     let msg = await message.channel.send(lonely);
