@@ -3,7 +3,7 @@ const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const ms = require("ms");
 const mss = require("millisecond");
 const embed = require('../../embedConstructor');
-
+const {error} = require('../../functions');
 const agree    = "✅";
 const disagree = "❎";
 
@@ -17,15 +17,15 @@ module.exports = {
       aliases: ['vote', 'гол']
     },
     run: async (bot, message, args) => {
-      if(!args[0]) return embed(message).setError("Укажите время.").send().then(msg => {msg.delete({timeout: "10000"})});
-      if (!message.member.hasPermission("ADMINISTRATOR")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
-      if(!ms(args[0]) || !isNaN(args[0])) return embed(message).setError("Укажите время на английском. \`\`1m, 1h, 1d\`\`").send().then(msg => {msg.delete({timeout: "10000"})});
-      if(!args[1]) return embed(message).setError("Задайте вопрос голосовании.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if (!message.member.hasPermission("ADMINISTRATOR")) return error(message, "У вас недостаточно прав.");
+      if(!args[0]) return error(message, "Укажите время.");
+      if(!ms(args[0]) || !isNaN(args[0])) return error(message, "Укажите время на английском. \`\`1m, 1h, 1d\`\`");
+      if(!args[1]) return error(message, "Задайте вопрос голосовании.");
       // Number.isInteger(itime)
       //  if (e) return message.reply('please supply a valid time number in seconds')
       let dateTime = new Date(ms(args[0]))
       let time = mss(args[0]);
-      if (time < 60000) return embed(message).setError("Минимальное время голосований **1 минута**.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if (time < 60000) return error(message, "Минимальное время голосований **1 минута**.");
       let data;
       if(time >= 3600000 && time < 8640000) {data = `(Время голосований: **${dateTime.getUTCHours()} часа(ов)**)`} else if(time >= 86400000) {data = `(Время голосований: **${time / 86400000} день(ей))**`}
       else {

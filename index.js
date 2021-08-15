@@ -1,9 +1,7 @@
 const {Client, MessageEmbed, Collection} = require('discord.js');
 const voiceCollection = new Collection();
 const {PREFIX, TOKEN, MONGO} = require('./config')
-const disbut = require("discord-buttons");
 const bot = new Client({disableMentions: "everyone"});
-disbut(bot);
 const fs = require('fs');
 const mongoose = require('mongoose');
 const mc = require('discordjs-mongodb-currency')
@@ -19,7 +17,6 @@ const profileModel = require("./models/profileSchema");
 const memberModel = require("./models/memberSchema");
 const begModel = require("./models/begSchema");
 const vipModel = require("./models/vipSchema");
-const voiceModel = require("./models/voiceSchema");
 
 bot.commands = new Collection();
 bot.aliases = new Collection();
@@ -75,61 +72,6 @@ bot.on("guildCreate", async guild => {
   }
 })
 
-bot.on('voiceStateUpdate', async (oldMember, newMember) => {
-    const user = await bot.users.fetch(newMember.id);
-    const server = newMember.guild
-    const member = server.member(user);
-    //let newUserChannel = newMember.channel.id
-
-    let oldUserChannel = oldMember.channel
-    const serverData = await serverModel.findOne({serverID: server.id})
-    if(serverData.voiceCategory !== null) {
-    let channelM = serverData.voiceChannel;
-    // console.log(newUserChannel);
-    // console.log(channelM);
-    let asd;
-    let channel;
-    if(!oldUserChannel && newMember.channel.id === channelM) {
-      channel = await server.channels.create(user.username, {
-        type: 'voice',
-        parent: server.channels.cache.get(channelM).parent,
-        permissionOverwrites: [
-          {
-            id: user.id,
-            allow: ['MANAGE_CHANNELS']
-          }
-        ]
-      });
-      member.voice.setChannel(channel)
-      voiceCollection.set(user.id, channel.id)
-
-        // let sd = await serverModel.findOne({serverID: newMember.guild.id})
-      let newData = voiceModel.create({
-      userID: member.user.id,
-      serverID: server.id,
-      channel: channel.id
-      })
-
-    }
-  }
-})
-
-const checkVoice = async () => {
-  const res = await voiceModel.find({channel: {$exists: true}})
-  res.forEach(async chan => {
-    const guild = await bot.guilds.cache.get(chan.serverID)
-    const channel = await guild.channels.cache.get(chan.channel)
-    if(channel.members.size === 0) {channel.delete()
-    chan.delete()
-  }
-    else {
-      return
-    }
-  })
-
-  setTimeout(checkVoice, 1000 * 10)
-}
-checkVoice()
 bot.on("guildMemberAdd", async member => {
     let sd = await serverModel.findOne({serverID: member.guild.id})
     if(sd.welcome) {
@@ -248,7 +190,7 @@ bot.on('message', async message => {
   };
   try {
       if (message.mentions.has(bot.user) && !message.mentions.has(message.guild.id)) {
-          return message.channel.send(Embed.setDescription(`Мой префикс для этого сервера: **\`${prefix}\`**`)).then(msg => msg.delete({timeout: "5000"}))
+          return message.reply(`Мой префикс для этого сервера: **\`${prefix}\`**`).then(msg => msg.delete({timeout: "5000"}))
       }
   } catch {
       return;
@@ -256,8 +198,6 @@ bot.on('message', async message => {
 });
 
 const checkMutes = async () => {
-  console.log("CHECKING MUTES!");
-
 
 const results = await memberModel.find({ muteTime: { $exists: true } });
 results.map(async user => {
@@ -290,7 +230,7 @@ results.map(async user => {
     }
   })
 
-setTimeout(checkMutes, 1000 * 10)
+setTimeout(checkMutes, 1000 * 20)
 }
 checkMutes()
 

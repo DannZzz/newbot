@@ -7,6 +7,7 @@ const { MessageEmbed } = require("discord.js");
 const { COIN } = require("../../config");
 const { checkValue } = require("../../functions");
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -39,24 +40,24 @@ module.exports = {
     if (author !== null && timeout - (Date.now() - author) > 0) {
         let time = new Date(timeout - (Date.now() - author));
 
-        return embed(message).setError(`Вы недавно купили новый герой.\n\nПопробуй еще раз через **${Math.round(Math.abs(time) / 86400000)} дней**.`).send().then(msg => {msg.delete({timeout: "10000"})});
+        return error(message, `Вы недавно купили новый герой.\n\nПопробуй еще раз через **${Math.round(Math.abs(time) / 86400000)} дней**.`);
     }
-    if (!args[0]) return embed(message).setError('Укажите героя.').send().then(msg => msg.delete({timeout: "10000"}))
-    if (!items.includes(args[0])) return embed(message).setError('Герой не найден.').send().then(msg => msg.delete({timeout: "10000"}))
+    if (!args[0]) return error(message, 'Укажите героя.')
+    if (!items.includes(args[0])) return error(message, 'Герой не найден.')
     const type = args[0];
     if (rp.item === null) {
       const item = heroes[type]
 
       if (item.vip === true) {
         if(bag["vip2"] !== true) {
-          return embed(message).setError('Герой доступен только для **VIP 2** пользователей.').send().then(msg => msg.delete({timeout: "10000"}));
+          return error(message, 'Герой доступен только для **VIP 2** пользователей.');
         }
       }
 
       if (item.costType === "star") {
         const stars = bag.stars
         if (item.cost > stars) {
-          return embed(message).setError('У вас недостаточно звёзд, либо герой недоступен.').send().then(msg => msg.delete({timeout: "10000"}));
+          return error(message, 'У вас недостаточно звёзд, либо герой недоступен.');
         }
         await bd.findOneAndUpdate({userID: user.id}, {$inc: {stars: -item.cost}});
         await pd.findOneAndUpdate({userID: user.id}, {$set: {drag: Date.now()}})
@@ -67,11 +68,11 @@ module.exports = {
 
         return embed(message).setSuccess(`Вы успешно купили героя **${item.nameRus}.**`).send();
       } else {
-        return embed(message).setError('Герой недоступен для покупки.').send().then(msg => msg.delete({timeout: "10000"}));
+        return error(message, 'Герой недоступен для покупки.');
       }
 
     } else {
-      return embed(message).setError(`Вы уже имеете герой, сначала убейте его, чтобы купить новый.`).send().then(msg => {msg.delete({timeout: "10000"})});
+      return error(message, `Вы уже имеете герой, сначала убейте его, чтобы купить новый.`);
 
     }
     //

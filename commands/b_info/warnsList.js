@@ -4,6 +4,7 @@ const {PREFIX} = require("../../config");
 const memberModel = require("../../models/memberSchema");
 const serverModel = require("../../models/serverSchema");
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -27,7 +28,7 @@ module.exports = {
     .setColor(cyan)
 
 
-    if (toWarn.user.bot) return embed(message).setError("Бот не может иметь предупреждения.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (toWarn.user.bot) return error(message, "Бот не может иметь предупреждения.");
 
     let data = await memberModel.findOne({
       userID: toWarn.id,
@@ -45,7 +46,7 @@ module.exports = {
     } else if (!data || data.warns.length === 0) {
 
 
-      embed(message).setError(`${toWarn} не имеет предупреждений.`).send();
+      error(message, `${toWarn} не имеет предупреждений.`)
     }
 
   }

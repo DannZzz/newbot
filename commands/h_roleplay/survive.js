@@ -10,6 +10,7 @@ const { checkValue } = require("../../functions");
 const embed = require('../../embedConstructor');
 const { RateLimiter } = require('discord.js-rate-limiter');
 let rateLimiter = new RateLimiter(1, 5000);
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -29,7 +30,7 @@ module.exports = {
     const bag = await bd.findOne({userID: user.id})
     let rp = await rpg.findOne({userID: user.id});
     if(!rp || rp.item === null) {
-      return embed(message).setError(`Сначала купите героя...\`\`?получить\`\``).send()
+      return error(message, `Сначала купите героя...\`\`?получить\`\``)
     }
     if (!rp.surviveLevel || rp.surviveLevel === null) await rpg.findOneAndUpdate({userID: user.id}, {$set: {surviveLevel: 1}});
     rp = await rpg.findOne({userID: user.id});
@@ -94,7 +95,7 @@ module.exports = {
         if (author !== null && timeoutt - (Date.now() - author) > 0) {
             let time = new Date(timeoutt - (Date.now() - author));
 
-            return embed(message).setError(`Вы недавно вернулись из приключений. Отдыхай **${time.getMinutes()} минут ${time.getSeconds()} секунд.**.`).send().then(msg => {msg.delete({timeout: "10000"})});
+            return error(message, `Вы недавно вернулись из приключений. Отдыхай **${time.getMinutes()} минут ${time.getSeconds()} секунд.**.`);
         }
       let rand = Math.floor(Math.random() * 32)
       if (rand < 16) {
@@ -147,7 +148,7 @@ module.exports = {
 
     } else {
       emb
-      .setTitle(`${enemy.nameRus} отказался сильнее.`)
+      .setTitle(`${enemy.nameRus} оказался сильнее.`)
       .setDescription(`Вернитесь через некоторое время.`)
       .setThumbnail(hero.url)
       .setImage(enemy.url)

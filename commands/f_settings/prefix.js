@@ -2,6 +2,7 @@ const {MessageEmbed} = require('discord.js');
 const {cyan} = require("../../JSON/colours.json");
 const serverModel = require("../../models/serverSchema");
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
 
 module.exports = {
     config: {
@@ -14,14 +15,14 @@ module.exports = {
     },
     run: async (bot, message, args) => {
 
-        if (!message.member.hasPermission('ADMINISTRATOR' || "MANAGE_SERVER")) return embed(message).setError(`<@${message.member.id}> у вас недостаточно прав.`).send().then(msg => {msg.delete({timeout: "10000"})})
+        if (!message.member.hasPermission('ADMINISTRATOR' || "MANAGE_SERVER")) return error(`<@${message.member.id}> у вас недостаточно прав.`)
         let sd = await serverModel.findOne({ serverID: message.guild.id });
         if (!args[0]) {
 
           let b = sd.prefix;
           if (b) {
-        return embed(message).setPrimary(`👀 Префикс сервера: \`${b}\``).send().then(msg => {msg.delete({timeout: "10000"})});
-      } else return embed(message).setError("Пожалуйста, укажите новый префикс.").send().then(msg => {msg.delete({timeout: "10000"})});
+        return embed(message).setPrimary(`👀 Префикс сервера: \`${b}\``);
+      } else return error("Пожалуйста, укажите новый префикс.");
     }
 
         try {
@@ -30,7 +31,7 @@ module.exports = {
             let b = sd.prefix;
 
             if (a === b) {
-                return embed(message).setError("Этот префикс уже установлен.").send().then(msg => {msg.delete({timeout: "10000"})})
+                return error("Этот префикс уже установлен.")
             } else {
                 await serverModel.findOneAndUpdate({serverID: message.guild.id}, {$set: {prefix: a}});
 

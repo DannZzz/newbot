@@ -3,6 +3,8 @@ const { MessageEmbed } = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const serverModel = require("../../models/serverSchema");
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
+
 module.exports = {
   config: {
     name: "никнейм",
@@ -14,23 +16,23 @@ module.exports = {
   },
   run: async (bot, message, args) => {
 
-    if (!message.member.hasPermission("MANAGE_NICKNAMES")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (!message.member.hasPermission("MANAGE_NICKNAMES")) return error(message, "У вас недостаточно прав.");;
 
-    if (!message.guild.me.hasPermission("CHANGE_NICKNAME" && "MANAGE_NICKNAMES")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})})
+    if (!message.guild.me.hasPermission("CHANGE_NICKNAME" && "MANAGE_NICKNAMES")) return error(message, "У меня недостаточно прав.");
 
-    if (!args[0]) return embed(message).setError("Укажите участника.").send().then(msg => {msg.delete({timeout: "10000"})})
+    if (!args[0]) return error(message, "Укажите участника.");
 
     let member = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase()) || message.member;
-    if (!member) return embed(message).setError("Укажите участника.").send().then(msg => {msg.delete({timeout: "10000"})})
+    if (!member) return error(message, "Укажите участника.");
     let sd = await serverModel.findOne({ serverID: message.guild.id });
     let authorHighestRole = message.member.roles.highest.position;
     let mentionHighestRole = member.roles.highest.position;
     if(mentionHighestRole >= authorHighestRole) {
-      embed(message).setError('Вы не сможете изменить никнейм участника с ролью выше вас, либо свой.').send().then(msg => {msg.delete({timeout: "10000"})});
+      error(message, 'Вы не сможете изменить никнейм участника с ролью выше вас, либо свой.');;
       return;}
-    if (member.roles.highest.comparePositionTo(message.guild.me.roles.highest) >= 0) return embed(message).setError("Я не могу изменить никнейм этого участника.").send().then(msg => {msg.delete({timeout: "10000"})})
+    if (member.roles.highest.comparePositionTo(message.guild.me.roles.highest) >= 0) return error(message, "Я не могу изменить никнейм этого участника.");
 
-    if (!args[1]) return embed(message).setError("Укажите никнейм.").send().then(msg => {msg.delete({timeout: "10000"})})
+    if (!args[1]) return error(message, "Укажите никнейм.");
 
     let nick = args.slice(1).join(' ');
 
@@ -42,7 +44,7 @@ module.exports = {
             .setAuthor(message.guild.name, message.guild.iconURL())
         message.channel.send(aembed)
         } catch {
-            return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+            return error(message, "У меня недостаточно прав.");;
         }
 
     let channel = sd.modLog;

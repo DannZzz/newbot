@@ -8,7 +8,8 @@ const profileSchema = new mongoose.Schema({
   drag: { type: Number, default: 0},
   rpg: { type: Number, default: 0},
   survive: { type: Number, default: 0},
-  shopped: {any: {}}
+  boss: { type: Number, default: 0},
+
 });
 
 const model = mongoose.model("ProfileModels", profileSchema);

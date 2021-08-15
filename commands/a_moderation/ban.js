@@ -3,6 +3,7 @@ const {greenlight, redlight} = require('../../JSON/colours.json');
 const serverModel = require("../../models/serverSchema");
 const embed = require('../../embedConstructor');
 const {AGREE} = require('../../config');
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -14,24 +15,25 @@ module.exports = {
       aliases: ["ban", "б", "b"]
     },
     run: async (bot, message, args) => {
+      let m = message
           try {
 
-              if (!message.member.hasPermission("BAN_MEMBERS")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
-              if (!message.guild.me.hasPermission("BAN_MEMBERS")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+              if (!message.member.hasPermission("BAN_MEMBERS")) return error(m, "У вас недостаточно прав.")
+              if (!message.guild.me.hasPermission("BAN_MEMBERS")) return error(m, "У меня недостаточно прав.")
 
-              if (!args[0]) return embed(message).setError("Укажите участника, чтобы забанить.").send().then(msg => {msg.delete({timeout: "10000"})});
+              if (!args[0]) return error(m, "Укажите участника, чтобы забанить.")
 
               var banMember = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase());
-              if (!banMember) return embed(message).setError("Пользователь не в сервере.").send().then(msg => {msg.delete({timeout: "10000"})});
+              if (!banMember) return error(m, "Пользователь не в сервере.")
               let sd = await serverModel.findOne({ serverID: message.guild.id });
-              if (banMember.id === message.member.id) return embed(message).setError("Вы хотите забанить себя? да ну, это не реально.").send();
+              if (banMember.id === message.member.id) return error(m, "Вы хотите забанить себя? да ну, это не реально.").send();
 
-              if (!banMember.bannable) return embed(message).setError("Невозможно забанить этого участника.").send().then(msg => {msg.delete({timeout: "10000"})})
-              if (banMember.user.bot) return embed(message).setError("Невозможно забанить этого бота.").send().then(msg => {msg.delete({timeout: "10000"})})
+              if (!banMember.bannable) return error(m, "Невозможно забанить этого участника.").send().then(msg => {msg.delete({timeout: "10000"})})
+              if (banMember.user.bot) return error(m, "Невозможно забанить этого бота.").send().then(msg => {msg.delete({timeout: "10000"})})
               let authorHighestRole = message.member.roles.highest.position;
               let mentionHighestRole = banMember.roles.highest.position;
               if(mentionHighestRole >= authorHighestRole) {
-                embed(message).setError('Вы не сможете кикнуть участника с ролью выше вас, либо себя.').send().then(msg => {msg.delete({timeout: "10000"})});
+                error(m, 'Вы не сможете кикнуть участника с ролью выше вас, либо себя.')
                 return;}
 
               var reason = args.slice(1).join(" ");

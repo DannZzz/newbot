@@ -4,8 +4,12 @@ const MONEY = ['', 'k', 'M', 'G', 'T', 'P', 'E'];
 const pd = require("./models/profileSchema");
 const inviteRegex = /(https?:\/\/)?(www\.|canary\.|ptb\.)?discord(\.gg|(app)?\.com\/invite|\.me)\/([^ ]+)\/?/gi;
 const botInvRegex = /(https?:\/\/)?(www\.|canary\.|ptb\.)?discord(app)\.com\/(api\/)?oauth2\/authorize\?([^ ]+)\/?/gi;
+const { DISAGREE } = require('./config')
 
 module.exports = {
+  error: function (msg, text = 'Ошибка') {
+    return msg.reply(`${DISAGREE} ${text}`).then(message => message.delete({timeout: "10000"}))
+  },
   progressBar: function (perc, ofMaxValue, size, line = '❤', slider = '🖤') {
   if (!perc) throw new Error('Perc value is either not provided or invalid');
   if (!perc && perc !== 0) throw new Error('Perc value is either not provided or invalid');

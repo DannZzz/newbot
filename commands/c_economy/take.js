@@ -6,6 +6,7 @@ const embed = require('../../embedConstructor');
 const mc = require('discordjs-mongodb-currency');
 const { RateLimiter } = require('discord.js-rate-limiter');
 let rateLimiter = new RateLimiter(1, 5000);
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -22,8 +23,8 @@ module.exports = {
 
     try {
 
-      if(!args[0]) return embed(message).setError("Укажите кол-во денег, чтобы обналичить в банк.").send().then(msg => {msg.delete({timeout: "10000"})});
-      if(isNaN(args[0]) && args[0] !== "all" && args[0] !== 'все') return embed(message).setError("Укажите кол-во денег в виде числ.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if(!args[0]) return error(message, "Укажите кол-во денег, чтобы обналичить в банк.");
+      if(isNaN(args[0]) && args[0] !== "all" && args[0] !== 'все') return error(message, "Укажите кол-во денег в виде числ.");
       let user = message.author;
       //args[0] = parseInt(args[0])
       let profileData = await mc.findUser(message.member.id, message.guild.id)
@@ -31,8 +32,8 @@ module.exports = {
       let bal1 = profileData.coinsInWallet;//
       let bank1 = profileData.coinsInBank;
 
-      if(args[0] > bank1) return embed(message).setError("У вас недостаточно денег.").send().then(msg => {msg.delete({timeout: "10000"})});
-      if(args[0] <= 0 || bank1 === 0) return embed(message).setError("Минимальная сумма **1**.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if(args[0] > bank1) return error(message, "У вас недостаточно денег.");
+      if(args[0] <= 0 || bank1 === 0) return error(message, "Минимальная сумма **1**.");
 
 
       if (args[0] === "all" || args[0] === 'все') {

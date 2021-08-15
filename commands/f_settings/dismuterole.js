@@ -3,6 +3,7 @@ const {AGREE} = require('../../config');
 const {MessageEmbed} = require("discord.js")
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const serverModel = require("../../models/serverSchema");
+const {error} = require('../../functions');
 
 module.exports = {
     config: {
@@ -14,15 +15,15 @@ module.exports = {
         accessableby: 'Нужна права: Управлять ролями.'
     },
     run: async (bot, message, args) => {
-      if (!message.member.hasPermission("MANAGE_ROLES")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
-      if (!message.guild.me.hasPermission("MANAGE_ROLES")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if (!message.member.hasPermission("MANAGE_ROLES")) return error(message, "У вас недостаточно прав.");
+      if (!message.guild.me.hasPermission("MANAGE_ROLES")) return error(message, "У меня недостаточно прав.");
 
         try {
             let sd = await serverModel.findOne({ serverID: message.guild.id });
             let a = sd.muteRole;a
 
             if (!a) {
-                return embed(message).setError("Роль мьюта пока не установлена.").send().then(msg => {msg.delete({timeout: "10000"})});
+                return error(message, "Роль мьюта пока не установлена.");
             } else {
               let dmtsEmbed = new MessageEmbed()
               .setTimestamp()
@@ -35,10 +36,7 @@ module.exports = {
             }
             return;
         } catch {
-          return embed(message).setError(
-            "Ошибка: `Отсутствующие разрешения  или роль не существует.`",
-            `\n${e.message}`
-          ).send();
+          return error(message, "Ошибка: `Отсутствующие разрешения  или роль не существует.`")
         }
     }
 }

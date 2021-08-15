@@ -5,7 +5,7 @@ const embed = require('../../embedConstructor');
 const mc = require('discordjs-mongodb-currency');
 const profileModel = require("../../models/profileSchema");
 const mongoose = require("mongoose")
-
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -57,7 +57,7 @@ module.exports = {
 
       message.channel.send(newEmbed)
     } else {
-      return embed(message).setError("Укажите участника.").send();
+      return error(message, "Укажите участника.")
     }
 
 

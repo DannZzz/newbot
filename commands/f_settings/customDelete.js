@@ -2,6 +2,7 @@ const embed = require('../../embedConstructor');
 const {MessageEmbed} = require("discord.js")
 const {PREFIX} = require("../../config");
 const customModel = require("../../models/customSchema");
+const {error} = require('../../functions');
 
 module.exports = {
       config: {
@@ -14,11 +15,8 @@ module.exports = {
     },
     run: async (bot, message, args) => {
 
-      if (!message.member.hasPermission("ADMINISTRATOR")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
-
-      if (!args[0]) return embed(message)
-                              .setError('Укажите название.')
-                              .send()
+      if (!message.member.hasPermission("ADMINISTRATOR")) return error(message, "У вас недостаточно прав.");
+      if (!args[0]) return error(message, 'Укажите название.')
       let cmd = args[0]
 
       let data = await customModel.findOne({ serverID: message.guild.id, command: cmd }, async(err, data) => {
@@ -27,7 +25,7 @@ module.exports = {
           data.delete()
           embed(message).setSuccess(`Успешно удалена команда **${cmd}**.`).send()
         } else if(!data) {
-          embed(message).setError(`Команда **${cmd}** не найдена.`).send()
+          error(message, `Команда **${cmd}** не найдена.`)
         }
       });
 

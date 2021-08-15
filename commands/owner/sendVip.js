@@ -16,7 +16,7 @@ module.exports = {
   },
   run: async (bot, message, args) => {
     try {
-    if (message.member.user.id !== ownerID) return embed(message).setError("К сожалению вы не разработчик.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (message.member.user.id !== ownerID) return 
     if (!args[0]) return embed(message).setError("Укажите участника.").send().then(msg => {msg.delete({timeout: "10000"})});
 
     let user = bot.users.cache.get(args[0]);

@@ -17,7 +17,7 @@ module.exports = {
   },
   run: async (bot, message, args) => {
     try {
-    if (message.member.user.id !== ownerID) return embed(message).setError("К сожалению вы не разработчик.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (message.member.user.id !== ownerID) return 
     if (!args[0]) return embed(message).setError("Укажите участника.").send().then(msg => {msg.delete({timeout: "10000"})});
 
     let user = bot.users.cache.get(args[0]);
@@ -31,7 +31,7 @@ module.exports = {
     rp = await rpg.findOne({userID: user.id})
 
     if(!args[1]) return embed(message).setError("Укажите подарок.").send().then(msg => {msg.delete({timeout: "10000"})});
-    const items = ["Zeenou", "Dilan", "Darius", "Selena", "Cthulhu", "Zeus"];
+    const items = ["Zeenou", "Dilan", "Darius", "Selena", "Cthulhu", "Zeus", "PerfectDuo"];
     if (!items.includes(args[1])) return embed(message).setError("Герой не найден.").send().then(msg => {msg.delete({timeout: "10000"})});
     let giftType = heroes[args[01]]
 

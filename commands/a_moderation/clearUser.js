@@ -6,7 +6,7 @@ const profileModel = require("../../models/profileSchema");
 const vipModel = require("../../models/vipSchema");
 const serverModel = require("../../models/serverSchema");
 const embed = require('../../embedConstructor');
-
+const {error} = require('../../functions');
 const Levels = require("discord-xp");
 Levels.setURL(MONGO)
 
@@ -23,13 +23,13 @@ module.exports = {
     let bag = await begModel.findOne({userID: message.author.id});
     let sd = await serverModel.findOne({serverID: message.guild.id});
 
-    if (!message.member.hasPermission("ADMINISTRATOR")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
-    if(!args[0]) return embed(message).setError("Укажите действие участника.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (!message.member.hasPermission("ADMINISTRATOR")) return error(message, "У вас недостаточно прав.");
+    if(!args[0]) return error(message, "Укажите действие участника.");
 
     var member = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase());
     if (!member) {
       const User = await Levels.fetch(args[0], message.guild.id)
-      if(!User.userID) return embed(message).setError("Пользователь не найден.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if(!User.userID) return error(message, "Пользователь не найден.");
     }
 
     Levels.deleteUser(member ? member.user.id : args[0], message.guild.id);

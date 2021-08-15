@@ -25,7 +25,7 @@ const profileModel = require("../../models/profileSchema");
 const begModel = require("../../models/begSchema");
 const embed = require('../../embedConstructor');
 const mc = require('discordjs-mongodb-currency');
-
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -38,70 +38,30 @@ module.exports = {
   },
   run: async (bot, message, args, ops) => {
 
-    if (!args[0]) return embed(message).setError("Укажите кол-во колод!").send().then(msg => {
-      msg.delete({
-        timeout: "10000"
-      })
-    });
+    if (!args[0]) return error(message, "Укажите кол-во колод!");;
     let deckCount = parseInt(args[0])
-    if (isNaN(args[0])) return embed(message).setError("Укажите число!").send().then(msg => {
-      msg.delete({
-        timeout: "10000"
-      })
-    });
-    if (deckCount <= 0 || deckCount >= 9) return embed(message).setError("Укажите число колод , от 1 до 8!").send().then(msg => {
-      msg.delete({
-        timeout: "10000"
-      })
-    });
+    if (isNaN(args[0])) return error(message, "Укажите число!");;
+    if (deckCount <= 0 || deckCount >= 9) return error(message, "Укажите число колод , от 1 до 8!");;
 
     let user = message.author;
     let profileData = await mc.findUser(message.member.id, message.guild.id)
     let bal = profileData.coinsInWallet;
 
-    if (!args[1]) return embed(message).setError("Укажите ставку!").send().then(msg => {
-      msg.delete({
-        timeout: "10000"
-      })
-    })
+    if (!args[1]) return error(message, "Укажите ставку!");
 
     let amount = parseInt(args[1])
-    if (isNaN(args[1])) return embed(message).setError("Укажите число!").send().then(msg => {
-      msg.delete({
-        timeout: "10000"
-      })
-    })
-    if (Math.floor(amount) < 100) return embed(message).setError("Минимальная ставка **100**!").send().then(msg => {
-      msg.delete({
-        timeout: "10000"
-      })
-    })
+    if (isNaN(args[1])) return error(message, "Укажите число!");
+    if (Math.floor(amount) < 100) return error(message, "Минимальная ставка **100**!");
     let bag = await begModel.findOne({userID: message.author.id})
     if (!bag["vip1"] && Math.floor(amount) > 100000) {
-      return embed(message).setError("Максимальная ставка **100.000**!\nЛибо купите VIP").send().then(msg => {
-        msg.delete({
-          timeout: "10000"
-        })
-      })
+      return error(message, "Максимальная ставка **100.000**!\nЛибо купите VIP");
     } else if (!bag["vip2"] && Math.floor(amount) > 1000000) {
-      return embed(message).setError("Максимальная ставка **1.000.000**!\nЛибо купите VIP 2").send().then(msg => {
-        msg.delete({
-          timeout: "10000"
-        })
-      })
+      return error(message, "Максимальная ставка **1.000.000**!\nЛибо купите VIP 2");
     }
 
-    if (bal < Math.floor(amount)) return embed(message).setError("У вас недостаточно денег!").send().then(msg => {
-      msg.delete({
-        timeout: "10000"
-      })
-    })
+    if (bal < Math.floor(amount)) return error(message, "У вас недостаточно денег!");
     const current = ops.games.get(message.channel.id);
-    if (current) return embed(message).setError(`Пожалуйста подождите пока игра **${current.name}** закончится!`).send().then(msg => {
-      msg.delete({
-        timeout: "10000"
-      })
-    })
+    if (current) return error(message, `Пожалуйста подождите пока игра **${current.name}** закончится!`);
     try {
       await mc.deductCoins(message.member.id, message.guild.id, Math.floor(amount))
       ops.games.set(message.channel.id, {

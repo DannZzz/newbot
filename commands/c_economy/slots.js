@@ -9,6 +9,7 @@ const begModel = require("../../models/begSchema");
 const mc = require('discordjs-mongodb-currency');
 const { RateLimiter } = require('discord.js-rate-limiter');
 let rateLimiter = new RateLimiter(1, 5000);
+const {error} = require('../../functions');
 
 module.exports = {
     config: {
@@ -46,27 +47,19 @@ module.exports = {
     if (author !== null && timeout - (Date.now() - author) > 0) {
 
       let time = new Date(timeout - (Date.now() - author));
-      return embed(message).setError(`Попробуй снова через **${time.getMinutes()} минут ${time.getSeconds()} секунд**.`).send().then(msg => {msg.delete({timeout: "10000"})});
+      return error(message, `Попробуй снова через **${time.getMinutes()} минут ${time.getSeconds()} секунд**.`);
     } else {
-      if (money < 100) return embed(message).setError(`Минимальная ставка **100**.`).send().then(msg => {msg.delete({timeout: "10000"})});
-      if (!money) return embed(message).setError('Укажите ставку.').send();
+      if (money < 100) return error(message, `Минимальная ставка **100**.`);
+      if (!money) return error(message, 'Укажите ставку.')
 
       if (!beg["vip1"] && money > 100000) {
-        return embed(message).setError("Максимальная ставка **100.000**!\nЛибо купите VIP").send().then(msg => {
-          msg.delete({
-            timeout: "10000"
-          })
-        })
+        return error(message, "Максимальная ставка **100.000**!\nЛибо купите VIP");
       } else if (!beg["vip2"] && money > 1000000) {
-        return embed(message).setError("Максимальная ставка **1.000.000**!\nЛибо купите VIP 2").send().then(msg => {
-          msg.delete({
-            timeout: "10000"
-          })
-        })
+        return error(message, "Максимальная ставка **1.000.000**!\nЛибо купите VIP 2");
       }
 
 
-      if (money > moneydb) return embed(message).setError(`У вас недостаточно денег.`).send();
+      if (money > moneydb) return error(message, `У вас недостаточно денег.`)
       await memberModel.findOneAndUpdate({userID: user.id, serverID: message.guild.id},{$set: {slots: Date.now()}});
       let reward = 0 ;
       let number = []

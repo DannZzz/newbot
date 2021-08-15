@@ -18,6 +18,6 @@ exports.giphy_API = 'afWlnBmAo2txNzxVgN4m4P34yNZN9PFt';
 
 exports.MONGO = 'mongodb+srv://DannDev:vard04mak@cluster0.fcdo0.mongodb.net/test';
 
-exports.AGREE = '<:check:870675077706940417>';
+exports.AGREE = '<:check2:876438109707989032>';
 
-exports.DISAGREE = '<:cross:870675077790851113>';
+exports.DISAGREE = '<:cross2:876438109728960522>';

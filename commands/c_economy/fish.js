@@ -9,6 +9,7 @@ const vipModel = require("../../models/vipSchema");
 const embed = require('../../embedConstructor');
 const { RateLimiter } = require('discord.js-rate-limiter');
 let rateLimiter = new RateLimiter(1, 5000);
+const {error} = require('../../functions');
 
 function randomRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -26,7 +27,7 @@ module.exports = {
     run: async (bot, message, args) => {
       let limited = rateLimiter.take(message.author.id)
       if(limited) return
-      
+
         let user = message.author;
         let profileData = await profileModel.findOne({ userID: user.id });
 
@@ -54,7 +55,7 @@ module.exports = {
             if (fishtime !== null && timeout - (Date.now() - fishtime) > 0) {
                 let time = await new Date(timeout - (Date.now() - fishtime));
 
-                return embed(message).setError(`Вы недавно рыбачили.\n\nПопробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**`).send().then(msg => {msg.delete({timeout: "10000"})});
+                return error(message, `Вы недавно рыбачили.\n\nПопробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**`);
             }
             await profileModel.findOneAndUpdate({userID: user.id}, {$set: {fish: Date.now()}})
 

@@ -6,6 +6,7 @@ const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK, STAR } = require('../../config');
 const ms = require('ms');
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -41,7 +42,7 @@ module.exports = {
       const server = message.guild
       const data = await sd.findOne({serverID: server.id})
 
-      if (data.shop.length < 1) return embed(message).setError(`Тут ничего нет.`).send().then(msg => msg.delete({timeout: 10000}))
+      if (data.shop.length < 1) return error(message, `Тут ничего нет.`);
 
       let shopEmb = new MessageEmbed()
       .setColor(cyan)

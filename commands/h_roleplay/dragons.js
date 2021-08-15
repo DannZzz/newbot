@@ -5,6 +5,7 @@ const bd = require("../../models/begSchema");
 const { MessageEmbed } = require("discord.js");
 const { COIN, STAR } = require("../../config");
 const pagination = require("@xoalone/discordjs-pagination");
+const {error} = require('../../functions');
 
 module.exports = {
   config: {

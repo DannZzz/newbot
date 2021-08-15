@@ -9,6 +9,7 @@ const { COIN, BANK, STAR } = require('../../config');
 const embed = require('../../embedConstructor');
 const { RateLimiter } = require('discord.js-rate-limiter');
 let rateLimiter = new RateLimiter(1, 5000);
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -29,17 +30,6 @@ module.exports = {
       let rarity;
       let money;
       let cost;
-      let author = bal.sell;
-
-      let timeout;
-      if (bag["vip2"] === true) { timeout = 10 * 1000; } else {
-        timeout = 20 * 1000;
-      }
-      if (author !== null && timeout - (Date.now() - author) > 0) {
-          let time = new Date(timeout - (Date.now() - author));
-
-          embed(message).setError(`Попробуй еще раз через **${time.getSeconds()} секунд.**.`).send().then(msg => {msg.delete({timeout: "10000"})});
-      }
 
       if (args[0] === '1') {
         fish_sell = bag.junk;
@@ -66,12 +56,12 @@ module.exports = {
         cost = 5
         rarity = fishes['legendary']
       } else {
-        return embed(message).setError(`Айди рыб не найдено: **${sd.prefix}рыба лист**`).send()
+        return error(message, `Айди рыб не найдено: **${sd.prefix}рыба лист**`);
       }
       const xx = fish_sell
       let exCost;
       if(bag['vip1']) exCost = cost + (cost / 3)
-      if(xx === 0) return embed(message).setError(`Интересно, как продать "ничего".`).send()
+      if(xx === 0) return error(message, `Интересно, как продать "ничего".`);
       if(xx < 10) money = cost * xx;
       else if (xx < 100) money = exCost * xx;
       else if (xx > 100) money = exCost * xx * (exCost / 2);

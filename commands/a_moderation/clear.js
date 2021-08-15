@@ -2,6 +2,7 @@ const {MessageEmbed} = require("discord.js")
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const {PREFIX} = require("../../config");
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
 
 module.exports = {
     config: {
@@ -13,16 +14,16 @@ module.exports = {
       aliases: ["clear", "purge", "cl", "оч"]
     },
     run: async (bot, message, args) => {
-        if (!message.member.hasPermission("MANAGE_MESSAGES")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
-        if (!message.guild.me.hasPermission("MANAGE_MESSAGES")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+        if (!message.member.hasPermission("MANAGE_MESSAGES")) return error(message, "У вас недостаточно прав.");
+        if (!message.guild.me.hasPermission("MANAGE_MESSAGES")) return error(message, "У меня недостаточно прав.");
         if (isNaN(args[0]))
-            return embed(message).setError("Укажите допустимый формат числ.").send().then(msg => {msg.delete({timeout: "10000"})});
+            return error(message, "Укажите допустимый формат числ.");
 
         if (args[0] >= 100)
-            return embed(message).setError("Укажите число меньше 100.").send().then(msg => {msg.delete({timeout: "10000"})});
+            return error(message, "Укажите число меньше 100.");
 
         if (args[0] < 1)
-            return embed(message).setError("Укажите число больше 1.").send().then(msg => {msg.delete({timeout: "10000"})});
+            return error(message, "Укажите число больше 1.");
 
         message.channel.bulkDelete(+args[0]+1)
             .then(messages => embed(message).setSuccess(`**Успешно удалено \`${messages.size-1}/${args[0]}\` сообщений**`).send().then(msg => msg.delete({ timeout: "10000" }))).catch(() => null)

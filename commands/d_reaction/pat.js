@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const superagent = require('superagent');
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -15,10 +16,10 @@ module.exports = {
   run: async (bot, message, args) => {
     try {
 
-        if(!args[0]) return embed(message).setError("Укажи участника чтобы погладить его/ее.").send().then(msg => {msg.delete({timeout: "10000"})});
+        if(!args[0]) return error(message, "Укажи участника чтобы погладить его/ее.");
         let member = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args[0].toLocaleLowerCase());
-        if (!member) return embed(message).setError("Укажи участника чтобы погладить его/ее.").send().then(msg => {msg.delete({timeout: "10000"})});
-        if (member.id === message.author.id) return embed(message).setError('Ты не сможешь погладить себя.').send().then(msg => {msg.delete({timeout: "10000"})});
+        if (!member) return error(message, "Укажи участника чтобы погладить его/ее.");
+        if (member.id === message.author.id) return error(message, 'Ты не сможешь погладить себя.');
         const { body } = await superagent
         .get("https://nekos.life/api/pat");
 

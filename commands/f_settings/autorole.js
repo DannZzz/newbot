@@ -3,6 +3,7 @@ const {MessageEmbed} = require("discord.js")
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const {PREFIX} = require("../../config");
 const serverModel = require("../../models/serverSchema");
+const {error} = require('../../functions');
 
 module.exports = {
       config: {
@@ -15,8 +16,8 @@ module.exports = {
     },
     run: async (bot, message, args) => {
 
-      if (!message.member.hasPermission("ADMINISTRATOR")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
-      if (!message.guild.me.hasPermission("MANAGE_ROLES")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if (!message.member.hasPermission("ADMINISTRATOR")) return error(message, "У вас недостаточно прав.");
+      if (!message.guild.me.hasPermission("MANAGE_ROLES")) return error(message, "У меня недостаточно прав.");
       let sd = await serverModel.findOne({ serverID: message.guild.id });
         try {
           if(!args[0] && sd.autoRoleOn) {
@@ -25,7 +26,7 @@ module.exports = {
               return embed(message).setPrimary(`Авто-роль сервера: **${role.name}**\nУбедитесь что моя роль выше!`).send()
             }
           } else if (!args[0]) {
-            return embed(message).setError(`Укажите роль!`).send()
+            return error(message, `Укажите роль!`)
           } else {
             let role = message.mentions.roles.first() || bot.guilds.cache.get(message.guild.id).roles.cache.get(args[0]) || message.guild.roles.cache.find(c => c.name.toLowerCase() === args.join(' ').toLocaleLowerCase());
             await serverModel.findOneAndUpdate({serverID: message.guild.id}, {$set: {autoRole: role.id, autoRoleOn: true}})
@@ -33,7 +34,7 @@ module.exports = {
           }
 
         } catch {
-            return embed(message).setError("Недостаточно прав, либо роль не существует.").send().then(msg => {msg.delete({timeout: "10000"})});
+            return error(message, "Недостаточно прав, либо роль не существует.");
         }
     }
 };

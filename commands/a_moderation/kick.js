@@ -3,7 +3,7 @@ const embed = require('../../embedConstructor');
 const {AGREE} = require('../../config');
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const serverModel = require("../../models/serverSchema");
-
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -17,22 +17,22 @@ module.exports = {
     run: async (bot, message, args) => {
           try {
 
-              if (!message.member.hasPermission("KICK_MEMBERS")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
-              if (!message.guild.me.hasPermission("KICK_MEMBERS")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+              if (!message.member.hasPermission("KICK_MEMBERS")) return error(message, "У вас недостаточно прав.");
+              if (!message.guild.me.hasPermission("KICK_MEMBERS")) return error(message, "У меня недостаточно прав.");
 
-              if (!args[0]) return embed(message).setError("Укажите участника, чтобы выгнать.").send().then(msg => {msg.delete({timeout: "10000"})});
+              if (!args[0]) return error(message, "Укажите участника, чтобы выгнать.");
 
               var kickMember = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase());
-              if (!kickMember) return embed(message).setError("Пользователь не в сервере.").send().then(msg => {msg.delete({timeout: "10000"})});
+              if (!kickMember) return error(message, "Пользователь не в сервере.");
               let sd = await serverModel.findOne({ serverID: message.guild.id });
-              if (kickMember.id === message.member.id) return embed(message).setError("Вы хотите выгнать себя? да ну, это не реально.").send();
+              if (kickMember.id === message.member.id) return error(message, "Вы хотите выгнать себя? да ну, это не реально.").send();
 
-              if (!kickMember.kickable) return embed(message).setError("Невозможно выгнать этого участника.").send().then(msg => {msg.delete({timeout: "10000"})})
-              if (kickMember.user.bot) return embed(message).setError("Невозможно выгнать этого бота.").send().then(msg => {msg.delete({timeout: "10000"})})
+              if (!kickMember.kickable) return error(message, "Невозможно выгнать этого участника.").send().then(msg => {msg.delete({timeout: "10000"})})
+              if (kickMember.user.bot) return error(message, "Невозможно выгнать этого бота.").send().then(msg => {msg.delete({timeout: "10000"})})
               let authorHighestRole = message.member.roles.highest.position;
               let mentionHighestRole = kickMember.roles.highest.position;
               if(mentionHighestRole >= authorHighestRole) {
-                embed(message).setError('Вы не сможете выгнать участника с ролью выше вас, либо себя.').send().then(msg => {msg.delete({timeout: "10000"})});
+                error(message, 'Вы не сможете выгнать участника с ролью выше вас, либо себя.');
                 return;}
 
               var reason = args.slice(1).join(" ");

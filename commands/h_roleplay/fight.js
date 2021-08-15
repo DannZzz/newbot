@@ -9,7 +9,7 @@ const { COIN } = require("../../config");
 const { checkValue } = require("../../functions");
 const embed = require('../../embedConstructor');
 const mc = require('discordjs-mongodb-currency');
-
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -32,46 +32,38 @@ module.exports = {
     if (author !== null && timeout - (Date.now() - author) > 0) {
         let time = new Date(timeout - (Date.now() - author));
 
-        return embed(message).setError(`Попробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**.`).send().then(msg => {msg.delete({timeout: "10000"})});
+        return error(message, `Попробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**.`);
     }
-    if (!args[0]) return embed(message).setError('Укажите участника.').send().then(msg => msg.delete({timeout: "10000"}));
+    if (!args[0]) return error(message, 'Укажите участника.');
     const user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args[0].toLocaleLowerCase());
-    if(!user) return embed(message).setError('Участник не найден.').send().then(msg => msg.delete({timeout: "10000"}));
-    if(user.user.bot) return embed(message).setError('Поединок с ботом...хм').send().then(msg => msg.delete({timeout: "10000"}));
+    if(!user) return error(message, 'Участник не найден.');
+    if(user.user.bot) return error(message, 'Поединок с ботом...хм');
     const mUser = message.author;
-    if(user.id === mUser.id) return embed(message).setError('Вы не можете начать бой с собой.').send().then(msg => msg.delete({timeout: "10000"}));
+    if(user.id === mUser.id) return error(message, 'Вы не можете начать бой с собой.');
 
-    if(!args[1] || isNaN(args[1])) return embed(message).setError('Укажите ставку.').send().then(msg => msg.delete({timeout: "10000"}));
+    if(!args[1] || isNaN(args[1])) return error(message, 'Укажите ставку.');
     let value = Math.floor(args[1])
     let data11 = await mc.findUser(user.id, message.guild.id)
     let data22 = await mc.findUser(mUser.id, message.guild.id)
 
     let bal = data11.coinsInWallet
     let mBal = data22.coinsInWallet
-    if (value < 10000) return embed(message).setError(`Минимальная ставка **10000**.`).send().then(msg => {msg.delete({timeout: "10000"})});
+    if (value < 10000) return error(message, `Минимальная ставка **10000**.`);
 
     if (!bag["vip1"] && value > 100000) {
-      return embed(message).setError("Максимальная ставка **100.000**!\nЛибо купите VIP").send().then(msg => {
-        msg.delete({
-          timeout: "10000"
-        })
-      })
+      return error(message, "Максимальная ставка **100.000**!\nЛибо купите VIP");
     } else if (!bag["vip2"] && value > 1000000) {
-      return embed(message).setError("Максимальная ставка **1.000.000**!\nЛибо купите VIP 2").send().then(msg => {
-        msg.delete({
-          timeout: "10000"
-        })
-      })
+      return error(message, "Максимальная ставка **1.000.000**!\nЛибо купите VIP 2");
     }
 
-    if(value > mBal) return embed(message).setError(`У вас недостаточно денег.`).send().then(msg => msg.delete({timeout: "10000"}));
-    if(value > bal) return embed(message).setError(`${user} не имеет столько денег.`).send().then(msg => msg.delete({timeout: "10000"}));
+    if(value > mBal) return error(message, `У вас недостаточно денег.`);
+    if(value > bal) return error(message, `${user} не имеет столько денег.`);
 
     const rp = await rpg.findOne({userID: user.id});
     const mrp = await rpg.findOne({userID: mUser.id});
 
-    if (!mrp || mrp.item === null) return embed(message).setError('Вы не имеете героя.').send().then(msg => msg.delete({timeout: "10000"}));
-    if (!rp || rp.item === null) return embed(message).setError('Участник не имеет героя.').send().then(msg => msg.delete({timeout: "10000"}));
+    if (!mrp || mrp.item === null) return error(message, 'Вы не имеете героя.');
+    if (!rp || rp.item === null) return error(message, 'Участник не имеет героя.');
 
     let h1 = rp.health
     let h2 = mrp.health
@@ -182,7 +174,7 @@ module.exports = {
     } else {
       await mc.giveCoins(user.id, message.guild.id, value)
       await mc.giveCoins(mUser.id, message.guild.id, value)
-      return embed(message).setError(`Поединок отклонен.`).send();
+      return error(message, `Поединок отклонен.`);
     }
     console.log('collected :' + collected.first().content)
   }).catch(async() => {

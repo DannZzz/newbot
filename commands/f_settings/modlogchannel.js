@@ -3,6 +3,7 @@ const {MessageEmbed} = require("discord.js")
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const {PREFIX, AGREE} = require("../../config");
 const serverModel = require("../../models/serverSchema");
+const {error} = require('../../functions');
 
 module.exports = {
       config: {
@@ -19,8 +20,8 @@ module.exports = {
       .setAuthor(message.guild.name, message.guild.iconURL())
       .setColor(greenlight)
 
-      if (!message.member.hasPermission("ADMINISTRATOR")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
-      if (!message.guild.me.hasPermission("MANAGE_CHANNELS")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if (!message.member.hasPermission("ADMINISTRATOR")) return error(message, "У вас недостаточно прав.");
+      if (!message.guild.me.hasPermission("MANAGE_CHANNELS")) return error(message, "У меня недостаточно прав.");
       let sd = await serverModel.findOne({ serverID: message.guild.id });
     if (!args[0]) {
 
@@ -31,13 +32,13 @@ module.exports = {
           `${AGREE} Журнал модерации установлен на: <#${channelName.id}>`
         ));
       } else
-        return embed(message).setError(
+        return error(message,
           "Укажите доступный тектовый канал."
-        ).send().then(msg => {msg.delete({timeout: "10000"})});
+        );
     }
         let channel = message.mentions.channels.first() || bot.guilds.cache.get(message.guild.id).channels.cache.get(args[0]) || message.guild.channels.cache.find(c => c.name.toLowerCase() === args.join(' ').toLocaleLowerCase());
 
-        if (!channel || channel.type !== 'text') return embed(message).setError("Укажите доступный текстовый канал.").send().then(msg => {msg.delete({timeout: "10000"})});
+        if (!channel || channel.type !== 'text') return error(message, "Укажите доступный текстовый канал.");
 
         try {
             let a = sd.modLog;
@@ -51,7 +52,7 @@ module.exports = {
                 message.channel.send(sembed.setDescription(`${AGREE} <#${channel.id}> установлен новый канал для модерации.`));
             }
         } catch {
-            return embed(message).setError("Недостаточно прав, либо канал не существует.").send().then(msg => {msg.delete({timeout: "10000"})});
+            return error(message, "Недостаточно прав, либо канал не существует.");
         }
     }
 };

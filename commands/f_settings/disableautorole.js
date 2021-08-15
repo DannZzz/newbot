@@ -3,6 +3,7 @@ const {MessageEmbed} = require("discord.js")
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const {PREFIX, DISAGREE, AGREE} = require("../../config");
 const serverModel = require("../../models/serverSchema");
+const {error} = require('../../functions');
 
 module.exports = {
       config: {
@@ -16,13 +17,13 @@ module.exports = {
     run: async (bot, message, args) => {
 
 
-      if (!message.member.hasPermission("ADMINISTRATOR")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
-      if (!message.guild.me.hasPermission("MANAGE_ROLES")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if (!message.member.hasPermission("ADMINISTRATOR")) return error(message, "У вас недостаточно прав.");
+      if (!message.guild.me.hasPermission("MANAGE_ROLES")) return error(message, "У меня недостаточно прав.");
       let sd = await serverModel.findOne({ serverID: message.guild.id });
         try {
           if(sd.autoRoleOn === false) {
 
-            return embed(message).setError(`Авто-роль и так отключена.`).send();
+            return error(message, `Авто-роль и так отключена.`)
 
           }  else {
 
@@ -31,7 +32,7 @@ module.exports = {
           }
 
         } catch {
-            return embed(message).setError("Недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+            return error(message, "Недостаточно прав.");
         }
     }
 };

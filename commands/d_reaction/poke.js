@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -27,10 +28,10 @@ module.exports = {
         "https://i.pinimg.com/originals/ae/62/32/ae62324b1de9d2422a45557ac0551e48.gif",
       ]
         const random = Math.floor(Math.random() * gifs.length)
-        if(!args[0]) return embed(message).setError("Укажи участника чтобы тикнуть его/ее.").send().then(msg => {msg.delete({timeout: "10000"})});
+        if(!args[0]) return error(message, "Укажи участника чтобы тикнуть его/ее.");
         let member = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args[0].toLocaleLowerCase());
-        if (!member) return embed(message).setError("Укажи участника чтобы тикнуть его/ее.").send().then(msg => {msg.delete({timeout: "10000"})});
-        if (member.id === message.author.id) return embed(message).setError('Ты не сможешь тикнуть себя.').send().then(msg => {msg.delete({timeout: "10000"})});
+        if (!member) return error(message, "Укажи участника чтобы тикнуть его/ее.");
+        if (member.id === message.author.id) return error(message, 'Ты не сможешь тикнуть себя.');
 
         const sembed = new Discord.MessageEmbed()
         .setColor(cyan)

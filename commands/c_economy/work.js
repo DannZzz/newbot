@@ -10,6 +10,7 @@ const begModel = require("../../models/begSchema");
 const mc = require('discordjs-mongodb-currency');
 const { RateLimiter } = require('discord.js-rate-limiter');
 let rateLimiter = new RateLimiter(1, 5000);
+const {error} = require('../../functions');
 
 module.exports = {
     config: {
@@ -37,7 +38,7 @@ module.exports = {
         if (author !== null && timeout - (Date.now() - author) > 0) {
             let time = new Date(timeout - (Date.now() - author));
 
-            embed(message).setError(`Вы уже работали недавно\n\nПопробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**.`).send().then(msg => {msg.delete({timeout: "10000"})});
+            error(message, `Вы уже работали недавно\n\nПопробуй еще раз через **${time.getMinutes()} минут ${time.getSeconds()} секунд.**.`);
         } else {
             await memberModel.findOneAndUpdate({userID: user.id, serverID: message.guild.id}, {$set: {work: Date.now()}})
 

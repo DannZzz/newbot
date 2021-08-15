@@ -5,7 +5,6 @@ const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK } = require('../../config');
 const db = require("mongoose");
 let profileModel = require("../../models/profileSchema.js")
-const commaNumber = require("comma-number");
 const mongoose = require("mongoose")
 
 module.exports = {
@@ -37,7 +36,7 @@ module.exports = {
       const leaderboard = getTop.slice(0, 15);
 
 
-      if (leaderboard.length < 1) return message.channel.send("Тут никого нет.");
+      if (leaderboard.length < 1) return message.reply("Тут никого нет.");
     // const leaderboard = await mc.generateLeaderboard(message.guild.id, 10);
     //
     // if (leaderboard.length < 1) return message.channel.send("Тут никого нет.");

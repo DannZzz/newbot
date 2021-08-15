@@ -5,6 +5,7 @@ const { COIN, BANK, STAR } = require('../../config');
 const profileModel = require("../../models/profileSchema");
 const vipModel = require("../../models/vipSchema");
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -19,9 +20,9 @@ module.exports = {
 
     let bag = await begModel.findOne({userID: message.author.id});
 
-    if(bag['vip1'] === false || bag['vip2'] === false) return embed(message).setError("Эта команда доступна только для **VIP 2** пользователей.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if(bag['vip1'] === false || bag['vip2'] === false) return error(message, "Эта команда доступна только для **VIP 2** пользователей.");
 
-    if(!args[0]) return embed(message).setError("Укажите ссылку").send().then(msg => {msg.delete({timeout: "10000"})});
+    if(!args[0]) return error(message, "Укажите ссылку");
 
     embed(message).setSuccess('Успешно установлена новая картинка для ранг-карточки.\nОбратите внимание, что ссылка указана правильно.').send()
     await vipModel.findOneAndUpdate({userID: message.author.id}, {$set: {rankImage: args[0]}})

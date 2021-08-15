@@ -5,6 +5,7 @@ const {greenlight, redlight} = require('../../JSON/colours.json');
 const {PREFIX, AGREE} = require("../../config");
 const serverModel = require("../../models/serverSchema");
 const memberModel = require("../../models/memberSchema");
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -17,26 +18,26 @@ module.exports = {
   },
   run: async (bot, message, args) => {
     try {
-    if (!message.member.hasPermission("MANAGE_MESSAGES")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
-    if (!message.guild.me.hasPermission("MANAGE_ROLES")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (!message.member.hasPermission("MANAGE_MESSAGES")) return error(message, "У вас недостаточно прав.");
+    if (!message.guild.me.hasPermission("MANAGE_ROLES")) return error(message, "У меня недостаточно прав.");
 
-    if (!args[0]) return embed(message).setError("Укажите участника, чтобы замутить.").send().then(msg => {msg.delete({timeout: "10000"})});
-    if (!args[1]) return embed(message).setError("Укажите время \`\`1m, 1h\`\`, чтобы замутить.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (!args[0]) return error(message, "Укажите участника, чтобы замутить.");
+    if (!args[1]) return error(message, "Укажите время \`\`1m, 1h\`\`, чтобы замутить.");
 
     let mutee = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase());
-    if (!mutee) return embed(message).setError(`Укажите участника.`).send().then(msg => {msg.delete({timeout: "10000"})});
+    if (!mutee) return error(message, `Укажите участника.`);
     let sd = await serverModel.findOne({ serverID: message.guild.id });
-    if (mutee === message.member) return embed(message).setError("Невозможно замьютить себя.").send().then(msg => {msg.delete({timeout: "10000"})});
-    if (mutee.roles.highest.comparePositionTo(message.guild.me.roles.highest) >= 0) return embed(message).setError("Невозможно замьютить этого участника.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (mutee === message.member) return error(message, "Невозможно замьютить себя.");
+    if (mutee.roles.highest.comparePositionTo(message.guild.me.roles.highest) >= 0) return error(message, "Невозможно замьютить этого участника.");
 
     let authorHighestRole = message.member.roles.highest.position;
     let mentionHighestRole = mutee.roles.highest.position;
     if(mentionHighestRole >= authorHighestRole) {
-      embed(message).setError('Вы не сможете замутить участника с ролью выше вас, либо себя.').send().then(msg => {msg.delete({timeout: "10000"})});
+      error(message, 'Вы не сможете замутить участника с ролью выше вас, либо себя.');
       return;}
 
     let reason = args.slice(2).join(" ");
-    if (mutee.user.bot) return embed(message).setError("Невозможно замьютить ботов.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (mutee.user.bot) return error(message, "Невозможно замьютить ботов.");
     const userRoles = mutee.roles.cache
           .filter(r => r.id !== message.guild.id)
           .map(r => r.id)
@@ -72,18 +73,18 @@ module.exports = {
               }
     };
 
-    if (mutee.roles.cache.has(muterole.id)) return embed(message).setError("Этот участник уже замучен.").send().then(msg => {msg.delete({timeout: "10000"})})
+    if (mutee.roles.cache.has(muterole.id)) return error(message, "Этот участник уже замучен.").send().then(msg => {msg.delete({timeout: "10000"})})
       // РОль мута конец
       var muteTime = args[1];
       if(!isNaN(muteTime)) {return}
       if(muteTime){
-        if(!isNaN(muteTime)) {return embed(message).setError(`Укажите доступный формат времени: \`\`20s, 1m, 1h, 1d\`\``).send().then(msg => {msg.delete({timeout: "5000"})})}
+        if(!isNaN(muteTime)) {return error(message, `Укажите доступный формат времени: \`\`20s, 1m, 1h, 1d\`\``);}
         if (mutee.roles.cache.find(r => r.name === muterole.name)) {
-           return embed(message).setError(`<@${mutee.id}> этот учатник уже замучен!`).send().then(msg => {msg.delete({timeout: "5000"})});
+           return error(message, `<@${mutee.id}> этот учатник уже замучен!`);;
         } else if (!ms(muteTime)) {
-          return embed(message).setError(`Укажите доступный формат времени: \`\`20s, 1m, 1h, 1d\`\``).send().then(msg => {msg.delete({timeout: "5000"})})
+          return error(message, `Укажите доступный формат времени: \`\`20s, 1m, 1h, 1d\`\``);
         } else if (ms(muteTime) < 60000) {
-          return embed(message).setError(`Минимальное время 1 минута.`).send().then(msg => {msg.delete({timeout: "5000"})})
+          return error(message, `Минимальное время 1 минута.`);
         }
         else {
           try {

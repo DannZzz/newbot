@@ -178,16 +178,14 @@ module.exports = {
 
           } else if(args[0] === 'фан' || args[0] === 'fun') {
 
-            description = new MessageEmbed()
+            let fun = new MessageEmbed()
+              .setColor(cyan)
               .setDescription(
                 '**Категория "Фан"**\n\n' + bot.commands.filter(c => c.config.category === 'e_fun').map(func)
                 .slice(0, 5)
                 .join("\n\n"))
-            description1 = new MessageEmbed()
-              .setDescription(
-              '**Категория "Фан"**\n\n' + bot.commands.filter(c => c.config.category === 'e_fun').map(func)
-              .slice(5, 10)
-              .join("\n\n"))
+
+          return message.channel.send(fun)
 
 
           } else if(args[0] === 'настройки' || args[0] === 'settings') {
@@ -246,6 +244,9 @@ module.exports = {
             }
             else if (category === "g_vip") {
               category = "VIP"
+            }
+            else if (category === "h_roleplay") {
+              category = "Ролевая Игра(RPG)"
             }
             else if (category === "d_reaction") {
               category = "Реакционные"

@@ -5,6 +5,7 @@ const { COIN, BANK, STAR } = require('../../config');
 const profileModel = require("../../models/profileSchema");
 const vipModel = require("../../models/vipSchema");
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -19,9 +20,9 @@ module.exports = {
     let bag = await begModel.findOne({userID: message.author.id});
 
 
-    if(bag['vip1'] === false) return embed(message).setError("Эта команда доступна только для **VIP 1** пользователей.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if(bag['vip1'] === false) return error(message, "Эта команда доступна только для **VIP 1** пользователей.");
     let arg = args.slice(" ").join(" ")
-    if(!args[0]) return embed(message).setError("Укажите текст.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if(!args[0]) return error(message, "Укажите текст.");
 
     embed(message).setSuccess('Успешно установленo новoe био профиля.').send()
     await vipModel.findOneAndUpdate({userID: message.author.id}, {$set: {profileBio: arg}})

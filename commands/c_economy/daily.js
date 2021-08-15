@@ -7,6 +7,7 @@ const begModel = require("../../models/begSchema");
 const embed = require('../../embedConstructor');
 const { RateLimiter } = require('discord.js-rate-limiter');
 let rateLimiter = new RateLimiter(1, 5000);
+const {error} = require('../../functions');
 
 module.exports = {
     config: {
@@ -37,12 +38,12 @@ module.exports = {
         if (daily !== null && timeout - (Date.now() - daily) > 0) {
             let time = new Date(timeout - (Date.now() - daily));
 
-            embed(message).setError(`Ты уже собрал свой ежедневный приз.\n\nПопробуй еще раз через **${time.getUTCHours()} часа(ов) ${time.getMinutes()} минут.**`).send().then(msg => {msg.delete({timeout: "10000"})});
+            error(message, `Ты уже собрал свой ежедневный приз.\n\nПопробуй еще раз через **${time.getUTCHours()} часа(ов) ${time.getMinutes()} минут.**`);
         } else {
             await profileModel.findOneAndUpdate({userID: user.id}, {$set: {daily: Date.now()}})
 
-            embed(message).setSuccess(`Ваш ежедневный приз: 3 ${STAR}`).send()
-            await begModel.findOneAndUpdate({userID: user.id},{$inc: {stars: 3}})
+            embed(message).setSuccess(`Ваш ежедневный приз: 10 ${STAR}`).send()
+            await begModel.findOneAndUpdate({userID: user.id},{$inc: {stars: 10}})
 
 
 

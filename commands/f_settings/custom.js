@@ -2,6 +2,7 @@ const embed = require('../../embedConstructor');
 const {MessageEmbed} = require("discord.js")
 const {PREFIX} = require("../../config");
 const customModel = require("../../models/customSchema");
+const {error} = require('../../functions');
 
 module.exports = {
       config: {
@@ -14,14 +15,10 @@ module.exports = {
     },
     run: async (bot, message, args) => {
 
-      if (!message.member.hasPermission("ADMINISTRATOR")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if (!message.member.hasPermission("ADMINISTRATOR")) return error(message, "У вас недостаточно прав.");
 
-      if (!args[0]) return embed(message)
-                              .setError('Укажите название.')
-                              .send()
-      if (!args[1]) return embed(message)
-                              .setError('Укажите сообщение.')
-                              .send()
+      if (!args[0]) return error(message, 'Укажите название.');
+      if (!args[1]) return error(message, 'Укажите сообщение.');
       let cmd = args[0]
       let cnt = args.splice(1).join(" ")
 

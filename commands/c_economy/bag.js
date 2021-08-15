@@ -4,10 +4,10 @@ const begModel = require("../../models/begSchema");
 const fishes = require('../../JSON/fishes.json');
 const { MessageEmbed } = require('discord.js');
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
-const { COIN, BANK, STAR } = require('../../config');
+const { COIN, BANK, STAR, MONGO } = require('../../config');
 const vipModel = require("../../models/vipSchema");
-
-
+const Levels = require("discord-xp");
+Levels.setURL(MONGO);
 module.exports = {
   config: {
     name: 'профиль',
@@ -20,7 +20,7 @@ module.exports = {
   run: async (bot, message, args) => {
 
     let member = await message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.member;
-
+    let person = await Levels.fetch(member.user.id, message.guild.id, true)
     let embed = new MessageEmbed()
     .setTimestamp()
     .setColor(cyan)
@@ -40,9 +40,9 @@ module.exports = {
 
 
 
-      embed.addField(`**VIP** - ${vip}`, `${STAR} ${data.stars}\n\n`)
+      embed.addField(`**VIP** - ${vip}`, `${STAR} ${data.stars}\n**XP:** ${person.xp || 0}\n\n`)
       embed.addField(`__Рыбы__\n`,
-    `\`\`\`Хлам(🔧) - ${data.junk}\nОбычная(🐟) - ${data.common}\nНеобычна(🐠) - ${data.uncommon}\nРедкая(🦑) - ${data.rare}\nЛегенда(🐋) - ${data.legendary}\`\`\`\n`, true)
+    `\`\`\`Хлам(🔧) - ${data.junk}\nОбычная(🐟) - ${data.common}\nНеобычная(🐠) - ${data.uncommon}\nРедкая(🦑) - ${data.rare}\nЛегенда(🐋) - ${data.legendary}\`\`\`\n`, true)
 
 
     if(data["vip1"] && checkVip.profileBio !== null) embed.addField('Обо мне:',checkVip.profileBio, true);

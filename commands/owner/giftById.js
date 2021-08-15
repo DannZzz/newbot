@@ -3,11 +3,13 @@ const {MessageEmbed} = require("discord.js");
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN, AGREE, STAR } = require('../../config');
 let ownerID = '382906068319076372';
+let darius = '873237782825422968'
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
-    name: "gift_by_id",
+    name: "giftstars",
     description: "",
     category: "",
     aliases: "",
@@ -15,20 +17,20 @@ module.exports = {
     usage: "[ID] [кол-во монет] "
   },
   run: async (bot, message, args) => {
-     if(message.member.user.id !== ownerID) return embed(message).setError("К сожалению вы не разработчик.").send().then(msg => {msg.delete({timeout: "10000"})});
-    if (!args[0]) return embed(message).setError("Укажите участника.").send().then(msg => {msg.delete({timeout: "10000"})});
+     if(message.member.user.id !== ownerID || message.member.user.id !== darius) return
+    if (!args[0]) return error(message, "Укажите участника.");
 
     let user = bot.users.cache.get(args[0]);
     try {
       let begData = await begModel.findOne({ userID: user.id });
     } catch {
-      return embed(message).setError("Данные не найдены.").send().then(msg => {msg.delete({timeout: "10000"})});
+      return error(message, "Данные не найдены.");
     }
 
-    if(!args[1]) return embed(message).setError("Укажите кол-во монет, чтобы добавить.").send().then(msg => {msg.delete({timeout: "10000"})});
-    if(isNaN(args[1])) return embed(message).setError("Укажите кол-во монет в виде, чтобы добавить.").send().then(msg => {msg.delete({timeout: "10000"})});
-    if(args[1] > 1000000000) return embed(message).setError("Укажите число меньше **1.000.000.000**.").send().then(msg => {msg.delete({timeout: "10000"})});
-    if(args[1] < 10) return embed(message).setError("Укажите число больше **10**.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if(!args[1]) return error(message, "Укажите кол-во монет, чтобы добавить.");
+    if(isNaN(args[1])) return error(message, "Укажите кол-во монет в виде, чтобы добавить.");
+    if(args[1] > 1000000000) return error(message, "Укажите число меньше **1.000.000.000**.");
+    if(args[1] < 10) return error(message, "Укажите число больше **10**.");
 
     await begModel.findOneAndUpdate({userID: user.id}, {$inc: {stars: Math.floor(args[1])}})
     message.react(`${AGREE}`)

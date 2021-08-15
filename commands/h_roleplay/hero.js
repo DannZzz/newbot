@@ -7,6 +7,7 @@ const { MessageEmbed } = require("discord.js");
 const { COIN } = require("../../config");
 const { checkValue } = require("../../functions");
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -19,9 +20,9 @@ module.exports = {
   },
   run: async (bot, message, args) => {
     const user = message.member;
-    if(user.user.bot) return embed(message).setError('Бот не может иметь героя.').send().then(msg => msg.delete({timeout: "10000"}))
+    if(user.user.bot) return error(message, 'Бот не может иметь героя.');
     const rp = await rpg.findOne({userID: user.id});
-    if (!rp) return embed(message).setError('Вы не имеете героя.').send().then(msg => msg.delete({timeout: "10000"}))
+    if (!rp) return error(message, 'Вы не имеете героя.');
     if(rp.item !== null) {
     const item = heroes[rp.item]
     let myHero = new MessageEmbed()
@@ -39,7 +40,7 @@ module.exports = {
 
     return message.channel.send(myHero).then(msg => msg.delete({timeout: "20000"}))
   } else {
-    return embed(message).setError('Вы не имеете героя.').send().then(msg => msg.delete({timeout: "10000"}))
+    return error(message, 'Вы не имеете героя.');
   }
 
   }

@@ -2,6 +2,7 @@ const {MessageEmbed} = require('discord.js');
 const profileModel = require("../../models/profileSchema")
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -25,9 +26,9 @@ module.exports = {
     if (author !== null && timeout - (Date.now() - author) > 0) {
 
       let time = new Date(timeout - (Date.now() - author));
-      return embed(message).setError(`Попробуй снова через **${time.getMinutes()} минут ${time.getSeconds()} секунд**.`).send().then(msg => {msg.delete({timeout: "10000"})});
+      return error(message, `Попробуй снова через **${time.getMinutes()} минут ${time.getSeconds()} секунд**.`);
     } else {
-      if(!args[0]) return embed(message).setError(`Оставьте сообщение.`).send().then(msg => {msg.delete({timeout: "10000"})});
+      if(!args[0]) return error(message, `Оставьте сообщение.`);
       embed(message).setSuccess("Спасибо за отзыв, мы рассмотрим ваше сообщение.").send()
       toChannel.send(embed(message).setPrimary(
         `

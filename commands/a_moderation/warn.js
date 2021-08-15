@@ -4,6 +4,8 @@ const {PREFIX} = require("../../config");
 const memberModel = require("../../models/memberSchema");
 const serverModel = require("../../models/serverSchema");
 const embed = require('../../embedConstructor');
+const {error} = require('../../functions');
+
 module.exports = {
   config: {
     name: "пред",
@@ -15,20 +17,20 @@ module.exports = {
   },
   run: async (bot, message, args) => {
 
-    if (!message.member.hasPermission("MANAGE_MESSAGES")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (!message.member.hasPermission("MANAGE_MESSAGES")) return error(message, "У вас недостаточно прав.");
 
-    if (!args[0]) return embed(message).setError("Укажите участника, чтобы давать предупреждение.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (!args[0]) return error(message, "Укажите участника, чтобы давать предупреждение.");
     let toWarn = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase());
 
-    if(!toWarn || toWarn.id === message.author.id) return embed(message).setError("Укажите другого участника, чтобы давать предупреждение.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if(!toWarn || toWarn.id === message.author.id) return error(message, "Укажите другого участника, чтобы давать предупреждение.");
 
     let authorHighestRole = message.member.roles.highest.position;
     let mentionHighestRole = toWarn.roles.highest.position;
     if(mentionHighestRole >= authorHighestRole || mentionHighestRole >= message.guild.me.roles.highest.position) {
-      return embed(message).setError('Вы не сможете давать предупреждение участнику с ролью выше вас, либо себя.').send().then(msg => {msg.delete({timeout: "10000"})});
+      return error(message, 'Вы не сможете давать предупреждение участнику с ролью выше вас, либо себя.');
       }
 
-    if (toWarn.user.bot) return embed(message).setError("Невозможно давать предупреждение ботам.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (toWarn.user.bot) return error(message, "Невозможно давать предупреждение ботам.");
 
     let data = await memberModel.findOne({
       userID: toWarn.id,
@@ -37,7 +39,7 @@ module.exports = {
 
     let reason = args.slice(1).join(" ")
 
-    if (!reason) return embed(message).setError("Укажите причину.").send().then(msg => {msg.delete({timeout: "10000"})});
+    if (!reason) return error(message, "Укажите причину.");
 
     if (data) {
       data.warns.unshift({

@@ -3,7 +3,7 @@ const {MessageEmbed} = require("discord.js")
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const {PREFIX, AGREE} = require("../../config");
 const serverModel = require("../../models/serverSchema");
-
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -16,23 +16,23 @@ module.exports = {
   },
   run: async (bot, message, args) => {
     try {
-      if (!message.member.hasPermission("MANAGE_MESSAGES")) return embed(message).setError("У вас недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
-      if (!message.guild.me.hasPermission("MANAGE_ROLES")) return embed(message).setError("У меня недостаточно прав.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if (!message.member.hasPermission("MANAGE_MESSAGES")) return error(message, "У вас недостаточно прав.");;
+      if (!message.guild.me.hasPermission("MANAGE_ROLES")) return error(message, "У меня недостаточно прав.");;
 
-      if (!args[0]) return embed(message).setError("Укажите участника, чтобы размьютить.").send()
+      if (!args[0]) return error(message, "Укажите участника, чтобы размьютить.");
       var mutee = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase());
       let sd = await serverModel.findOne({ serverID: message.guild.id });
-      if (!mutee) return embed(message).setError("Укажите участника.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if (!mutee) return error(message, "Укажите участника.");;
 
-      if (mutee === message.member) return embed(message).setError("Невозможно размьютить себя.").send().then(msg => {msg.delete({timeout: "10000"})})
-      if (mutee.roles.highest.comparePositionTo(message.guild.me.roles.highest) >= 0) return embed(message).setError("Невозможно размьютить этого участника.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if (mutee === message.member) return error(message, "Невозможно размьютить себя.");
+      if (mutee.roles.highest.comparePositionTo(message.guild.me.roles.highest) >= 0) return error(message, "Невозможно размьютить этого участника.");;
       let authorHighestRole = message.member.roles.highest.position;
       let mentionHighestRole = mutee.roles.highest.position;
       if(mentionHighestRole >= authorHighestRole) {
-        embed(message).setError('Вы не сможете размутить участника с ролью выше вас, либо себя.').send().then(msg => {msg.delete({timeout: "10000"})});
+        error(message, 'Вы не сможете размутить участника с ролью выше вас, либо себя.');;
         return;}
       let reason = args.slice(1).join(" ");
-      if (mutee.user.bot) return embed(message).setError("Невозможно размьютить ботов.").send().then(msg => {msg.delete({timeout: "10000"})});
+      if (mutee.user.bot) return error(message, "Невозможно размьютить ботов.");;
       const userRoles = mutee.roles.cache
             .filter(r => r.id !== message.guild.id)
             .map(r => r.id)
@@ -47,7 +47,7 @@ module.exports = {
         muterole = message.guild.roles.cache.get(dbmute)
       }
 
-      if (!mutee.roles.cache.has(muterole.id))  return embed(message).setError("Этот участник уже размучен.").send().then(msg => {msg.delete({timeout: "10000"})})
+      if (!mutee.roles.cache.has(muterole.id))  return error(message, "Этот участник уже размучен.");
 
       if (reason) {
                   const sembed2 = new MessageEmbed()

@@ -9,6 +9,7 @@ const { checkValue } = require("../../functions");
 const embed = require('../../embedConstructor');
 const { RateLimiter } = require('discord.js-rate-limiter');
 let rateLimiter = new RateLimiter(1, 5000);
+const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -22,13 +23,13 @@ module.exports = {
   run: async (bot, message, args) => {
     let limited = rateLimiter.take(message.author.id)
     if(limited) return
-    
+
     const rp = await rpg.findOne({userID: message.author.id});
     const data = await bd.findOne({userID: message.author.id});
     const bal = data.stars;
 
     if(!rp || rp.item === null) {
-    return embed(message).setError('Вы не имеете героя.').send().then(msg => msg.delete({timeout: "10000"}))
+    return error(message, 'Вы не имеете героя.')
     };
     let hero = heroes[rp.item]
     let firstLevel = 1;
@@ -38,8 +39,8 @@ module.exports = {
 
     const resp = ['инфо', 'info']
 
-    let addH = 150;
-    let addD = 10;
+    let addH = 250;
+    let addD = 20;
 
     if(args[0] && resp.includes(args[0])) {
       const newEmb = new MessageEmbed()
@@ -54,7 +55,7 @@ module.exports = {
 
       return message.channel.send(newEmb)
     }
-    if (bal < requiredValue) return embed(message).setError(`У вас недостаточно денег.\nСтоимость прокачки до следующего уровня **${requiredValue}** ${STAR}.`).send();
+    if (bal < requiredValue) return error(message, `У вас недостаточно денег.\nСтоимость прокачки до следующего уровня **${requiredValue}** ${STAR}.`)
 
 
 

@@ -54,6 +54,24 @@ module.exports = {
     .addField(`Жизнь: ❤ ${dLord.health} х уровень`, `**Атака: ⚔ ${dLord.damage}** х уровень`, true)
     allEnemies.push(enemy4)
 
+    const eaterSkull = enemies["EaterSkull"]
+    const enemy5 = new MessageEmbed()
+    .setColor(cyan)
+    .setTitle(`Босс ${eaterSkull.name} (${eaterSkull.nameRus})`)
+    .setThumbnail(eaterSkull.url)
+    .setDescription(eaterSkull.description)
+    .addField(`Жизнь: ❤ ${eaterSkull.health}`, `**Атака: ⚔ ${eaterSkull.damage}**\n**Награда: ${eaterSkull.reward}** ${STAR}`, true)
+    allEnemies.push(enemy5)
+
+    const fireWalker = enemies["FireWalker"]
+    const enemy6 = new MessageEmbed()
+    .setColor(cyan)
+    .setTitle(`Босс ${fireWalker.name} (${fireWalker.nameRus})`)
+    .setThumbnail(fireWalker.url)
+    .setDescription(fireWalker.description)
+    .addField(`Жизнь: ❤ ${fireWalker.health}`, `**Атака: ⚔ ${fireWalker.damage}**\n**Награда: ${fireWalker.reward}** ${STAR}`, true)
+    allEnemies.push(enemy6)
+
     const emojies = ['⏪', '◀️', '⏹️', '▶️', '⏩']
     const timeout = '100000'
     const userids = [message.author.id]

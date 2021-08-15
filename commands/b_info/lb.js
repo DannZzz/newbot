@@ -1,14 +1,10 @@
-const profileModel = require("../../models/profileSchema");
-const memberModel = require("../../models/memberSchema");
-const begModel = require("../../models/begSchema");
-const canvacord = require("canvacord");
 const { MessageEmbed, MessageAttachment } = require('discord.js');
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK, STAR, MONGO } = require('../../config');
-const vipModel = require("../../models/vipSchema");
 const serverModel = require("../../models/serverSchema");
 const Embed = require('../../embedConstructor');
 const pagination = require("@xoalone/discordjs-pagination");
+const {error} = require('../../functions');
 
 const Levels = require("discord-xp");
 Levels.setURL(MONGO);
@@ -31,10 +27,10 @@ module.exports = {
     .setAuthor(`${message.guild.name}\nТоп 10 активных участников!`, message.guild.iconURL({dynamic: true}))
     .setColor(cyan)
 
-    if (!server.rank) return Embed(message).setError(`**Система уровней для этого сервера отключена!**`).send().then(msg => {msg.delete({timeout: "10000"})});
+    if (!server.rank) return error(message, `**Система уровней для этого сервера отключена!**`);
 
     const led = await Levels.fetchLeaderboard(message.guild.id, 30)
-    if (led.length <1) return Embed(message).setError(`**Тут пока никого нет.**`).send().then(msg => {msg.delete({timeout: "10000"})});
+    if (led.length <1) return error(message, `**Тут пока никого нет.**`);
 
 
     const gg = await Levels.computeLeaderboard(bot, led, true);
@@ -47,7 +43,7 @@ module.exports = {
     let page3;
     if(led.length <= 10) {
       as = lb.slice(0, 10).join("\n\n")
-      message.channel.send(embed.setDescription("\`\`\`" + as + "\`\`\`")).then(msg => {msg.delete({timeout: "100000"})});
+      message.channel.send(embed.setDescription("\`\`\`" + as + "\`\`\`"))
     } else {
       if (led.length <= 20){
         page1 =  new MessageEmbed()
