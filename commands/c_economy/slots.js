@@ -1,15 +1,14 @@
 //const slotItems = ["🍇", "🍉", "🍌", "🍎", "🍒"];
 const slotItems = ["<a:163:849994358828171296>", "<a:164:849994326025043988>", "<a:170:849994324577878037>", "<a:166:849994325831712798>", "<a:168:849994325441773588>"];
-const embed = require('../../embedConstructor');
 const { MessageEmbed } = require('discord.js');
 const {greenlight, redlight} = require('../../JSON/colours.json');
 const { COIN, BANK, AGREE, DISAGREE } = require('../../config');
 const memberModel = require("../../models/memberSchema");
 const begModel = require("../../models/begSchema");
 const mc = require('discordjs-mongodb-currency');
+const {error, embed, perms} = require('../../functions');
 const { RateLimiter } = require('discord.js-rate-limiter');
 let rateLimiter = new RateLimiter(1, 5000);
-const {error} = require('../../functions');
 
 module.exports = {
     config: {
@@ -76,10 +75,10 @@ module.exports = {
       }
       if (win) {
 
-          embed(message).setPrimary(`${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n${AGREE} Ты выиграл ${money}${COIN}`).send()
+          embed(message, `${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n${AGREE} Ты выиграл ${money}${COIN}`, false);
           await mc.giveCoins(user.id, message.guild.id, Math.floor(money))
       } else {
-          embed(message).setPrimary(`${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n${DISAGREE} Ты проиграл ${money}${COIN}`).send()
+          embed(message, `${slotItems[number[0]]} | ${slotItems[number[1]]} | ${slotItems[number[2]]}\n\n${DISAGREE} Ты проиграл ${money}${COIN}`, false);
 
       }
 
