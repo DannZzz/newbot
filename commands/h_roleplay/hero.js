@@ -25,7 +25,7 @@ module.exports = {
     if(user.user.bot) return error(message, 'Бот не может иметь героя.');
     let rp = await rpg.findOne({userID: user.id});
     if (!rp) return error(message, 'Вы не имеете героя.');
-    if (rp.item === null && rp.heroes.length !== 0) {
+    if (rp.item === null && rp.heroes && rp.heroes.length !== 0) {
       await rpg.findOneAndUpdate({userID: user.id}, {$set: {item: rp.heroes[0]["name"]}});
       await rpg.findOneAndUpdate({userID: user.id}, {$set: {health: rp.heroes[0]["health"]}});
       await rpg.findOneAndUpdate({userID: user.id}, {$set: {damage: rp.heroes[0]["damage"]}});
