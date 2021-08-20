@@ -1,5 +1,8 @@
 const { MessageEmbed } = require('discord.js');
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
+const {error, embed, perms} = require('../../functions');
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 module.exports = {
     config: {
@@ -11,6 +14,9 @@ module.exports = {
         accessableby: "Для всех"
     },
     run: async (bot, message, args) => {
+      let limited = rateLimiter.take(message.author.id)
+      if(limited) return
+
 
         let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.member;
 
@@ -22,13 +28,13 @@ module.exports = {
                 .addField("**Статус не найден!**", 'Этот участник не имеет статус!')
                 .setFooter(message.guild.name, message.guild.iconURL())
                 .setTimestamp()
-            message.channel.send(sembed)
+            message.channel.send({embeds: [sembed]})
             return undefined;
         }
 
         user.presence.activities.forEach((activity) => {
 
-            if (activity.type === 'CUSTOM_STATUS') {
+            if (activity.type === 'CUSTOM') {
                 const embed = new MessageEmbed()
                     .setAuthor(user.user.username, user.user.displayAvatarURL({ dynamic: true }))
                     .setColor(cyan)
@@ -36,7 +42,7 @@ module.exports = {
                     .setThumbnail(user.user.displayAvatarURL())
                     .setFooter(message.guild.name, message.guild.iconURL())
                     .setTimestamp()
-                message.channel.send(embed)
+                message.channel.send({embeds: [embed]})
             }
             else if (activity.type === 'PLAYING') {
                 let name1 = activity.name
@@ -52,7 +58,7 @@ module.exports = {
                     .addField("**Игра:**", `${name1}`)
                     .addField("**Детали:**", `${details1 || "Нет детали"}`)
                     .addField("**Работает над:**", `${state1 || "Не найден"}`)
-                message.channel.send(sembed);
+                message.channel.send({embeds: [sembed]});
             }
             else if (activity.type === 'LISTENING' && activity.name === 'Spotify' && activity.assets !== null) {
 
@@ -75,7 +81,7 @@ module.exports = {
                     .addField('Автор', trackAuthor, false)
                     .addField('** **', `[Слушать в Spotify](${trackURL})`, false)
                     .setFooter(user.displayName, user.user.displayAvatarURL({ dynamic: true }))
-                message.channel.send(embed);
+                message.channel.send({embeds: [embed]});
             }
         })
     }

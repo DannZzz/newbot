@@ -4,9 +4,9 @@ const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK, STAR, MONGO } = require('../../config');
 const vipModel = require("../../models/vipSchema");
 const serverModel = require("../../models/serverSchema");
-const embed = require('../../embedConstructor');
-const {error} = require('../../functions');
-
+const {error, embed, perms} = require('../../functions');
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 const Levels = require("discord-xp");
 Levels.setURL(MONGO);
 
@@ -21,6 +21,9 @@ module.exports = {
     acessableby: 'Для всех'
   },
   run: async (bot, message, args) => {
+    let limited = rateLimiter.take(message.author.id)
+    if(limited) return
+
     let server = await serverModel.findOne({serverID: message.guild.id})
 
     if (!server.rank) return error(message, `Система уровней для этого сервера отключена!`);
@@ -58,10 +61,11 @@ module.exports = {
     if (vip.rankImage !== null) rank.setBackground("IMAGE", vip.rankImage)
     rank.build()
       .then(data => {
-          const attachment = new MessageAttachment(data, "RankCard.png");
-          message.channel.send(attachment)
+          const attachment = new MessageAttachment("RankCard.png", data);
+          message.reply({ files: [{ attachment: data, name: 'rankcard.png' }] });
 
       });
+
 
     // const led = await Levels.fetchLeaderboard(message.guild.id, 5)
     // if (led.length <1) return message.channel.send("lolol");

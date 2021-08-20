@@ -6,11 +6,9 @@ const bd = require("../../models/begSchema");
 const rpg = require("../../models/rpgSchema");
 const { MessageEmbed } = require("discord.js");
 const { COIN, STAR } = require("../../config");
-const { checkValue } = require("../../functions");
-const embed = require('../../embedConstructor');
+const {error, embed, perms} = require('../../functions');
 const { RateLimiter } = require('discord.js-rate-limiter');
 let rateLimiter = new RateLimiter(1, 5000);
-const {error} = require('../../functions');
 
 module.exports = {
   config: {
@@ -43,6 +41,8 @@ module.exports = {
     let enemy;
     if (nowLevel % 10 === 0) {
       enemy = enemies["D'Lord"]
+    } else if (nowLevel % 7 === 0) {
+      enemy = enemies["D'Wolf"];
     } else if (nowLevel % 5 === 0) {
       enemy = enemies["Arthas"];
     } else if (nowLevel % 4 === 0) {
@@ -73,7 +73,7 @@ module.exports = {
     .addField(`${enemy.name}`, `(${enemy.nameRus})`, true)
     .addField(`❤ Общая жизнь: ${enemyHealth}`, `**⚔ Общая атака: ${enemyDamage}**`, true)
     .setThumbnail(`https://media.giphy.com/media/SwUwZMPpgwHNQGIjI7/giphy.gif`)
-    .setImage("https://i.ibb.co/wrsPgsQ/killin.gif")
+    .setImage("https://i.ibb.co/9sZWpJ3/download.gif")
 
     if (args[0] && argsWords.includes(args[0])) {
 
@@ -86,7 +86,7 @@ module.exports = {
       .addField(`Награда: ${levelReward} ${STAR}`, `** **`, false)
       .setImage(enemy.url)
 
-      return message.channel.send(levMes);
+      return message.channel.send({embeds: [levMes]});
     } else {
       let timeoutt;
         if (bag["vip2"] === true) { timeoutt = 1800000; } else {
@@ -129,6 +129,14 @@ module.exports = {
     let winner;
     win ? winner = hero : winner = enemy
 
+    if(hero.name === "Eragon" && enemy.name === "D'Lord") {
+      winner = hero
+    }
+
+    if(hero.name === "Ariel" && enemy.name === "D'Wolf") {
+      winner = hero
+    }
+    
     let msgozv = new MessageEmbed()
     .setColor(cyan)
     .setTitle("Сценарий.")
@@ -155,9 +163,9 @@ module.exports = {
       await pd.findOneAndUpdate({userID: user.id}, {$set: {survive: Date.now()}})
 
     }
-    let msg = await message.channel.send(lonely);
+    let msg = await message.channel.send({embeds: [lonely]});
     setTimeout(function(){
-      return msg.edit(emb)
+      return msg.edit({embeds: [emb]})
     }, 15000)
     // message.channel.send(msgozv).then(
     //   (msg) => {

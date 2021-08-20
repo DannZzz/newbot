@@ -1,11 +1,12 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, MessageButton } = require("discord.js");
 const { readdirSync } = require("fs");
 const serverModel = require("../../models/serverSchema")
 const { stripIndents } = require("common-tags");
 const { cyan } = require("../../JSON/colours.json");
 const { PREFIX, DISAGREE } = require('../../config');
-const Embed = require('../../embedConstructor');
-const pagination = require("@xoalone/discordjs-pagination");
+const {pagination} = require("../../functions");
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 module.exports = {
     config: {
@@ -17,6 +18,9 @@ module.exports = {
         accessableby: "Для всех"
     },
     run: async (bot, message, args) => {
+      let limited = rateLimiter.take(message.author.id)
+      if(limited) return
+
         let prefix;
         let serverData = await serverModel.findOne({ serverID: message.guild.id });
         if(!serverData) {
@@ -26,7 +30,7 @@ module.exports = {
         server.save()}
 
         prefix = serverData.prefix;
-        let catArray = ['RPG', 'игра', 'roleplay', 'rpg', 'модерация', 'модер', 'moder', 'информация', 'инфо', 'info', 'экономика', 'economy', 'реакционные', 'реакция', 'reaction', 'фан', 'fun', 'настройки', 'settings', 'VIP', 'vip']
+        let catArray = ['RPG', 'игра', 'roleplay', 'rpg', 'информация', 'инфо', 'info', 'экономика', 'economy', 'реакционные', 'реакция', 'reaction', 'фан', 'fun', 'настройки', 'settings', 'VIP', 'vip']
         const embed = new MessageEmbed()
             .setColor(cyan)
             .setAuthor(`${message.guild.me.displayName} | Хелп`, message.guild.iconURL())
@@ -70,7 +74,7 @@ module.exports = {
             a.pop()
             embed.addField(`Все доступные категории:`, `\`\`\`${a.join("\n")}\`\`\``)
 
-            return message.channel.send(embed)
+            return message.channel.send({embeds: [embed]})
         }else if(catArray.includes(args[0]) && !args[1]) {
           let func = c => `**${prefix}${c.config.name}** -  ${c.config.description || "Нет описания."} \n\`${ c.config.usage ? `\`Применение: ${prefix}${c.config.name} ${c.config.usage}\`` : "\`Нет применения.\`"}\`\n\`Псевдонимы: ${c.config.aliases ? c.config.aliases.join(", ") : "Нету."}\``
           let description;
@@ -115,11 +119,6 @@ module.exports = {
               '**Категория "Информация"**\n\n' + bot.commands.filter(c => c.config.category === 'b_info').map(func)
               .slice(5, 10)
               .join("\n\n"))
-            description2 = new MessageEmbed()
-              .setDescription(
-              '**Категория "Информация"**\n\n' + bot.commands.filter(c => c.config.category === 'b_info').map(func)
-              .slice(5, 10)
-              .join("\n\n"))
 
           } else if(args[0] === 'игра' || args[0] === 'roleplay' || args[0] === 'rpg' || args[0] === 'RPG') {
 
@@ -134,6 +133,12 @@ module.exports = {
               '**Категория "Ролевая Игра"**\n\n' + bot.commands.filter(c => c.config.category === 'h_roleplay').map(func)
               .slice(5, 10)
               .join("\n\n"))
+              
+              description2 = new MessageEmbed()
+              .setDescription(
+              '**Категория "Ролевая Игра"**\n\n' + bot.commands.filter(c => c.config.category === 'h_roleplay').map(func)
+              .slice(10, 15)
+              .join("\n\n")) 
 
           } else if(args[0] === 'экономика' || args[0] === 'economy') {
 
@@ -185,7 +190,7 @@ module.exports = {
                 .slice(0, 5)
                 .join("\n\n"))
 
-          return message.channel.send(fun)
+          return message.channel.send({embeds: [fun]})
 
 
           } else if(args[0] === 'настройки' || args[0] === 'settings') {
@@ -225,14 +230,29 @@ module.exports = {
 
           const emojies = ['⏪', '◀️', '⏹️', '▶️', '⏩']
 
-          const timeout = '100000'
+          const timeout = 100000
+
+          const button1 = new MessageButton()
+                .setCustomId('previousbtn')
+                .setLabel('Предыдущая')
+                .setStyle('DANGER');
+
+                const button2 = new MessageButton()
+                .setCustomId('nextbtn')
+                .setLabel('Следующая')
+                .setStyle('SUCCESS');
+
+          let buttonList = [
+              button1,
+              button2
+          ]
 
           const userids = [message.author.id]
 
-          pagination(message, pages, emojies, timeout, false, userids)
+          pagination(message, pages, buttonList, timeout, userids)
         } else {
             let command = bot.commands.get(bot.aliases.get(args[0].toLowerCase()) || args[0].toLowerCase())
-            if (!command) return message.channel.send(embed.setTitle(`${DISAGREE} **Не правильная команда!**`).setDescription(`**Пишите \`${prefix}хелп\` чтобы посмотреть все доступные команды бота!**`))
+            if (!command) return message.channel.send({embeds: [embed.setTitle(`${DISAGREE} **Не правильная команда!**`).setDescription(`**Пишите \`${prefix}хелп\` чтобы посмотреть все доступные команды бота!**`)]})
             command = command.config
             let category = command.category;
             if(category === "b_info") {category = "Информация"}
@@ -267,7 +287,7 @@ module.exports = {
             ** Псевдонимы: ** \`${command.aliases ? command.aliases.join(", ") : "Нету."}\``)
             embed.setFooter(message.guild.name, message.guild.iconURL())
 
-            return message.channel.send(embed)
+            return message.channel.send({embeds: [embed]})
         }
     }
 };

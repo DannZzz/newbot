@@ -12,7 +12,8 @@ module.exports = {
         accessableby: "Для всех",
         aliases: ["server", 'serverinfo', 'си']
     },
-    run: async (bot, message, args) => {
+    run: async (bot, messageCreate, args) => {
+      let message = messageCreate
         try {
           let server = message.guild;
           let isItIn = function(val){
@@ -22,17 +23,17 @@ module.exports = {
           }
           let agg = 0;
 
-          let all =  server.members.cache.filter(m => m.presence.status === "online").size + server.members.cache.filter(m => m.presence.status === "dnd").size + server.members.cache.filter(m => m.presence.status === "idle").size
+          let all =  server.members.cache.filter(m => m.presence?.status === "online").size + server.members.cache.filter(m => m.presence?.status === "dnd").size + server.members.cache.filter(m => m.presence?.status === "idle").size
 
           const serverembed = new MessageEmbed()
 
           .setAuthor('Информация о сервере')
           .setTitle(server.name)
           .setThumbnail(server.iconURL({dynamic: true}))
-          .addField('Каналы:', `\`\`\`# ${server.channels.cache.filter(t => t.type === "text").size}\n🔈 ${server.channels.cache.filter(v => v.type === "voice").size}\`\`\``, true)
+          .addField('Каналы:', `\`\`\`T: ${server.channels.cache.filter(t => t.type === "GUILD_TEXT").size}\nV: ${server.channels.cache.filter(v => v.type === "GUILD_VOICE").size}\`\`\``, true)
           .addField('Вы зашли в:', `\`\`\`${moment(message.member.joinedAt).format('DD.MM.YYYY HH:mm')}\`\`\``, true)
           .addField('Создано в:', `\`\`\`${moment(server.createdAt).format('DD.MM.YYYY HH:mm')}\`\`\``, true)
-          .addField('Создатель:', `\`\`\`${server.owner.user.tag}\`\`\``, true)
+          .addField('Создатель:', `\`\`\`${bot.users.cache.get(server.ownerId).tag}\`\`\``, true)
 
 
           .addField('Участников:', `\`\`\`${server.memberCount}\`\`\``, true)
@@ -40,8 +41,8 @@ module.exports = {
           // .addField('Онлайн:', `\`\`\`${server.members.cache.filter(m => m.presence.status === "online").size}\`\`\``, true)
           // .addField('Не беспокоить:', `\`\`\`${server.members.cache.filter(m => m.presence.status === "dnd").size}\`\`\``, true)
           // .addField('Неактивен:', `\`\`\`${server.members.cache.filter(m => m.presence.status === "idle").size}\`\`\``, true)
-          .addField('Оффлайн:', `\`\`\`${server.members.cache.filter(m => m.presence.status === "offline").size}\`\`\``, true)
-          .addField('Категорий:', `\`\`\`${server.channels.cache.filter(c => c.type === "category").size}\`\`\``, true)
+          .addField('Оффлайн:', `\`\`\`${server.memberCount - all}\`\`\``, true)
+          .addField('Категорий:', `\`\`\`${server.channels.cache.filter(c => c.type === "GUILD_CATEGORY").size}\`\`\``, true)
 
           .addField('Верифицирован:', `\`\`\`${booleanToRus(server.verified)}\`\`\``, true)
           .setFooter('ID: ' + server.id)
@@ -54,7 +55,7 @@ module.exports = {
             return command
           }).map(({command}) => command).join(', ')
           if(filteredData.length !== 0) serverembed.addField('Пользовательские команды.', '\`\`\`' + filteredData + '\`\`\`', false)
-          return message.channel.send(serverembed);
+          return message.channel.send({embeds: [serverembed]});
         }
         catch (r ){
             console.log(r);

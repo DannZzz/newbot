@@ -7,9 +7,10 @@ const rpg = require("../../models/rpgSchema");
 const { MessageEmbed } = require("discord.js");
 const { COIN } = require("../../config");
 const { checkValue } = require("../../functions");
-const embed = require('../../embedConstructor');
 const mc = require('discordjs-mongodb-currency');
-const {error} = require('../../functions');
+const {error, embed, perms} = require('../../functions');
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 module.exports = {
   config: {
@@ -21,6 +22,9 @@ module.exports = {
     accessableby: "Для всех"
   },
   run: async (bot, message, args) => {
+    let limited = rateLimiter.take(message.author.id)
+      if(limited) return
+       
     const bag = await bd.findOne({ userID: message.author.id });
     const profileData = await pd.findOne({ userID: message.author.id });
 
@@ -99,8 +103,9 @@ module.exports = {
 
     const filter = m => m.author.id === user.id || m.author.id === user.id;
     message.delete()
-    let wait = await embed(message).setPrimary(`<@${user.user.id}> у вас 20 секунд, чтобы принять вызов.\nПринять: \`\`+\`\`\nОтклонить: \`\`-\`\``).send()
-    await message.channel.awaitMessages(filter, {
+    let wait = await embed(message, `<@${user.user.id}> у вас 20 секунд, чтобы принять вызов.\nСтавка: __${value}__ ${COIN}\n\nПринять: \`\`+\`\`\nОтклонить: \`\`-\`\``, false)
+    await message.channel.awaitMessages({
+    filter, 
     max: 1, // leave this the same
     time: 20000,
     errors: ['time'] // time in MS. there are 1000 MS in a second
@@ -109,12 +114,12 @@ module.exports = {
           await wait.delete()
           await mc.giveCoins(user.id, message.guild.id, value)
           await mc.giveCoins(mUser.id, message.guild.id, value)
-          return embed(message).setPrimary(`${user} отказался.`).send()
+          return error(message, `${user} отказался.`)
     }
     else if (collected.first().content == '+') {
       await wait.delete()
       await pd.findOneAndUpdate({userID: message.author.id}, {$set: {rpg: Date.now()}})
-      let msg = await message.channel.send(myHero);
+      let msg = await message.channel.send({embeds: [myHero]});
       let rand = Math.floor(Math.random() * 32)
       if (rand < 16) {
         while (true) {
@@ -168,8 +173,8 @@ module.exports = {
         .addField(`❤ Общая жизнь: ${winData.health}`, `**⚔ Общая атака: ${winData.damage}**`, true)
         .addField(`Выигрыш: ${value * 2} ${COIN}`, `**🏆 Процент побед: ${Math.trunc(winData.wins / winData.totalGames * 100) || '0'}%**`, true)
 
-        return msg.edit(winEmb)
-      }, 10000)
+        return msg.edit({embeds: [winEmb]})
+      }, 25000)
 
     } else {
       await mc.giveCoins(user.id, message.guild.id, value)

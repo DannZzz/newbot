@@ -2,10 +2,11 @@ const heroes = require('../../JSON/heroes.json');
 const { cyan } = require('../../JSON/colours.json');
 const pd = require("../../models/profileSchema");
 const bd = require("../../models/begSchema");
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, MessageButton } = require("discord.js");
 const { COIN, STAR } = require("../../config");
-const pagination = require("@xoalone/discordjs-pagination");
-const {error} = require('../../functions');
+const {error, pagination} = require('../../functions');
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 module.exports = {
   config: {
@@ -17,6 +18,9 @@ module.exports = {
     accessableby: "Для всех"
   },
   run: async (bot, message, args) => {
+    let limited = rateLimiter.take(message.author.id)
+      if(limited) return
+       
     let allDrags = []
 
     const zeenou = heroes["Zeenou"]
@@ -89,11 +93,44 @@ module.exports = {
     .addField(`Жизнь: ${perfectDuo.health} ❤`, `**Атака: ${perfectDuo.damage}** ⚔`, true)
     allDrags.push(dragon7)
 
-    const emojies = ['⏪', '◀️', '⏹️', '▶️', '⏩']
+    const eragon = heroes["Eragon"]
+    const dragon8 = new MessageEmbed()
+    .setColor(cyan)
+    .setTitle(`${eragon.name} (${eragon.nameRus}) ${cVip(eragon.vip)}`)
+    .setThumbnail(eragon.url)
+    .setDescription(eragon.description)
+    .addField(`Цена: ${eragon.cost} ${cType(eragon.costType)}`, `**Доступен: ${eragon.available}**`, true)
+    .addField(`Жизнь: ${eragon.health} ❤`, `**Атака: ${eragon.damage}** ⚔`, true)
+    allDrags.push(dragon8)
+
+    const ariel = heroes["Ariel"]
+    const dragon9 = new MessageEmbed()
+    .setColor(cyan)
+    .setTitle(`${ariel.name} (${ariel.nameRus}) ${cVip(ariel.vip)}`)
+    .setThumbnail(ariel.url)
+    .setDescription(ariel.description)
+    .addField(`Цена: ${ariel.cost} ${cType(ariel.costType)}`, `**Доступен: ${ariel.available}**`, true)
+    .addField(`Жизнь: ${ariel.health} ❤`, `**Атака: ${ariel.damage}** ⚔`, true)
+    allDrags.push(dragon9)
+
     const timeout = '100000'
     const userids = [message.author.id]
     const pages = allDrags
-    pagination(message, pages, emojies, timeout, false, userids)
+    const button1 = new MessageButton()
+          .setCustomId('previousbtn')
+          .setLabel('Предыдущая')
+          .setStyle('DANGER');
+
+          const button2 = new MessageButton()
+          .setCustomId('nextbtn')
+          .setLabel('Следующая')
+          .setStyle('SUCCESS');
+
+    let buttonList = [
+        button1,
+        button2
+    ]
+    pagination(message, pages, buttonList, timeout, userids)
 
 
     function cVip(bool) {

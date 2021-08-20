@@ -1,11 +1,10 @@
-const { MessageEmbed, MessageAttachment } = require('discord.js');
+const { MessageEmbed, MessageAttachment, MessageButton } = require('discord.js');
 const {greenlight, redlight, cyan} = require('../../JSON/colours.json');
 const { COIN, BANK, STAR, MONGO } = require('../../config');
 const serverModel = require("../../models/serverSchema");
-const Embed = require('../../embedConstructor');
-const pagination = require("@xoalone/discordjs-pagination");
-const {error} = require('../../functions');
-
+const {error, pagination} = require('../../functions');
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 const Levels = require("discord-xp");
 Levels.setURL(MONGO);
 
@@ -20,6 +19,9 @@ module.exports = {
     acessableby: 'Для всех'
   },
   run: async (bot, message, args) => {
+    let limited = rateLimiter.take(message.author.id)
+    if(limited) return
+
     let server = await serverModel.findOne({serverID: message.guild.id})
 
     let embed = new MessageEmbed()
@@ -80,9 +82,24 @@ module.exports = {
 
       const timeout = '100000'
 
+      const button1 = new MessageButton()
+            .setCustomId('previousbtn')
+            .setLabel('Предыдущая')
+            .setStyle('DANGER');
+
+            const button2 = new MessageButton()
+            .setCustomId('nextbtn')
+            .setLabel('Следующая')
+            .setStyle('SUCCESS');
+
+      let buttonList = [
+          button1,
+          button2
+      ]
+
       const userids = [message.author.id]
 
-      pagination(message, pages, emojies, timeout, false, userids)
+      pagination(message, pages, buttonList, timeout, userids)
     }
 
 

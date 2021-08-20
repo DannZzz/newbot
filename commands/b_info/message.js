@@ -1,8 +1,9 @@
 const {MessageEmbed} = require('discord.js');
 const profileModel = require("../../models/profileSchema")
-const {greenlight, redlight} = require('../../JSON/colours.json');
-const embed = require('../../embedConstructor');
-const {error} = require('../../functions');
+const {cyan} = require('../../JSON/colours.json');
+const {error, embed, perms} = require('../../functions');
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 module.exports = {
   config: {
@@ -14,9 +15,15 @@ module.exports = {
     accessableby: "Для всех"
   },
   run: async (bot, message, args) => {
+    let limited = rateLimiter.take(message.author.id)
+    if(limited) return
+
     let {member, channel} = message
     const profileData = await profileModel.findOne({userID: member.id});
-
+    const emb = new MessageEmbed()
+    .setAuthor(message.author.tag, message.author.displayAvatarURL({dynamic: true}))
+    .setColor(cyan)
+    .setTimestamp()
 
     let toGuild = bot.guilds.cache.get('731032795509686332');
     let toChannel = toGuild.channels.cache.get('870408356723052655');
@@ -29,12 +36,12 @@ module.exports = {
       return error(message, `Попробуй снова через **${time.getMinutes()} минут ${time.getSeconds()} секунд**.`);
     } else {
       if(!args[0]) return error(message, `Оставьте сообщение.`);
-      embed(message).setSuccess("Спасибо за отзыв, мы рассмотрим ваше сообщение.").send()
-      toChannel.send(embed(message).setPrimary(
+      embed(message, "Спасибо за отзыв, мы рассмотрим ваше сообщение.\nУбедитесь, что ваши личные сообщения открыты.")
+      toChannel.send({embeds: [emb.setDescription(
         `
         **Получено от: **\`${member.user.tag}(${member.id})\`\n**Из сервера: **\`${message.guild.name}(${message.guild.id})\`\n\n**Сообщение:**\n\`${args.join(" ")}\`
         `
-      ))
+      )]})
 
       await profileModel.findOneAndUpdate({userID: member.id}, {$set: {bug: Date.now()}})
     }

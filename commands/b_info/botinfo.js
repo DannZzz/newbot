@@ -23,11 +23,12 @@ module.exports = {
   .addField('Разработчик: ', DEV, true)
   .addField('Префикс по умолчанию: ', PREFIX, true)
   .addField('Чтобы приглашать меня нажми на:', `[ПРИГЛАШЕНИЕ](${botINVITE})`)
+  .addField('Наш Дискорд сервер:', `[OnlyChill](https://discord.gg/OnlyChill)`)
   .setThumbnail(bot.user.displayAvatarURL({ dynamic: true }))
   .setFooter("ID: " + bot.user.id)
   .setTimestamp()
   .setColor(cyan)
 
-  message.channel.send(embed);
+  message.channel.send({embeds: [embed]});
   }
 }

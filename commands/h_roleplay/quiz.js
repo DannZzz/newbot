@@ -4,11 +4,11 @@ const bd = require("../../models/begSchema");
 const { MessageEmbed } = require("discord.js");
 const { COIN, STAR, AGREE, DISAGREE } = require("../../config");
 const { shuffle } = require("../../functions");
-const embed = require('../../embedConstructor');
 const respA = ['A', 'а', "1"]
 const respB = ['B', 'b', "2"]
 const respC = ['C', 'c', "3"]
 const respD = ['D', 'd', "4"]
+const {error, embed, perms} = require('../../functions');
 const { RateLimiter } = require('discord.js-rate-limiter');
 let rateLimiter = new RateLimiter(1, 5000);
 
@@ -23,6 +23,7 @@ module.exports = {
     accessableby: "Для всех"
   },
   run: async (bot, message, args) => {
+    
     let limited = rateLimiter.take(message.author.id)
     if(limited) return
 
@@ -45,7 +46,7 @@ module.exports = {
     .setColor(cyan)
     .setTimestamp()
     .setAuthor(message.author.username, message.author.displayAvatarURL({dynamic: true}))
-    let msg = await embed(message).setPrimary(`
+    let msg = await embed(message, `
 У вас 15 секунд.
 Вопрос:
 \`\`${getQuestion}\`\`
@@ -54,8 +55,9 @@ module.exports = {
 :regional_indicator_b: | ${b}
 :regional_indicator_c: | ${c}
 :regional_indicator_d: | ${d}
-   `).send()
-    await message.channel.awaitMessages(filter, {
+   `, false);
+    await message.channel.awaitMessages({
+    filter, 
     max: 1, // leave this the same
     time: 15000,
     errors: ['time'] // time in MS. there are 1000 MS in a second
@@ -63,46 +65,46 @@ module.exports = {
     if (respA.includes(collected.first().content)) {
       userResponse = a
       if (userResponse === getAnswer) {
-        await bd.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: 1}})
-        return msg.edit(Emb.setDescription(`${AGREE} Вы ответили правильно, ваша награда — **1** ${STAR}.`))
+        await bd.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: 3}})
+        return msg.edit({embeds: [Emb.setDescription(`${AGREE} Вы ответили правильно, ваша награда — **3** ${STAR}.`)]})
 
       } else {
-        return msg.edit(Emb.setDescription(`${DISAGREE} Вы ответили неправильно.`))
+        return msg.edit({embeds: [Emb.setDescription(`${DISAGREE} Вы ответили неправильно.`)]})
       }
     } else if (respB.includes(collected.first().content)) {
       userResponse = b
       if (userResponse === getAnswer) {
-        await bd.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: 1}})
-        return msg.edit(Emb.setDescription(`${AGREE} Вы ответили правильно, ваша награда — **1** ${STAR}.`))
+        await bd.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: 3}})
+        return msg.edit({embeds: [Emb.setDescription(`${AGREE} Вы ответили правильно, ваша награда — **3** ${STAR}.`)]})
 
       } else {
-        return msg.edit(Emb.setDescription(`${DISAGREE} Вы ответили неправильно.`))
+        return msg.edit({embeds: [Emb.setDescription(`${DISAGREE} Вы ответили неправильно.`)]})
       }
     } else if (respC.includes(collected.first().content)) {
       userResponse = c
       if (userResponse === getAnswer) {
-        await bd.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: 1}})
-        return msg.edit(Emb.setDescription(`${AGREE} Вы ответили правильно, ваша награда — **1** ${STAR}.`))
+        await bd.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: 3}})
+        return msg.edit({embeds: [Emb.setDescription(`${AGREE} Вы ответили правильно, ваша награда — **3** ${STAR}.`)]})
 
       } else {
-        return msg.edit(Emb.setDescription(`${DISAGREE} Вы ответили неправильно.`))
+        return msg.edit({embeds: [Emb.setDescription(`${DISAGREE} Вы ответили неправильно.`)]})
       }
         } else if (respD.includes(collected.first().content)) {
       userResponse = d
       if (userResponse === getAnswer) {
-        await bd.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: 1}})
-        return msg.edit(Emb.setDescription(`${AGREE} Вы ответили правильно, ваша награда — **1** ${STAR}.`))
+        await bd.findOneAndUpdate({userID: message.author.id}, {$inc: {stars: 3}})
+        return msg.edit({embeds: [Emb.setDescription(`${AGREE} Вы ответили правильно, ваша награда — **3** ${STAR}.`)]})
 
       } else {
-        return msg.edit(Emb.setDescription(`${DISAGREE} Вы ответили неправильно.`))
+        return msg.edit({embeds: [Emb.setDescription(`${DISAGREE} Вы ответили неправильно.`)]})
       }
     } else {
-      return msg.edit(Emb.setDescription(`${DISAGREE} Вы ответили неправильно.`));
+      return msg.edit({embeds: [Emb.setDescription(`${DISAGREE} Вы ответили неправильно.`)]});
     }
     console.log('collected :' + collected.first().content)
   }).catch(async() => {
 
-    return msg.edit(Emb.setDescription(`${DISAGREE} Время вышло, попробуйте снова.`));
+    return msg.edit({embeds: [Emb.setDescription(`${DISAGREE} Время вышло, попробуйте снова.`)]});
     });
 
   }

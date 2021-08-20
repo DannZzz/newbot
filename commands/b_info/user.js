@@ -1,6 +1,9 @@
 const { MessageEmbed } = require("discord.js");
 const { cyan } = require("../../JSON/colours.json");
 const moment = require('moment');
+const {error, embed, perms} = require('../../functions');
+const { RateLimiter } = require('discord.js-rate-limiter');
+let rateLimiter = new RateLimiter(1, 5000);
 
 module.exports = {
     config: {
@@ -12,12 +15,15 @@ module.exports = {
         accessableby: "Для всех"
     },
     run: async (bot, message, args) => {
+      let limited = rateLimiter.take(message.author.id)
+      if(limited) return
+
         let member = await message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.guild.members.cache.find(r => r.displayName.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.member;
         let UIembed = new MessageEmbed()
         .setTimestamp()
         .setColor(cyan)
         if(!member)
-        return message.channel.send(UIembed.setDescription("❌ Участник не найден")).then(msg => {msg.delete({timeout: "10000"})});
+        return error(message, "Участник не найден");
 
         function statusToRus(ups){
           if(ups === "dnd"){
@@ -35,7 +41,7 @@ module.exports = {
         const activities = [];
     for (const activity of member.presence.activities.values()) {
       switch (activity.type) {
-        case 'CUSTOM_STATUS':
+        case 'CUSTOM':
         activities.push(activity.state)
           UIembed.setDescription(`**Польз. статус:** \`\`\`${activities}\`\`\``)
           break;
@@ -80,7 +86,7 @@ module.exports = {
         //           })
 
 
-        message.channel.send(UIembed);
+        message.channel.send({embeds: [UIembed]});
     }
 }
 
